@@ -6,13 +6,13 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour
 {
     private int Health { set; get;  }
-    private Weapon Weapon { set; }
+    private Weapon Weapon { get; set; }
 
     public Action OnDeathAction;
     public Action OnHitAction;
     
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         Health = 0;
     }
@@ -26,4 +26,8 @@ public abstract class Entity : MonoBehaviour
     {
         OnDeathAction?.Invoke();
     }
+}
+
+internal class Weapon
+{
 }
