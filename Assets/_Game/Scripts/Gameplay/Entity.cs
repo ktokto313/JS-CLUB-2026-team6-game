@@ -1,53 +1,33 @@
 using System;
-using _Game.Scripts.Gameplay;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour
 {
-    private int _health;
-    [SerializeField]
-    private Projectile projectile;
+    private int Health { set; get;  }
+    private Weapon Weapon { get; set; }
 
     public Action OnDeathAction;
     public Action OnHitAction;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        _health = 0;
-    }
     
-    public void SetHealth(int health)
+    // Start is called before the first frame update
+    protected virtual void Start()
     {
-        if (health < this._health) OnHit();
-        CheckHealth();
-        this._health = health;
+        Health = 0;
     }
 
-    public void LowerHealth(int amount)
-    {
-        OnHit();
-        this._health -= amount;
-        CheckHealth();
-    }
-
-    private void CheckHealth()
-    {
-        if (this._health <= 0) OnDeathAction();
-    }
-
-    public int GetHealth()
-    {
-        return _health;
-    }
-
-    protected void OnHit() 
+    protected void onHit() 
     {
         OnHitAction?.Invoke();
     }
     
-    protected void OnDeath() 
+    protected void onDeath() 
     {
         OnDeathAction?.Invoke();
     }
+}
+
+internal class Weapon
+{
 }

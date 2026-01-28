@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6971031991163159732}
   - component: {fileID: 718575305729760486}
+  - component: {fileID: 7127093054956642834}
   - component: {fileID: 1390880370876288048}
   m_Layer: 0
   m_Name: PlayerController
@@ -61,6 +62,41 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!70 &7127093054956642834
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142161456922311038}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.15}
+  m_Size: {x: 0.14, y: 0.3}
+  m_Direction: 0
 --- !u!114 &1390880370876288048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,11 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c101da9bdadcc784c8b5fe8299f2a30d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheck: {fileID: 0}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  groundCheckRadius: 0.2
 --- !u!1 &6467640713610120558
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,3 +229,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 4499989749593172168}
+  player: {fileID: 1390880370876288048}
