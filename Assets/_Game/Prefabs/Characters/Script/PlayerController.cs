@@ -1,20 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Prefabs.Characters.Script;
 using UnityEngine;
 
 public class PlayerController : Entity
 {
-    public event Action OnJumpAction;
-    public event Action OnAttackAction;
+    public static PlayerController Instance { get; private set; }
+    
+    // Nhom S
+    public event Action OnPerformLowAttack;
+    public event Action OnPerformSmash;
+    
+    // Nhom W
+    public event Action OnPerformJumpAttack;
+    public event Action OnPerformRisingAttack;
+    public event Action OnPerformAirSpin;
+    
+    // Nhom A D
+    public event Action<Facing> OnPerformAttack;
+    public event Action<Facing> OnPerformUppercut;
+    public event Action<Facing> OnPerformAirAttack;
 
-    public bool IsDucking { get; private set; }
-    public bool IsOnAir { get; private set; }
 
-    public PlayerController Instance { get; private set; }
+    public PlayerState state { get; private set; } = PlayerState.STANDING;
 
-    private Facing Facing = Facing.RIGHT;
-
+    private Facing facing = Facing.RIGHT;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -30,78 +42,112 @@ public class PlayerController : Entity
     protected override void Start()
     {
         base.Start();
-        IsOnAir = false;
 
-        // Bỏ if null check để nếu quên tạo GameInput thì Unity báo lỗi ngay
-        // Hoặc giữ lại nhưng thêm Debug.LogError để biết
+        
+        
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnJump += HandleJump;
-            GameInput.Instance.OnAttackLeft += HandleAttackLeft;
-            GameInput.Instance.OnAttackRight += HandleAttackRight;
+            GameInput.Instance.OnInputAttack += HandleAttack;
+            GameInput.Instance.OnInputJump += HandleJump;
+            GameInput.Instance.OnInputDuck += HandleDuck;
         }
-        else
-        {
-            Debug.LogError("FATAL ERROR: Không tìm thấy GameInput trong Scene!");
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (GameInput.Instance != null)
-        {
-            GameInput.Instance.OnJump -= HandleJump;
-            GameInput.Instance.OnAttackLeft -= HandleAttackLeft;
-            GameInput.Instance.OnAttackRight -= HandleAttackRight;
-        }
+        
     }
 
     private void Update()
     {
-        if (GameInput.Instance.IsDucking && !IsOnAir)
+        // UpdatePhysicsGrounded();
+    }
+
+    // Xu ly Action:
+    private void HandleAttack(Facing newFacing) 
+    {
+        SetFacing(newFacing);
+        switch (state)
         {
-            IsDucking = true;
+            case PlayerState.STANDING:
+                OnPerformAttack?.Invoke(facing);
+                break;
+            
+            case PlayerState.DUCKING:
+                state = PlayerState.STANDING;
+                OnPerformUppercut?.Invoke(facing);
+                break;
+            
+            case PlayerState.SMASHING:
+                break;
+            
+            case PlayerState.AIRBORNE:
+                OnPerformAirAttack.Invoke(facing);
+                break;
         }
-        else
-        {
-            IsDucking = false;
-        }
+        
     }
-
-    private void HandleAttackRight()
-    {
-        SetFacing(Facing.RIGHT);
-        PerformAttack();
-    }
-
-    private void HandleAttackLeft()
-    {
-        SetFacing(Facing.LEFT);
-        PerformAttack();
-    }
-
-    private void PerformAttack()
-    {
-        OnAttackAction?.Invoke();
-    }
-
+    
     private void HandleJump()
     {
-        OnJumpAction?.Invoke();
+        switch (state)
+        {
+            case PlayerState.STANDING:
+                state = PlayerState.AIRBORNE;
+                OnPerformJumpAttack?.Invoke();
+                break;
+            
+            case PlayerState.DUCKING:
+                state = PlayerState.AIRBORNE;
+                OnPerformRisingAttack?.Invoke();
+                break;
+            
+            case PlayerState.SMASHING:
+                break;
+            
+            case PlayerState.AIRBORNE:
+                OnPerformAirSpin?.Invoke();
+                break;
+        }
     }
+
+    private void HandleDuck()
+    {
+        switch (state)
+        {
+            case PlayerState.STANDING:
+                OnPerformLowAttack?.Invoke();
+                state = PlayerState.DUCKING;
+                break;
+            
+            case PlayerState.DUCKING:
+                OnPerformLowAttack?.Invoke();
+                break;
+            
+            case PlayerState.SMASHING:
+                break;
+            
+            case PlayerState.AIRBORNE:
+                state = PlayerState.SMASHING;
+                OnPerformSmash?.Invoke();
+                break;
+        }
+        
+    }
+    
+    
+    
+    
+    // Private Helper
 
     private void SetFacing(Facing newFacing)
     {
-        if (Facing != newFacing)
+        if (facing != newFacing)
         {
-            Facing =  newFacing;
+            facing = newFacing;
+            
             Vector3 scale = transform.localScale;
+            
             float size = Mathf.Abs(scale.x);
-            // BƯỚC 2: Gán dấu dựa trên hướng
-            // Nếu quay Phải -> 0.5. Nếu quay Trái -> -0.5
-            scale.x = (Facing == Facing.RIGHT) ? size : -size;
+
+            scale.x = (facing == Facing.RIGHT) ? size : -size;
             transform.localScale = scale;
         }
-        
     }
 }
