@@ -6,19 +6,20 @@ using UnityEngine;
 
 public class GameInput : MonoBehaviour
 {
+    // SingleTon
     public static GameInput Instance { get; private set; }
-
-    public event Action OnAttackLeft;
-    public event Action OnAttackRight;
-    public event Action OnJump;
-
-    public bool IsDucking { get; private set; }
+    
+    // Action Subject
+    public Action OnInputJump;
+    public Action OnInputDuck;
+    public Action<Facing> OnInputAttack;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -28,33 +29,21 @@ public class GameInput : MonoBehaviour
 
     private void Update()
     {
-        // Left
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            OnAttackLeft?.Invoke();
+            OnInputJump?.Invoke();
         }
-
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.S))
         {
-            OnAttackRight?.Invoke();
+            OnInputDuck?.Invoke();
         }
-        
-        // Jump
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Input.GetKeyDown(KeyCode.A))
         {
-            OnJump?.Invoke();
+            OnInputAttack?.Invoke(Facing.LEFT);
         }
-        // Duck
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.D))
         {
-            IsDucking = true;
+            OnInputAttack?.Invoke(Facing.RIGHT);
         }
-        else
-        {
-            IsDucking = false;
-        }
-        
-        
     }
-    
 }
