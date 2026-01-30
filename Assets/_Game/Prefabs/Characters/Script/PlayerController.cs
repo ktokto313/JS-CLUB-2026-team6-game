@@ -3,10 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using _Game.Prefabs.Characters.Script;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : Entity
 {
     public static PlayerController Instance { get; private set; }
+    
+    // Check Ground
+    [SerializeField] private Transform groundCheck; // Vị trí tâm hình tròn
+    [SerializeField] private LayerMask groundLayer; // Lớp đất
+    [SerializeField] private float groundCheckRadius = 0.2f;
     
     // Nhom S
     public event Action OnPerformLowAttack;
@@ -42,9 +48,6 @@ public class PlayerController : Entity
     protected override void Start()
     {
         base.Start();
-
-        
-        
         if (GameInput.Instance != null)
         {
             GameInput.Instance.OnInputAttack += HandleAttack;
@@ -54,11 +57,59 @@ public class PlayerController : Entity
         
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        // UpdatePhysicsGrounded();
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnInputAttack -= HandleAttack;
+            GameInput.Instance.OnInputJump -= HandleJump;
+            GameInput.Instance.OnInputDuck -= HandleDuck;
+        }
     }
 
+    private void Update()
+    {
+        UpdatePhysicsGrounded();
+    }
+
+    private void UpdatePhysicsGrounded()
+    {
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        Debug.Log($"Ground Check: {isGrounded} | Radius: {groundCheckRadius}");
+        if (isGrounded)
+        {
+            // === CHẠM ĐẤT ===
+            if (state == PlayerState.AIRBORNE || state == PlayerState.SMASHING)
+            {
+                // Nếu đang lao xuống (Smash) -> Nổ (Sau này thêm logic)
+                if (state == PlayerState.SMASHING) Debug.Log("Smash Landed!");
+
+                state = PlayerState.STANDING;
+            }
+        }
+        else
+        {
+            // === TRÊN KHÔNG ===
+            // Nếu đang Đứng/Ngồi mà hẫng chân -> Airborne
+            // (Giữ nguyên nếu đang Smash)
+            if (state == PlayerState.STANDING || state == PlayerState.DUCKING)
+            {
+                state = PlayerState.AIRBORNE;
+            }
+        }
+    }
+
+    // --- 3. VẼ GIZMOS (HÌNH TRÒN) ---
+    private void OnDrawGizmos()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.green;
+            // Vẽ hình cầu dây (Wire Sphere) để minh họa hình tròn
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+    }
+    
     // Xu ly Action:
     private void HandleAttack(Facing newFacing) 
     {
@@ -112,8 +163,8 @@ public class PlayerController : Entity
         switch (state)
         {
             case PlayerState.STANDING:
-                OnPerformLowAttack?.Invoke();
                 state = PlayerState.DUCKING;
+                OnPerformLowAttack?.Invoke();
                 break;
             
             case PlayerState.DUCKING:
@@ -130,8 +181,6 @@ public class PlayerController : Entity
         }
         
     }
-    
-    
     
     
     // Private Helper
