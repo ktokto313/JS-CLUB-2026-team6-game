@@ -33,15 +33,15 @@ public class GameInput : MonoBehaviour
         {
             OnInputJump?.Invoke();
         }
-        else if (Input.GetKey(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             OnInputDuck?.Invoke();
         }
-        else if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             OnInputAttack?.Invoke(Facing.LEFT);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D))
         {
             OnInputAttack?.Invoke(Facing.RIGHT);
         }
