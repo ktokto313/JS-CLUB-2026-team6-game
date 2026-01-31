@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Entity : MonoBehaviour
+public abstract class EntityTest : MonoBehaviour
 {
     private int Health { set; get;  }
-    private Weapon Weapon { get; set; }
+    private WeaponTest Weapon { get; set; }
 
     public Action OnDeathAction;
     public Action OnHitAction;
@@ -28,6 +28,6 @@ public abstract class Entity : MonoBehaviour
     }
 }
 
-internal class Weapon
+internal class WeaponTest
 {
 }
