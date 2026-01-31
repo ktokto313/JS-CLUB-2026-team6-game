@@ -5,8 +5,8 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    private int Health { set; get;  }
-    private Weapon Weapon { set; }
+    public int Health { set; get;  }
+    private Weapon Weapon;
 
     public Action OnDeathAction;
     public Action OnHitAction;

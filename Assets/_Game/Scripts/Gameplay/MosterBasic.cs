@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyBase : Entity
 {
-    public float moveSpeed = 3f;
+public float moveSpeed = 3f;
     public float stopDistance = 0.8f;
     private int comboCount = 0;  
     private float lastHitTime = 0f;  
@@ -14,6 +14,9 @@ public class EnemyBase : Entity
     protected Rigidbody2D rb;
     protected bool isStunned = false; 
     
+    public Weapon currentWeapon; 
+    
+    public GameObject weaponItemPrefab;
     IEnumerator StunRoutine(float duration)
     {
         isStunned = true; 
@@ -25,14 +28,17 @@ public class EnemyBase : Entity
     {
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        OnDeathAction = () => {
+            CheckAndDropWeapon();
+            Destroy(gameObject);
+        };
         LookAtPlayer();
-        OnDeathAction = () => { Destroy(gameObject); };
     }
 
-    // Hướng: 0 = Ngang, 1 = Up , 2 = Down ... { Chắc phải thêm nhiều tại phải chuyển cái đòn đánh kết hợp khác đó từ class player sang}
-    public virtual void GetHit(int hitType)
+    // Hướng: 0 = Ngang, 1 = Up , 2 = Down, 3 Fly object... { Chắc phải thêm nhiều tại phải chuyển cái đòn đánh kết hợp khác đó từ class player sang}
+    public virtual void GetHit(int damage,int hitType) // game controller gọi sau
     {
-        Health -= 1;
+        Health -= damage;
         if (Health <= 0) { onDeath(); return; }
         if (Time.time - lastHitTime > comboWindow) {
             comboCount = 0;
@@ -81,6 +87,19 @@ public class EnemyBase : Entity
                 }
                 
                 break;
+            case 3:
+                if (isAirborne)
+                {
+                    rb.velocity = Vector2.zero;
+                    rb.AddForce(new Vector2(pushDir * 1f, 0f), ForceMode2D.Impulse);
+                }
+                else
+                {
+                    rb.AddForce(new Vector2(pushDir * 2f, 0f), ForceMode2D.Impulse);
+                    StopCoroutine("StunRoutine");
+                    StartCoroutine(StunRoutine(0.3f)); 
+                }
+                break;
         }
 
         OnHitAction?.Invoke(); 
@@ -128,5 +147,28 @@ public class EnemyBase : Entity
     
         // Giả sử model chuẩn đã được xoay nhìn sang PHẢI trong Unity
         transform.localScale = new Vector3(direction, 1, 1);
+    }
+    private void CheckAndDropWeapon()
+    {
+        if (currentWeapon == null) return;
+        float distance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(player.position.x, 0));
+        if (Random.value <= 0.5f && distance <= stopDistance + 0.2f)
+        {
+            SpawnDroppedWeapon();
+        }
+    }
+    private void SpawnDroppedWeapon()
+    {
+        Vector3 spawnPos = transform.position + Vector3.up * 1.5f;
+        
+        GameObject droppedObj = Instantiate(weaponItemPrefab, spawnPos, Quaternion.identity);
+        
+        DroppedWeapon dw = droppedObj.GetComponent<DroppedWeapon>();
+        if (dw != null)
+        {
+            dw.Init(currentWeapon, player);
+        }
+
+        // Cập nhật Sprite hình ảnh vũ khí sau...
     }
 }
