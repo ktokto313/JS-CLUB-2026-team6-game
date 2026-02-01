@@ -6,7 +6,7 @@ public class Entity : MonoBehaviour
 {
     private int _health;
     [SerializeField]
-    private Weapon weapon;
+    private Projectile projectile;
 
     public Action OnDeathAction;
     public Action OnHitAction;

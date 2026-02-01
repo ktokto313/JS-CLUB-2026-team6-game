@@ -3,7 +3,7 @@ using UnityEngine;
 namespace _Game.Scripts.Gameplay
 {
     [CreateAssetMenu(fileName = "FILENAME", menuName = "MENUNAME", order = 0)]
-    public class Weapon : ScriptableObject
+    public class Projectile : ScriptableObject
     {
         [SerializeField] private int damage = 0;
         
