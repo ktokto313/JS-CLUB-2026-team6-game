@@ -1,13 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using _Game.Scripts.Gameplay;
 using UnityEngine;
 
-public abstract class Entity : MonoBehaviour
+public class Entity : MonoBehaviour
 {
     private int _health;
-    private Weapon _weapon;
+    [SerializeField]
+    private Weapon weapon;
 
     public Action OnDeathAction;
     public Action OnHitAction;
@@ -28,8 +27,8 @@ public abstract class Entity : MonoBehaviour
     public void LowerHealth(int amount)
     {
         OnHit();
-        CheckHealth();
         this._health -= amount;
+        CheckHealth();
     }
 
     private void CheckHealth()
@@ -40,16 +39,6 @@ public abstract class Entity : MonoBehaviour
     public int GetHealth()
     {
         return _health;
-    }
-
-    public void SetWeapon(Weapon weapon)
-    {
-        _weapon = weapon;
-    }
-
-    public Weapon GetWeapon()
-    {
-        return _weapon;
     }
 
     protected void OnHit() 

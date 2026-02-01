@@ -1,24 +1,16 @@
-﻿using System;
 using UnityEngine;
 
 namespace _Game.Scripts.Gameplay
 {
-    [RequireComponent(typeof(Collider2D))]
-    public class Weapon : MonoBehaviour
+    [CreateAssetMenu(fileName = "FILENAME", menuName = "MENUNAME", order = 0)]
+    public class Weapon : ScriptableObject
     {
-        private WeaponType _weaponType;
-        private WeaponData _weaponData;
-
+        [SerializeField] private int damage = 0;
+        
         private void OnCollisionEnter2D(Collision2D other)
         {
-            Entity entityHit = (Entity)(other.gameObject);
-            entityHit.LowerHealth(_weaponData.getDamageOnWolf());
+            Entity entityHit = (other.gameObject.GetComponent<Entity>());
+            entityHit?.LowerHealth(damage);
         }
-    }
-
-    public enum WeaponType
-    {
-        Ranged,
-        Melee
     }
 }
