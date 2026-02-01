@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 3219139331191528268}
   - component: {fileID: 8584449624399972687}
   - component: {fileID: 4579215552543128142}
+  - component: {fileID: 5793345459179436425}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -171,6 +172,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   groundCheckRadius: 0.2
+--- !u!114 &5793345459179436425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142161456922311038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b92576d8dd6e2940851d74b2610679f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider: {fileID: 8584449624399972687}
+  duckHeightRadio: 0.66
 --- !u!1 &6467640713610120558
 GameObject:
   m_ObjectHideFlags: 0
