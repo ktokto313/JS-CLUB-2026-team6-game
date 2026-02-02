@@ -10,7 +10,7 @@ namespace _Game.Scripts.Gameplay
         private void OnCollisionEnter2D(Collision2D other)
         {
             Entity entityHit = (other.gameObject.GetComponent<Entity>());
-            entityHit?.LowerHealth(damage);
+            // entityHit?.LowerHealth(damage);
         }
     }
 }
