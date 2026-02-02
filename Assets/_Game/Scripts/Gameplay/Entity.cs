@@ -17,12 +17,12 @@ public abstract class EntityTest : MonoBehaviour
         Health = 0;
     }
 
-    protected void onHit() 
+    protected void OnHit() 
     {
         OnHitAction?.Invoke();
     }
     
-    protected void onDeath() 
+    protected void OnDeath() 
     {
         OnDeathAction?.Invoke();
     }
