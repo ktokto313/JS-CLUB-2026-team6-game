@@ -96,3 +96,5 @@ InitTestScene*.unity*
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
 
+Assets/Scenes/TestScene.unity.meta
+Assets/Scenes/TestScene.unity
