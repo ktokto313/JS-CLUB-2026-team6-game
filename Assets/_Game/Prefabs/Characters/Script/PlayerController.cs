@@ -152,14 +152,15 @@ public class PlayerController : Entity
 
     private void HandleJump()
     {
-        movement.PerformJump();
         switch (state)
         {
             case PlayerState.STANDING:
+                movement.PerformJump();
                 OnPerformJumpAttack?.Invoke();
                 break;
 
             case PlayerState.DUCKING:
+                movement.PerformJump();
                 OnPerformRisingAttack?.Invoke();
                 break;
 
