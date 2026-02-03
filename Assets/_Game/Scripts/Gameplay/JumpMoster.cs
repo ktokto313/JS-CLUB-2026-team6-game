@@ -48,7 +48,7 @@ public class JumpMoster : EnemyBase
         {
             isRiding = false;
             base.Invoke("SpawnDroppedWeapon", 0f); 
-            currentWeapon = null; 
+            CurrentWeaponTbScript = null; 
 
             rb.velocity = Vector2.zero;
             float pushDir = transform.position.x < player.position.x ? -1f : 1f;
