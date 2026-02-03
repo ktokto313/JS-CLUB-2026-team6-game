@@ -23,7 +23,7 @@ public class GameInput : MonoBehaviour
         }
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
