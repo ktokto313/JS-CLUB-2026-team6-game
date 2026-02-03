@@ -84,17 +84,17 @@ public class PlayerAnimation : MonoBehaviour
 
     // 3. NHÓM ATTACK (Phím A/D)
     
-    private void PlayAttack(Facing side)
+    private void PlayAttack()
     {
         anim.SetTrigger("Attack");
     }
 
-    private void PlayUppercut(Facing side)
+    private void PlayUppercut()
     {
         anim.SetTrigger("Uppercut");
     }
 
-    private void PlayAirAttack(Facing side)
+    private void PlayAirAttack()
     {
         anim.SetTrigger("AirAttack");
     }

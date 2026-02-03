@@ -9,31 +9,34 @@ using UnityEngine.XR;
 public class PlayerController : Entity
 {
     public static PlayerController Instance { get; private set; }
-    
+
+    [SerializeField] private PlayerMovement movement;
+
     // Check Ground
-    [SerializeField] private Transform groundCheck; // Vị trí tâm hình tròn
     [SerializeField] private LayerMask groundLayer; // Lớp đất
     [SerializeField] private float groundCheckRadius = 0.2f;
-    
+
     // Nhom S
     public event Action OnPerformLowAttack;
     public event Action OnPerformSmash;
-    
+
     // Nhom W
     public event Action OnPerformJumpAttack;
     public event Action OnPerformRisingAttack;
     public event Action OnPerformAirSpin;
-    
+
     // Nhom A D
-    public event Action<Facing> OnPerformAttack;
-    public event Action<Facing> OnPerformUppercut;
-    public event Action<Facing> OnPerformAirAttack;
+    public event Action OnPerformAttack;
+    public event Action OnPerformUppercut;
+    public event Action OnPerformAirAttack;
 
 
     public PlayerState state { get; private set; } = PlayerState.STANDING;
 
     private Facing facing = Facing.RIGHT;
-    
+
+    [SerializeField] private Transform groundCheck;
+
     private void Awake()
     {
         if (Instance == null)
@@ -51,30 +54,31 @@ public class PlayerController : Entity
         base.Start();
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnInputRight += AttackRight;
-            GameInput.Instance.OnInputLeft += AttackLeft;
+            GameInput.Instance.OnInputRight += HandleAttackRight;
+            GameInput.Instance.OnInputLeft += HandleAttackLeft;
             GameInput.Instance.OnInputUp += HandleJump;
             GameInput.Instance.OnInputDown += HandleDuck;
         }
-        
     }
 
-    private void AttackLeft()
+    private void HandleAttackLeft()
     {
-        HandleAttack(Facing.LEFT);
+        movement.SetFacing(Facing.LEFT);
+        HandleAttack();
     }
 
-    private void AttackRight()
+    private void HandleAttackRight()
     {
-        HandleAttack(Facing.RIGHT);
+        movement.SetFacing(Facing.RIGHT);
+        HandleAttack();
     }
 
     private void OnDestroy()
     {
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnInputRight -= AttackRight;
-            GameInput.Instance.OnInputLeft -= AttackLeft;
+            GameInput.Instance.OnInputRight -= HandleAttackRight;
+            GameInput.Instance.OnInputLeft -= HandleAttackLeft;
             GameInput.Instance.OnInputUp -= HandleJump;
             GameInput.Instance.OnInputDown -= HandleDuck;
         }
@@ -122,49 +126,46 @@ public class PlayerController : Entity
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
-    
+
     // Xu ly Action:
-    private void HandleAttack(Facing newFacing) 
+    private void HandleAttack()
     {
-        SetFacing(newFacing);
         switch (state)
         {
             case PlayerState.STANDING:
-                OnPerformAttack?.Invoke(facing);
+                OnPerformAttack?.Invoke();
                 break;
-            
+
             case PlayerState.DUCKING:
                 state = PlayerState.STANDING;
-                OnPerformUppercut?.Invoke(facing);
+                OnPerformUppercut?.Invoke();
                 break;
-            
+
             case PlayerState.SMASHING:
                 break;
-            
+
             case PlayerState.AIRBORNE:
-                OnPerformAirAttack.Invoke(facing);
+                OnPerformAirAttack.Invoke();
                 break;
         }
-        
     }
-    
+
     private void HandleJump()
     {
+        movement.PerformJump();
         switch (state)
         {
             case PlayerState.STANDING:
-                state = PlayerState.AIRBORNE;
                 OnPerformJumpAttack?.Invoke();
                 break;
-            
+
             case PlayerState.DUCKING:
-                state = PlayerState.AIRBORNE;
                 OnPerformRisingAttack?.Invoke();
                 break;
-            
+
             case PlayerState.SMASHING:
                 break;
-            
+
             case PlayerState.AIRBORNE:
                 OnPerformAirSpin?.Invoke();
                 break;
@@ -179,23 +180,22 @@ public class PlayerController : Entity
                 state = PlayerState.DUCKING;
                 OnPerformLowAttack?.Invoke();
                 break;
-            
+
             case PlayerState.DUCKING:
                 OnPerformLowAttack?.Invoke();
                 break;
-            
+
             case PlayerState.SMASHING:
                 break;
-            
+
             case PlayerState.AIRBORNE:
                 state = PlayerState.SMASHING;
                 OnPerformSmash?.Invoke();
                 break;
         }
-        
     }
-    
-    
+
+
     // Private Helper
 
     private void SetFacing(Facing newFacing)
@@ -203,9 +203,9 @@ public class PlayerController : Entity
         if (facing != newFacing)
         {
             facing = newFacing;
-            
+
             Vector3 scale = transform.localScale;
-            
+
             float size = Mathf.Abs(scale.x);
 
             scale.x = (facing == Facing.RIGHT) ? size : -size;
