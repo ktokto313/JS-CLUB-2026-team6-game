@@ -1,7 +1,8 @@
 using UnityEngine;
+
 public class FlyObject : MonoBehaviour
 {
-    private Weapon weaponData;
+    private WeaponTBScript _weaponTbScriptData;
     private Transform playerTransform; 
     private Rigidbody2D rb;
     
@@ -9,13 +10,25 @@ public class FlyObject : MonoBehaviour
     private bool isPlayerOwned = false; 
     private float leftBoundary = -20f;
     private float rightBoundary = 20f;
-    public void Launch(Weapon data, Vector2 direction, float speed, Transform player, bool fromPlayer)
+
+    private void Awake()
     {
-        weaponData = data;
+        rb = GetComponent<Rigidbody2D>();
+    }
+    
+    private void OnEnable()
+    {
+        hasPassedPlayer = false;
+        isPlayerOwned = false;
+    }
+
+    public void Launch(WeaponTBScript data, Vector2 direction, float speed, Transform player, bool fromPlayer)
+    {
+        _weaponTbScriptData = data;
         playerTransform = player;
         isPlayerOwned = fromPlayer; 
 
-        rb = GetComponent<Rigidbody2D>();
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.velocity = direction * speed;
 
@@ -26,24 +39,27 @@ public class FlyObject : MonoBehaviour
     {
         transform.Rotate(0, 0, 1000 * Time.deltaTime);
         CheckMapBoundaries();
+        
         if (!isPlayerOwned && !hasPassedPlayer && playerTransform != null)
         {
             CheckIfPassedPlayer();
         }
     }
+    
     public void GetCaught()
     {
-        Destroy(this); 
+        this.enabled = false; 
     }
+
     private void CheckMapBoundaries()
     {
         float currentX = transform.position.x;
         if (currentX > rightBoundary || currentX < leftBoundary)
         {
-            Debug.Log("FlyObject bay ra khỏi map -> Tự hủy");
-            Destroy(gameObject);
+            GlobalPoolManager.Instance.Return(gameObject);
         }
     }
+
     private void CheckIfPassedPlayer()
     {
         float directionToPlayer = playerTransform.position.x - transform.position.x;
@@ -53,7 +69,6 @@ public class FlyObject : MonoBehaviour
         {
             hasPassedPlayer = true;
             gameObject.tag = "DroppedWeapon"; 
-            Debug.Log("Chuyển sang tag DroppedWeapon");
         }
     }
     
@@ -68,13 +83,13 @@ public class FlyObject : MonoBehaviour
     {
         if (isPlayerOwned && collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<EnemyBase>().GetHit(weaponData.damage, 3);
-            Destroy(gameObject);
+            collision.GetComponent<EnemyBase>().GetHit(_weaponTbScriptData.damage, 3);
+            GlobalPoolManager.Instance.Return(gameObject); 
         }
         else if (!isPlayerOwned && collision.CompareTag("Player") && !hasPassedPlayer)
         {
-            // Player trừ máu
-            Destroy(gameObject);
+            // Logic Player trừ máu ở đây
+            GlobalPoolManager.Instance.Return(gameObject); 
         }
     }
 }

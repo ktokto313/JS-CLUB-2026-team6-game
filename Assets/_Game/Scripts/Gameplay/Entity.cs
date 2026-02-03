@@ -2,14 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using _Game.Scripts.Gameplay;
 
 public abstract class Entity : MonoBehaviour
 {
     public int Health { set; get;  }
-    [SerializeField]
-    private Weapon _weapon;
-    
+    private WeaponTBScript _weaponTbScript;
+
     public Action OnDeathAction;
     public Action OnHitAction;
     
@@ -21,6 +19,7 @@ public abstract class Entity : MonoBehaviour
 
     protected void onHit() 
     {
+        // gọi getHit();
         OnHitAction?.Invoke();
     }
     

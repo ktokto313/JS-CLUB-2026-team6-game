@@ -1,91 +1,69 @@
-using System.Collections;
 using UnityEngine;
 
 public class DroppedWeapon : MonoBehaviour
 {
-    private Weapon weaponData;
+    private WeaponTBScript _weaponTbScriptData;
     private Transform playerTransform;
     private Rigidbody2D rb;
     private Collider2D col;
     
     private bool isFalling = true; 
-    private bool isHeld = false;    
-    private bool isFlying = false;  
 
-    public void Init(Weapon data, Transform player)
+    private void Awake()
     {
-        weaponData = data;
+        rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+    }
+
+    private void OnEnable()
+    {
+        isFalling = true;
+        this.enabled = true; 
+        if (col != null) col.isTrigger = true;
+        if (rb != null) {
+            rb.gravityScale = 0.5f;
+            rb.velocity = Vector2.zero;
+        }
+    }
+
+    public void Init(WeaponTBScript data, Transform player)
+    {
+        _weaponTbScriptData = data;
         playerTransform = player;
-        
-        rb = gameObject.AddComponent<Rigidbody2D>();
-        col = gameObject.AddComponent<CapsuleCollider2D>();
-        col.isTrigger = true; 
-
         gameObject.tag = "DroppedWeapon"; 
-        rb.gravityScale = 0.5f; 
     }
 
-    public void GetInteract(bool playerHasWeapon) // game controller gọi sau
+    // --- HÀM CHO PLAYER GỌI ---
+    /// Player gọi hàm này khi muốn NHẶT vũ khí.
+    public WeaponTBScript Collect()
     {
-        if (!playerHasWeapon)
-        {
-            if (isFalling || !isHeld) {
-                StartCoroutine(HoldWeapon());
-            } else if (isHeld || weaponData.type == WeaponType.Ranged) {
-                LaunchWeapon(); 
-            }
-        }
-        else 
-        {
-            ReflectWeapon();
-        }
+        GlobalPoolManager.Instance.Return(gameObject);
+        return _weaponTbScriptData;
     }
-
-    private IEnumerator HoldWeapon()
-{
-    FlyObject fly = GetComponent<FlyObject>();
-    if (fly != null) fly.GetCaught(); 
-
-    isFalling = false;
-    isHeld = true;
-    
-    rb.velocity = Vector2.zero;
-    rb.gravityScale = 0;
-    col.isTrigger = true;
-
-    while (isHeld)
-    {
-        float dir = playerTransform.localScale.x;
-        transform.position = playerTransform.position + new Vector3(dir * 0.6f, 0, 0);
-        yield return null;
-    }
-}
-
-    private void LaunchWeapon()
-    {
-        isHeld = false;
-        ExecuteLaunch(10f);
-    }
-
-    private void ReflectWeapon()
+    /// Player gọi hàm này khi muốn ĐÁ hoặc PHẢN ĐÒN vũ khí bay đi luôn.
+    public void Reflect(Vector2 launchDirection, float speed)
     {
         isFalling = false;
-        ExecuteLaunch(15f);
+        ExecuteLaunch(speed, launchDirection);
     }
-    private void ExecuteLaunch(float speed)
+    
+
+    private void ExecuteLaunch(float speed, Vector2 direction)
     {
         FlyObject fly = GetComponent<FlyObject>();
         if (fly == null) fly = gameObject.AddComponent<FlyObject>();
-
-        float dir = playerTransform.localScale.x;
-        fly.Launch(weaponData, new Vector2(dir, 0), speed, playerTransform, true);
-        Destroy(this);
+        else fly.enabled = true;
+        
+        fly.Launch(_weaponTbScriptData, direction, speed, playerTransform, true);
+        
+        this.enabled = false; 
     }
+
     private void Update()
     {
-        if (isFlying)
+        if (isFalling)
         {
-            transform.Rotate(0, 0, 1000 * Time.deltaTime);
+            transform.Rotate(0, 0, 180 * Time.deltaTime);
         }
     }
 
@@ -93,16 +71,7 @@ public class DroppedWeapon : MonoBehaviour
     {
         if (isFalling && collision.CompareTag("Ground"))
         {
-            Destroy(gameObject, 0.1f);
-        }
-        if (isFlying && collision.CompareTag("Enemy"))
-        {
-            var enemy = collision.GetComponent<EnemyBase>();
-            if (enemy != null)
-            {
-                enemy.GetHit(weaponData.damage, 3);
-            }
-            Destroy(gameObject);
+            GlobalPoolManager.Instance.Return(gameObject);
         }
     }
 }
