@@ -10,10 +10,11 @@ public class GameInput : MonoBehaviour
     public static GameInput Instance { get; private set; }
     
     // Action Subject
-    public Action OnInputJump;
-    public Action OnInputDuck;
-    public Action<Facing> OnInputAttack;
-
+    public Action OnInputUp;
+    public Action OnInputDown;
+    public Action OnInputLeft;
+    public Action OnInputRight;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -29,21 +30,22 @@ public class GameInput : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            OnInputJump?.Invoke();
+            OnInputUp?.Invoke();
         }
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) ||  Input.GetKeyDown(KeyCode.DownArrow))
         {
-            OnInputDuck?.Invoke();
+            OnInputDown?.Invoke();
         }
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) ||  Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            OnInputAttack?.Invoke(Facing.LEFT);
+            OnInputLeft?.Invoke();
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D)  ||  Input.GetKeyDown(KeyCode.RightArrow))
         {
-            OnInputAttack?.Invoke(Facing.RIGHT);
+            OnInputRight?.Invoke();
         }
     }
+    
 }
