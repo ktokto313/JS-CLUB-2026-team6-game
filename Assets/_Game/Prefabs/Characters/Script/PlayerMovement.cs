@@ -1,108 +1,40 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-    public class PlayerMovement : MonoBehaviour
-    {
-        
-        [SerializeField] private float jumpAttackForce = 16f; // Lực nhảy khi tấn công (thường mạnh hơn nhảy thường)
-
-        [SerializeField] private Rigidbody2D rb;
-        
-        private Facing facing = Facing.RIGHT;
+public class PlayerMovement : MonoBehaviour
+{
+    [Header("Settings")]
+    [SerializeField] private float jumpAttackForce = 16f; 
+    [SerializeField] private Rigidbody2D rb;
     
+    // Biến lưu trạng thái hướng hiện tại
+    private Facing currentFacing = Facing.RIGHT;
+
+    // --- CÁC HÀM PUBLIC (API) ĐỂ CONTROLLER GỌI ---
+    
+    public void SetFacing(Facing newFacing)
+    {
+        // Chỉ xử lý nếu có sự thay đổi hướng để tối ưu hiệu năng
+        if (currentFacing != newFacing)
+        {
+            currentFacing = newFacing;
         
-        private void Start()
-        {
-            if (PlayerController.Instance != null)
-            {
-                // 1. NHÓM DUCK (Phím S)
-                PlayerController.Instance.OnPerformLowAttack += PlayLowAttack;
-                PlayerController.Instance.OnPerformSmash += PlaySmash;
-
-                // 2. NHÓM JUMP (Phím W)
-                PlayerController.Instance.OnPerformJumpAttack += PlayJumpAttack;
-                PlayerController.Instance.OnPerformRisingAttack += PlayRisingAttack;
-                PlayerController.Instance.OnPerformAirSpin += PlayAirSpin;
-
-                // 3. NHÓM ATTACK (Phím A/D)
-                PlayerController.Instance.OnPerformAttack += PlayAttack;
-                PlayerController.Instance.OnPerformUppercut += PlayAttack;
-                PlayerController.Instance.OnPerformAirAttack += PlayAttack; 
-            }
-        }
-
-        private void PlayLowAttack()
-        {
-        }
-
-        private void PlaySmash()
-        {
-        }
-
-        private void PlayJumpAttack()
-        {
-            // 1. Reset vận tốc Y về 0 để cú nhảy luôn có lực nhất quán 
-            // (Dù đang rơi hay đang bay thì bấm là nảy lên ngay)
-            rb.velocity = new Vector2(rb.velocity.x, 0);
-
-            // 2. Thêm lực hướng lên trên (Impulse = Lực tức thời)
-            rb.AddForce(Vector2.up * jumpAttackForce, ForceMode2D.Impulse);
-        }
-
-        private void PlayRisingAttack()
-        {
-        }
-
-        private void PlayAirSpin()
-        {
-        }
-
-        private void PlayAttack(Facing face)
-        {
-            SetFacing(face);
-        }
-
-        private void Update()
-        {
+            Vector3 scale = transform.localScale;
             
-        }
+            // Lấy giá trị tuyệt đối để đảm bảo scale gốc luôn dương
+            float size = Mathf.Abs(scale.x);
 
-        private void OnDestroy()
-        {
-            if (PlayerController.Instance != null)
-            {
-                // 1. NHÓM DUCK
-                PlayerController.Instance.OnPerformLowAttack -= PlayLowAttack;
-                PlayerController.Instance.OnPerformSmash -= PlaySmash;
-
-                // 2. NHÓM JUMP
-                PlayerController.Instance.OnPerformJumpAttack -= PlayJumpAttack;
-                PlayerController.Instance.OnPerformRisingAttack -= PlayRisingAttack;
-                PlayerController.Instance.OnPerformAirSpin -= PlayAirSpin;
-
-                // 3. NHÓM ATTACK
-                PlayerController.Instance.OnPerformAttack -= PlayAttack;
-                PlayerController.Instance.OnPerformUppercut -= PlayAttack;
-                PlayerController.Instance.OnPerformAirAttack -= PlayAttack; 
-            }
-        }
-
-
-
-        private void SetFacing(Facing newFacing)
-        {
-            if (facing != newFacing)
-            {
-                facing = newFacing;
+            // Gán dấu: RIGHT là dương, LEFT là âm
+            scale.x = (currentFacing == Facing.RIGHT) ? size : -size;
             
-                Vector3 scale = transform.localScale;
-            
-                float size = Mathf.Abs(scale.x);
-
-                scale.x = (facing == Facing.RIGHT) ? size : -size;
-                transform.localScale = scale;
-            }
+            transform.localScale = scale;
         }
     }
+
+    public void PerformJump()
+    {
+        
+        rb.velocity = new Vector2(rb.velocity.x, 0);
+
+        rb.AddForce(Vector2.up * jumpAttackForce, ForceMode2D.Impulse);
+    }
+}
