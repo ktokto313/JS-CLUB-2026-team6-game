@@ -41,7 +41,7 @@ public class PlayerController : Entity
         }
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
