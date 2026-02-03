@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using _Game.Prefabs.Characters.Script;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.XR;
 
 public class PlayerController : Entity
 {
@@ -50,20 +51,32 @@ public class PlayerController : Entity
         base.Start();
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnInputAttack += HandleAttack;
-            GameInput.Instance.OnInputJump += HandleJump;
-            GameInput.Instance.OnInputDuck += HandleDuck;
+            GameInput.Instance.OnInputRight += AttackRight;
+            GameInput.Instance.OnInputLeft += AttackLeft;
+            GameInput.Instance.OnInputUp += HandleJump;
+            GameInput.Instance.OnInputDown += HandleDuck;
         }
         
+    }
+
+    private void AttackLeft()
+    {
+        HandleAttack(Facing.LEFT);
+    }
+
+    private void AttackRight()
+    {
+        HandleAttack(Facing.RIGHT);
     }
 
     private void OnDestroy()
     {
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnInputAttack -= HandleAttack;
-            GameInput.Instance.OnInputJump -= HandleJump;
-            GameInput.Instance.OnInputDuck -= HandleDuck;
+            GameInput.Instance.OnInputRight -= AttackRight;
+            GameInput.Instance.OnInputLeft -= AttackLeft;
+            GameInput.Instance.OnInputUp -= HandleJump;
+            GameInput.Instance.OnInputDown -= HandleDuck;
         }
     }
 
