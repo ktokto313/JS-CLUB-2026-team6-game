@@ -5,6 +5,7 @@
         STANDING,
         DUCKING,
         AIRBORNE,
-        SMASHING
+        SMASHING,
+        DEATH
     }
 }
