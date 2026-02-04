@@ -10,10 +10,10 @@ public class GameInput : MonoBehaviour
     public static GameInput Instance { get; private set; }
     
     // Action Subject
-    public Action OnInputUp;
-    public Action OnInputDown;
-    public Action OnInputLeft;
-    public Action OnInputRight;
+    public event Action OnInputUp;
+    public event Action OnInputDown;
+    public event Action OnInputLeft;
+    public event Action OnInputRight;
     
     private void Awake()
     {
