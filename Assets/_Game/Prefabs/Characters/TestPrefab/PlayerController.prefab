@@ -214,8 +214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxX: 1.07
-  boxY: 0.62
-  punchOffset: {x: 0.77, y: 1.94}
+  boxY: 3.1
+  punchOffset: {x: 0.79, y: 1.55}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -248,7 +248,7 @@ Transform:
   m_GameObject: {fileID: 6467640713610120558}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.005, y: -0.002, z: 0}
+  m_LocalPosition: {x: -0.003, y: -0.002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
