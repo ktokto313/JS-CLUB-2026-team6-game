@@ -17,15 +17,15 @@ public class GameInput : MonoBehaviour
     
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this) 
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(this.gameObject); 
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Instance = this;
+    
+        DontDestroyOnLoad(this.gameObject); 
     }
 
     private void Update()
