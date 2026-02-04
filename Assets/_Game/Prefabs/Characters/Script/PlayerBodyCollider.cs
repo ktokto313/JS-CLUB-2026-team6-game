@@ -1,81 +1,80 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using _Game.Prefabs.Characters.Script;
 using UnityEngine;
 
 public class PlayerBodyCollider : MonoBehaviour
 {
     [SerializeField] private BoxCollider2D boxCollider;
-    [SerializeField] private float duckHeightRadio;
+    [SerializeField] private float duckHeightRatio = 0.5f;
     
-    // Original Size
-    private Vector2 OriginSize;
-    private Vector2 OriginOffset;
-
-    // Ducking Size
-    private Vector2 DuckingSize;
-    private Vector2 DuckingOffset;
-    
-    
-    
-    private bool isDucking;
+    private Vector2 originSize;
+    private Vector2 originOffset;
+    private Vector2 duckingSize;
+    private Vector2 duckingOffset;
 
     private void Awake()
     {
-        OriginSize = boxCollider.size;
-        OriginOffset = boxCollider.offset;
+        if (boxCollider == null) boxCollider = GetComponent<BoxCollider2D>();
+
+        originSize = boxCollider.size;
+        originOffset = boxCollider.offset;
 
         CalculateStat();
-
     }
 
-    private void CalculateStat()
-    {   
-        float newHeight = OriginSize.y * duckHeightRadio;
-        
-        DuckingSize = new Vector2(OriginSize.x, newHeight);
-        
-        float diff = OriginSize.y - DuckingSize.y;
-        
-        DuckingOffset = new Vector2(OriginOffset.x,OriginOffset.y - diff/2);
-        
-    }
-
-    private void Update()
+    private void Start()
     {
         if (PlayerController.Instance != null)
         {
-            if (PlayerController.Instance.state == PlayerState.DUCKING)
-            {
-                if (!isDucking)
-                {
-                    SetCollider();
-                    isDucking = true;
-                }
-            }
-            else
-            {
-                if (isDucking)
-                {
-                    ResetCollider();
-                    isDucking = false;
-                }
-            }
+            // 1. NHÓM DUCK
+            PlayerController.Instance.OnPerformLowAttack += SetColliderDucking;
+            PlayerController.Instance.OnPerformSmash += SetColliderStanding;
+
+            // 2. NHÓM JUMP
+            PlayerController.Instance.OnPerformJumpAttack += SetColliderStanding;
+            PlayerController.Instance.OnPerformRisingAttack += SetColliderStanding;
+            PlayerController.Instance.OnPerformAirSpin += SetColliderStanding;
+
+            // 3. NHÓM ATTACK
+            PlayerController.Instance.OnPerformAttack += SetColliderStanding;
+            PlayerController.Instance.OnPerformUppercut += SetColliderStanding;
+            PlayerController.Instance.OnPerformAirAttack += SetColliderStanding; 
+            
         }
     }
-    
-    private void ResetCollider()
+
+    private void SetColliderDucking()
     {
-        boxCollider.size = OriginSize;
-        boxCollider.offset = OriginOffset;
-        Debug.Log("Original size: " + boxCollider.size);
+        SetDucking(true);
     }
 
-    private void SetCollider()
+    private void SetColliderStanding()
     {
-        boxCollider.size = DuckingSize;
-        boxCollider.offset = DuckingOffset;
-        Debug.Log("Ducking size: " + boxCollider.size);
+        SetDucking(false);
+    }
+    
+
+    private void CalculateStat()
+    {   
+        float newHeight = originSize.y * duckHeightRatio;
+        duckingSize = new Vector2(originSize.x, newHeight);
+        
+        float diff = originSize.y - duckingSize.y;
+        
+        duckingOffset = new Vector2(originOffset.x, originOffset.y - (diff / 2));
+    }
+
+    // --- HÀM PUBLIC ĐỂ NGƯỜI KHÁC GỌI ---
+    public void SetDucking(bool isDucking)
+    {
+        if (isDucking)
+        {
+            boxCollider.size = duckingSize;
+            boxCollider.offset = duckingOffset;
+        }
+        else
+        {
+            boxCollider.size = originSize;
+            boxCollider.offset = originOffset;
+        }
     }
 }
