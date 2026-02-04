@@ -6,15 +6,21 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR;
 
-public class PlayerController : Entity
+public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
     [SerializeField] private PlayerMovement movement;
 
+    [SerializeField] private PlayerHealth health;
+
     // Check Ground
     [SerializeField] private LayerMask groundLayer; // Lớp đất
     [SerializeField] private float groundCheckRadius = 0.2f;
+
+    // Check Death
+    public event Action OnHitAction;
+    public event Action OnDeathAction;
 
     // Nhom S
     public event Action OnPerformLowAttack;
@@ -39,20 +45,17 @@ public class PlayerController : Entity
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) 
+        if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject); 
+            Destroy(this.gameObject);
             return;
         }
 
         Instance = this;
-    
-        DontDestroyOnLoad(this.gameObject); 
     }
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         if (GameInput.Instance != null)
         {
             GameInput.Instance.OnInputRight += HandleAttackRight;
@@ -117,16 +120,36 @@ public class PlayerController : Entity
         }
     }
 
-    // --- 3. VẼ GIZMOS (HÌNH TRÒN) ---
     private void OnDrawGizmos()
     {
         if (groundCheck != null)
         {
             Gizmos.color = Color.green;
-            // Vẽ hình cầu dây (Wire Sphere) để minh họa hình tròn
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
+
+    // Xu ly Death
+    public void TakeDamage()
+    {
+        if (state == PlayerState.DEATH) return;
+
+        if (health != null)
+        {
+            bool isDead = health.TakeHit();
+
+            if (isDead)
+            {
+                state = PlayerState.DEATH;
+                OnDeathAction?.Invoke();
+            }
+            else
+            {
+                OnHitAction?.Invoke();
+            }
+        }
+    }
+
 
     // Xu ly Action:
     private void HandleAttack()

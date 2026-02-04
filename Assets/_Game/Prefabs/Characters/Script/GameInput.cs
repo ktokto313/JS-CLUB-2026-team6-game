@@ -24,8 +24,6 @@ public class GameInput : MonoBehaviour
         }
 
         Instance = this;
-    
-        DontDestroyOnLoad(this.gameObject); 
     }
 
     private void Update()
