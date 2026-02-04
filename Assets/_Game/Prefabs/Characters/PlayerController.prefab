@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2266856191104021108}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,8 @@ GameObject:
   - component: {fileID: 4579215552543128142}
   - component: {fileID: 5793345459179436425}
   - component: {fileID: 4029415490958023433}
-  m_Layer: 0
+  - component: {fileID: 5553352419273494973}
+  m_Layer: 7
   m_Name: PlayerController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: {fileID: 3219139331191528268}
+  health: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -213,13 +215,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f7c8a094678374f964032f16916654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxX: 1.07
-  boxY: 3.1
-  punchOffset: {x: 0.79, y: 1.55}
+  boxSize: {x: 1.02, y: 3.07}
+  punchOffset: {x: 0.79, y: 1.52}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
   showHitboxTime: 0.1
+--- !u!114 &5553352419273494973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142161456922311038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f00e2b3b1540004eb6500f5cfb6cd97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 8
 --- !u!1 &6467640713610120558
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +246,7 @@ GameObject:
   - component: {fileID: 4499989749593172168}
   - component: {fileID: 8824820897144908186}
   - component: {fileID: 6933569093343171555}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
