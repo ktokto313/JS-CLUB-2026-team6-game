@@ -39,14 +39,15 @@ public class PlayerController : Entity
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this) 
         {
-            Instance = this;
+            Destroy(this.gameObject); 
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Instance = this;
+    
+        DontDestroyOnLoad(this.gameObject); 
     }
 
     protected override void Start()
