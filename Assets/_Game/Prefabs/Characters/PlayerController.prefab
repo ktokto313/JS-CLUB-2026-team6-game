@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider: {fileID: 8584449624399972687}
-  duckHeightRadio: 0.66
+  duckHeightRatio: 0.7
 --- !u!114 &4029415490958023433
 MonoBehaviour:
   m_ObjectHideFlags: 0
