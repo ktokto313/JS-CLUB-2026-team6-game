@@ -13,7 +13,7 @@ public class WeaponTBScript : ScriptableObject
     [Header("Combat Stats")]
     public WeaponType type;
     public int damage = 10;
-    public float attackRange = 1.5f;
+    public float attackRange = 3f;
     public float attackSpeed = 1.0f;
 
     [Header("Projectile Settings (If Ranged)")]

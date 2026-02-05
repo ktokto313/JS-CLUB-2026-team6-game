@@ -40,7 +40,7 @@ public class DroppedWeapon : MonoBehaviour
         GlobalPoolManager.Instance.Return(gameObject);
         return _weaponTbScriptData;
     }
-    /// Player gọi hàm này khi muốn ĐÁ hoặc PHẢN ĐÒN vũ khí bay đi luôn.
+
     public void Reflect(Vector2 launchDirection, float speed)
     {
         isFalling = false;

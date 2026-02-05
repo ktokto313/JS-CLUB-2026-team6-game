@@ -68,15 +68,13 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {   
-            Entity entity = enemy.GetComponent<Entity>();
+            EnemyBase entity = enemy.GetComponent<EnemyBase>();
             if (entity != null)
             {
                 int damage = 1; 
                 int hitType = 0; 
+                entity.GetHit(damage, hitType); 
 
-                entity.onHit(damage, hitType); 
-                
-                Debug.Log($"Đã đánh trúng {enemy.name}!");
             }
         }
         yield return new WaitForSeconds(showHitboxTime);

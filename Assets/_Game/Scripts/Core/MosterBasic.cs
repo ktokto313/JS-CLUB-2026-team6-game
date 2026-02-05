@@ -3,11 +3,10 @@ using System.Collections;
 
 public class EnemyBase : Entity {
     public float moveSpeed = 3f;
-    public float stopDistance = 0.8f;
     private int comboCount = 0;  
     private float lastHitTime = 0f;  
     public float comboWindow = 0.5f; 
-    protected Transform player;
+    public Transform player;
     protected float attackTimer = 0f;
     protected bool isAirborne = false;
     protected Rigidbody2D rb;
@@ -31,7 +30,7 @@ public class EnemyBase : Entity {
         if (GameManager.Instance != null)  player = GameManager.Instance.PlayerTransform;
 
         OnDeathAction = () => {
-            CheckAndDropWeapon();
+            // đang lỗi CheckAndDropWeapon();
             GlobalPoolManager.Instance.Return(gameObject);
         };
         LookAtPlayer();
@@ -70,7 +69,7 @@ public class EnemyBase : Entity {
 protected virtual void Update() {
         if (player == null || isAirborne || isStunned) return;
         
-        float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 0.8f;
+        float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 3f;
 
         float distance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(player.position.x, 0));
 
@@ -87,20 +86,22 @@ protected virtual void Update() {
     }
 
     protected virtual void HandleAttack() {
+        if (rb != null) rb.velocity = new Vector2(0, rb.velocity.y);
         float attackCooldown = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackSpeed : 1.0f;
 
         attackTimer += Time.deltaTime;
-        if (attackTimer >= attackCooldown) {
-            // gọi hàm trừ máu player
+        if (attackTimer >= attackCooldown)
+        {
+            PlayerController.Instance.TakeDamage();
+            Debug.Log("Hit Playyer :########");
             attackTimer = 0;
-            // gọi Animation đánh của quái
         }
     }
     
     private void CheckAndDropWeapon() {
         if (CurrentWeaponTbScript == null) return;
         if (Random.value <= 0.5f) {
-            GameObject dropObj = GlobalPoolManager.Instance.Get(weaponItemPrefab, transform.position + Vector3.up);
+            GameObject dropObj = GlobalPoolManager.Instance.Get(weaponItemPrefab, transform.position + Vector3.up);//
             dropObj.GetComponent<DroppedWeapon>()?.Init(CurrentWeaponTbScript, player);
         }
     }
