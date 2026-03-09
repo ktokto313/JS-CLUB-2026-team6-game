@@ -16,9 +16,9 @@ public class AxeMoster : EnemyBase
 
     protected override void Update()
     {
-        if (player == null || isAirborne || isStunned) return;
+        if (isAirborne || isStunned) return;
         
-        float distance = Mathf.Abs(transform.position.x - player.position.x);
+        float distance = Mathf.Abs(transform.position.x - playerPos.x);
         
         if (!hasThrown && distance <= throwDistance)
         {
@@ -38,8 +38,8 @@ public class AxeMoster : EnemyBase
             FlyObject fly = go.GetComponent<FlyObject>();
             if (fly != null)
             {
-                Vector2 dir = (player.position - shootPoint.position).normalized;
-                fly.Launch(CurrentWeaponTbScript, dir, flySpeed, player, false);
+                Vector2 dir = (playerPos - shootPoint.position).normalized;
+                fly.Launch(CurrentWeaponTbScript, dir, flySpeed, playerPos, false);
             }
         }
 

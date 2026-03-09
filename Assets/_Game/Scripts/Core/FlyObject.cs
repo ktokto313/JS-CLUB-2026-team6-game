@@ -3,7 +3,7 @@ using UnityEngine;
 public class FlyObject : MonoBehaviour
 {
     private WeaponTBScript _weaponTbScriptData;
-    private Transform playerTransform; 
+    private Vector3 playerPos;
     private Rigidbody2D rb;
     
     private bool hasPassedPlayer = false;
@@ -22,10 +22,10 @@ public class FlyObject : MonoBehaviour
         isPlayerOwned = false;
     }
 
-    public void Launch(WeaponTBScript data, Vector2 direction, float speed, Transform player, bool fromPlayer)
+    public void Launch(WeaponTBScript data, Vector2 direction, float speed, Vector3 playerPos, bool fromPlayer)
     {
         _weaponTbScriptData = data;
-        playerTransform = player;
+        this.playerPos = playerPos;
         isPlayerOwned = fromPlayer; 
 
         if (rb == null) rb = GetComponent<Rigidbody2D>();
@@ -39,8 +39,8 @@ public class FlyObject : MonoBehaviour
     {
         transform.Rotate(0, 0, 1000 * Time.deltaTime);
         CheckMapBoundaries();
-        
-        if (!isPlayerOwned && !hasPassedPlayer && playerTransform != null)
+
+        if (!isPlayerOwned && !hasPassedPlayer) 
         {
             CheckIfPassedPlayer();
         }
@@ -62,7 +62,7 @@ public class FlyObject : MonoBehaviour
 
     private void CheckIfPassedPlayer()
     {
-        float directionToPlayer = playerTransform.position.x - transform.position.x;
+        float directionToPlayer = playerPos.x - transform.position.x;
         float moveDir = rb.velocity.x;
         
         if (Mathf.Sign(directionToPlayer) != Mathf.Sign(moveDir))

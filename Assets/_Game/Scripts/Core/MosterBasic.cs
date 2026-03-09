@@ -5,8 +5,8 @@ public class EnemyBase : Entity {
     public float moveSpeed = 3f;
     private int comboCount = 0;  
     private float lastHitTime = 0f;  
-    public float comboWindow = 0.5f; 
-    public Transform player;
+    public float comboWindow = 0.5f;
+    protected Vector3 playerPos;
     protected float attackTimer = 0f;
     protected bool isAirborne = false;
     protected Rigidbody2D rb;
@@ -26,8 +26,9 @@ public class EnemyBase : Entity {
         Health = 5;
     }
 
-    protected virtual void Start() {
-        if (GameManager.Instance != null)  player = GameManager.Instance.PlayerTransform;
+    protected virtual void Start()
+    {
+        playerPos = Vector3.zero;
 
         OnDeathAction = () => {
             // đang lỗi CheckAndDropWeapon();
@@ -42,7 +43,7 @@ public class EnemyBase : Entity {
         if (Time.time - lastHitTime > comboWindow) comboCount = 0;
         comboCount++; 
         lastHitTime = Time.time;
-        float pushDir = transform.position.x < player.position.x ? -1f : 1f;
+        float pushDir = transform.position.x < playerPos.x ? -1f : 1f;
         
         switch (hitType) {
             case 0: 
@@ -67,11 +68,11 @@ public class EnemyBase : Entity {
     }
 
 protected virtual void Update() {
-        if (player == null || isAirborne || isStunned) return;
+        if (isAirborne || isStunned) return;
         
         float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 3f;
 
-        float distance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(player.position.x, 0));
+        float distance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(playerPos.x, 0));
 
         if (distance > currentRange) {
             MoveTowardsPlayer();
@@ -80,7 +81,7 @@ protected virtual void Update() {
         }
     }
     protected virtual void MoveTowardsPlayer() {
-        float direction = player.position.x > transform.position.x ? 1 : -1;
+        float direction = playerPos.x > transform.position.x ? 1 : -1;
         transform.Translate(new Vector3(direction * moveSpeed * Time.deltaTime, 0, 0));
         transform.localScale = new Vector3(direction, 1, 1);
     }
@@ -102,7 +103,7 @@ protected virtual void Update() {
         if (CurrentWeaponTbScript == null) return;
         if (Random.value <= 0.5f) {
             GameObject dropObj = GlobalPoolManager.Instance.Get(weaponItemPrefab, transform.position + Vector3.up);//
-            dropObj.GetComponent<DroppedWeapon>()?.Init(CurrentWeaponTbScript, player);
+            dropObj.GetComponent<DroppedWeapon>()?.Init(CurrentWeaponTbScript, playerPos);
         }
     }
 
@@ -113,8 +114,7 @@ protected virtual void Update() {
     }
 
     protected void LookAtPlayer() {
-        if (player == null) return;
-        float direction = player.position.x > transform.position.x ? 1 : -1;
+        float direction = playerPos.x > transform.position.x ? 1 : -1;
         transform.localScale = new Vector3(direction, 1, 1);
     }
 

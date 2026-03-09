@@ -3,7 +3,7 @@ using UnityEngine;
 public class DroppedWeapon : MonoBehaviour
 {
     private WeaponTBScript _weaponTbScriptData;
-    private Transform playerTransform;
+    private Vector3 playerPos;
     private Rigidbody2D rb;
     private Collider2D col;
     
@@ -26,10 +26,10 @@ public class DroppedWeapon : MonoBehaviour
         }
     }
 
-    public void Init(WeaponTBScript data, Transform player)
+    public void Init(WeaponTBScript data, Vector3 player)
     {
         _weaponTbScriptData = data;
-        playerTransform = player;
+        this.playerPos = playerPos;
         gameObject.tag = "DroppedWeapon"; 
     }
 
@@ -54,7 +54,7 @@ public class DroppedWeapon : MonoBehaviour
         if (fly == null) fly = gameObject.AddComponent<FlyObject>();
         else fly.enabled = true;
         
-        fly.Launch(_weaponTbScriptData, direction, speed, playerTransform, true);
+        fly.Launch(_weaponTbScriptData, direction, speed, playerPos, true);
         
         this.enabled = false; 
     }

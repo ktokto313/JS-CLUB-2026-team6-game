@@ -51,7 +51,7 @@ public class JumpMoster : EnemyBase
             CurrentWeaponTbScript = null; 
 
             rb.velocity = Vector2.zero;
-            float pushDir = transform.position.x < player.position.x ? -1f : 1f;
+            float pushDir = transform.position.x < playerPos.x ? -1f : 1f;
             rb.AddForce(new Vector2(pushDir * 8f, 0f), ForceMode2D.Impulse);
             
             base.LookAtPlayer();
