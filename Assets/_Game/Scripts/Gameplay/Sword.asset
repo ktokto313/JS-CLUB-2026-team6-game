@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: 
   icon: {fileID: 0}
-  worldSprite: {fileID: 0}
+  worldSprite: {fileID: 21300000, guid: 8da9bd326319f5240956fd069ee3430b, type: 3}
   type: 0
   damage: 1
-  attackRange: 1
+  attackRange: 3
   attackSpeed: 0.8
   flySpeed: 15
   lifeTime: 5

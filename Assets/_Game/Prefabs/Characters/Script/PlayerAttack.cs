@@ -57,29 +57,44 @@ public class PlayerAttack : MonoBehaviour
         StopAllCoroutines(); 
         StartCoroutine(PunchRoutine());
     }
-
+    
     private IEnumerator PunchRoutine()
     {
         float direction = Mathf.Sign(transform.localScale.x);
-        
         Vector2 hitboxCenter = (Vector2)transform.position + new Vector2(punchOffset.x * direction, punchOffset.y);
+        
+        Collider2D[] hitObjects = Physics2D.OverlapBoxAll(hitboxCenter, boxSize, 0);
 
-        Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(hitboxCenter, boxSize, 0, enemyLayer);
-
-        foreach (Collider2D enemy in hitEnemies)
+        foreach (Collider2D obj in hitObjects)
         {   
-            EnemyBase entity = enemy.GetComponent<EnemyBase>();
+            // 1. Nếu là Kẻ địch 
+            EnemyBase entity = obj.GetComponentInParent<EnemyBase>();
             if (entity != null)
             {
-                int damage = 1; 
-                int hitType = 0; 
-                entity.GetHit(damage, hitType); 
+                entity.GetHit(1, 0); 
+                continue;
+            }
 
+            // 2. Nếu là cái rìu 
+            if (obj.CompareTag("DroppedWeapon"))
+            {
+                FlyObject fly = obj.GetComponent<FlyObject>();
+                if (fly != null)
+                {
+                    // Lấy dữ liệu vũ khí
+                    WeaponTBScript caughtData = fly.GetWeaponData();
+
+                    PlayerController.Instance.EquipWeapon(caughtData);
+                    
+                    GlobalPoolManager.Instance.Return(obj.gameObject);
+                
+                    Debug.Log("<color=cyan>Đã bắt được vũ khí!</color>");
+                    break; 
+                }
             }
         }
         yield return new WaitForSeconds(showHitboxTime);
     }
-    
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

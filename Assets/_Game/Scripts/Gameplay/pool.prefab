@@ -70,7 +70,7 @@ Transform:
   m_GameObject: {fileID: 5605084872375839971}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.63, y: -1.28, z: -10.093622}
+  m_LocalPosition: {x: 8, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -101,7 +101,7 @@ Transform:
   m_GameObject: {fileID: 6671751389816784332}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.26, y: -1.17, z: -10.093622}
+  m_LocalPosition: {x: -8, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -152,7 +152,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waves:
-  - {fileID: 11400000, guid: 2df24c66a91ff2b44a8988e9ee66cd1e, type: 2}
   - {fileID: 11400000, guid: 2d55fcc78b7a1c248ab4145c3ae004d1, type: 2}
   timeBetweenWaves: 5
   spawnPoints:

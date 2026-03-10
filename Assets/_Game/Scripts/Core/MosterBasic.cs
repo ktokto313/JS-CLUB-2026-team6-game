@@ -11,12 +11,15 @@ public class EnemyBase : Entity {
     protected bool isAirborne = false;
     protected Rigidbody2D rb;
     protected bool isStunned = false; 
-    
+    private Vector3 originalScale;
     public WeaponTBScript CurrentWeaponTbScript; 
     public GameObject weaponItemPrefab;
-
-    protected virtual void Awake() => rb = GetComponent<Rigidbody2D>();
-
+    protected bool isPerformingAction = false;
+    protected Animator anim;
+    protected virtual void Awake() {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+    }
     protected virtual void OnEnable() {
         isStunned = false;
         isAirborne = false;
@@ -27,6 +30,7 @@ public class EnemyBase : Entity {
     }
 
     protected virtual void Start() {
+        originalScale = transform.localScale;
         if (GameManager.Instance != null)  player = GameManager.Instance.PlayerTransform;
 
         OnDeathAction = () => {
@@ -36,9 +40,14 @@ public class EnemyBase : Entity {
         LookAtPlayer();
     }
     
-    public virtual void GetHit(int damage, int hitType) {
+    public virtual void GetHit(int damage, int hitType) {// Hướng: 0 = Ngang, 1 = Up , 2 = Down, 3 Fly object
         Health -= damage;
-        if (Health <= 0) { onDeath(); return; }
+        if (anim != null) anim.SetTrigger("gethit");
+        if (Health <= 0)
+        {
+            if (anim != null) anim.SetTrigger("death");
+            onDeath(); return;
+        }
         if (Time.time - lastHitTime > comboWindow) comboCount = 0;
         comboCount++; 
         lastHitTime = Time.time;
@@ -61,28 +70,33 @@ public class EnemyBase : Entity {
             case 3:
                 rb.velocity = isAirborne ? Vector2.zero : rb.velocity;
                 rb.AddForce(new Vector2(pushDir * (isAirborne ? 1f : 2f), 0f), ForceMode2D.Impulse);
-                if (!isAirborne) { StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(0.3f)); }
+                if (!isAirborne) { StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(1.5f)); }
                 break;
         }
     }
 
 protected virtual void Update() {
-        if (player == null || isAirborne || isStunned) return;
-        
-        float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 3f;
-
-        float distance = Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(player.position.x, 0));
+        if (player == null || isAirborne || isStunned || isPerformingAction) {
+            if (anim && isStunned) anim.SetBool("isWalking", false);
+            return;
+        }
+        float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 2.5f;
+        float distance = Mathf.Abs(transform.position.x - player.position.x);
 
         if (distance > currentRange) {
+            // Đang ở xa: Đi bộ
+            if (anim) anim.SetBool("isWalking", true); 
             MoveTowardsPlayer();
         } else {
+            // Đã đến gần: Dừng đi bộ và tấn công
+            if (anim) anim.SetBool("isWalking", false);
             HandleAttack();
         }
     }
     protected virtual void MoveTowardsPlayer() {
         float direction = player.position.x > transform.position.x ? 1 : -1;
         transform.Translate(new Vector3(direction * moveSpeed * Time.deltaTime, 0, 0));
-        transform.localScale = new Vector3(direction, 1, 1);
+        transform.localScale = new Vector3(direction * originalScale.x, originalScale.y, originalScale.z);
     }
 
     protected virtual void HandleAttack() {
@@ -108,14 +122,17 @@ protected virtual void Update() {
 
     IEnumerator StunRoutine(float duration) {
         isStunned = true; 
+        if (anim) anim.SetBool("stun", true);
         yield return new WaitForSeconds(duration);
+        if (anim) anim.SetBool("stun", false);
         isStunned = false;
     }
 
-    protected void LookAtPlayer() {
-        if (player == null) return;
+    protected float LookAtPlayer() {
+        if (player == null) return transform.localScale.x;
         float direction = player.position.x > transform.position.x ? 1 : -1;
-        transform.localScale = new Vector3(direction, 1, 1);
+        transform.localScale = new Vector3(direction * originalScale.x, originalScale.y, originalScale.z);
+        return direction;
     }
 
     protected void OnCollisionEnter2D(Collision2D collision) {

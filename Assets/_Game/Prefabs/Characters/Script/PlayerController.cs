@@ -237,4 +237,14 @@ public class PlayerController : MonoBehaviour
             transform.localScale = scale;
         }
     }
+    
+    [Header("Weapon System")]
+    public WeaponTBScript currentWeapon;
+    public void EquipWeapon(WeaponTBScript newWeapon)
+    {
+        currentWeapon = newWeapon;
+        Debug.Log("Player đã trang bị: " + newWeapon.weaponName);
+    
+        // Ở đây bạn có thể thêm logic thay đổi Sprite trên tay Player nếu muốn
+    }
 }

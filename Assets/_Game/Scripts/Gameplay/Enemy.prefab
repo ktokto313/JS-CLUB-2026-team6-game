@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5646273214941657602}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1, y: 1.4, z: 0}
-  m_LocalScale: {x: 0.45, y: 1.04, z: 0}
+  m_LocalScale: {x: -0.5535, y: 1.04, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,6 +78,7 @@ MonoBehaviour:
   comboWindow: 0.5
   player: {fileID: 0}
   CurrentWeaponTbScript: {fileID: 11400000, guid: 73d43e5bd8a079e44be65ddfd8216e7d, type: 2}
+  weaponItemPrefab: {fileID: 0}
 --- !u!212 &1373397946880363727
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -162,7 +163,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.02914095, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -173,5 +174,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.5, y: 4}
+  m_Size: {x: 2.1012268, y: 4}
   m_EdgeRadius: 0

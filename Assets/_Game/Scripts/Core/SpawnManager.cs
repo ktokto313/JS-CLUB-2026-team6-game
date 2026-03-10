@@ -31,13 +31,26 @@ public class SpawnManager : MonoBehaviour {
         }
     }
 
-    private void SpawnFromPool(GameObject prefab) {
-        if (spawnPoints.Length == 0) return;
+private void SpawnFromPool(GameObject prefab) {
+    if (spawnPoints.Length == 0) return;
 
-        // Chọn vị trí ngẫu nhiên trong danh sách điểm Spawn
-        Vector3 pos = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
-        
-        // GỌI POOL: Lấy quái ra thay vì Instantiate
-        GlobalPoolManager.Instance.Get(prefab, pos);
+    // 1. Chọn một điểm Spawn ngẫu nhiên trong danh sách
+    Vector3 airPos = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
+    
+    // 2. Bắn một tia Ray từ trên cao xuống để tìm mặt đất
+    // Chú ý: LayerMask.GetMask("Ground") phải khớp với tên Layer mặt đất của bạn
+    RaycastHit2D hit = Physics2D.Raycast(airPos, Vector2.down, 15f, LayerMask.GetMask("Ground"));
+
+    Vector3 finalPos = airPos; // Mặc định nếu không thấy đất thì dùng vị trí cũ
+
+    if (hit.collider != null) {
+        // Nếu thấy đất, đặt quái ngay tại điểm chạm (hit.point)
+        finalPos = hit.point; 
+    } else {
+        Debug.LogWarning("SpawnManager: Không tìm thấy mặt đất phía dưới điểm " + airPos);
     }
+
+    // 3. Gọi Pool sinh quái tại vị trí chuẩn
+    GlobalPoolManager.Instance.Get(prefab, finalPos);
+}
 }
