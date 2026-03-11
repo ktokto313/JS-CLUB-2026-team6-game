@@ -73,6 +73,7 @@ public class EnemyBase : Entity {
                 if (!isAirborne) { StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(1.5f)); }
                 break;
         }
+        if (anim) anim.SetTrigger("stun");
     }
 
 protected virtual void Update() {
@@ -80,7 +81,7 @@ protected virtual void Update() {
             if (anim && isStunned) anim.SetBool("isWalking", false);
             return;
         }
-        float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 2.5f;
+        float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 1.5f;
         float distance = Mathf.Abs(transform.position.x - player.position.x);
 
         if (distance > currentRange) {
@@ -122,9 +123,8 @@ protected virtual void Update() {
 
     IEnumerator StunRoutine(float duration) {
         isStunned = true; 
-        if (anim) anim.SetBool("stun", true);
         yield return new WaitForSeconds(duration);
-        if (anim) anim.SetBool("stun", false);
+        
         isStunned = false;
     }
 

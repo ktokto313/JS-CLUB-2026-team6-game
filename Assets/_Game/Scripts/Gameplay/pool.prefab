@@ -152,8 +152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waves:
+  - {fileID: 11400000, guid: 2df24c66a91ff2b44a8988e9ee66cd1e, type: 2}
   - {fileID: 11400000, guid: 2d55fcc78b7a1c248ab4145c3ae004d1, type: 2}
-  timeBetweenWaves: 5
+  timeBetweenWaves: 3
   spawnPoints:
   - {fileID: 6371551761541227973}
   - {fileID: 1943376905677022407}

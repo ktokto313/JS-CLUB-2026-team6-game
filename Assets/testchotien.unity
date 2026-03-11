@@ -316,6 +316,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8125511615641333691, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
+      propertyPath: timeBetweenWaves
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8674375970346404925, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
       propertyPath: m_Name
       value: pool

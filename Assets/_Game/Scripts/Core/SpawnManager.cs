@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour {
 
     [Header("Wave Settings")]
     [SerializeField] private List<WaveData> waves; 
-    [SerializeField] private float timeBetweenWaves = 5f;
+    [SerializeField] private float timeBetweenWaves = 3f;
 
     [Header("Spawn Points")]
     [SerializeField] private Transform[] spawnPoints;

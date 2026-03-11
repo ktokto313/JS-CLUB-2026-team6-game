@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70aca7d7d3474d9ca8089b6c826e0ffd, type: 3}
-  m_Name: TestWave
+  m_Name: BasicWave
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
-  count: 10
-  spawnInterval: 3
+  count: 5
+  spawnInterval: 5.2
