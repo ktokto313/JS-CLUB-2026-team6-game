@@ -5,7 +5,6 @@ public class AxeMoster : EnemyBase {
     public float throwDistance = 10f;
     public float flySpeed = 2f;
     private bool hasThrown = false; 
-    protected Animator anim;
     protected override void Awake() {
         base.Awake();
         anim = GetComponent<Animator>();

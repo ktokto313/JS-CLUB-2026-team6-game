@@ -2,97 +2,102 @@ using UnityEngine;
 using System.Collections;
 
 public class ChargerEnemy : EnemyBase {
-    [Header("Charger Settings")]
-    public float dashSpeed = 15f;
-    public float dashRange = 7f;
-    public float prepTime = 2.0f; // Thời gian đứng im gồng
-    
-    private bool hasWeapon = true;
+    [Header("Charger Fixed Settings")]
+    private float targetX = 5f; 
+    private float startX = -5f;  
+    private float currentDestX;  
+
+    public float dashSpeed = 18f;
+    public float prepTime = 1.0f;
+    private bool isDashing = false;
+
+    protected override void Start() {
+        base.Start();
+        originalScale = transform.localScale;
+        // Chọn điểm đích ban đầu là điểm xa quái nhất để bắt đầu vòng lặp
+        currentDestX = (Mathf.Abs(transform.position.x - targetX) > Mathf.Abs(transform.position.x - startX)) ? targetX : startX;
+    }
 
     protected override void Update() {
-        // Nếu đã mất vũ khí, chạy logic cơ bản (đi bộ đến gần rồi đánh)
-        if (!hasWeapon) {
-            base.Update();
-            return;
-        }
         if (player == null || isAirborne || isStunned || isPerformingAction) return;
 
-        float distance = Mathf.Abs(transform.position.x - player.position.x);
+        float distToDest = Mathf.Abs(transform.position.x - currentDestX);
 
-        // Bắt đầu chuỗi hành động khi vào tầm 7f
-        if (distance <= dashRange) {
+        if (distToDest > 0.3f && !isDashing) {
+            if (anim) anim.SetBool("walk", true);
+            MoveToX(currentDestX);
+        } 
+        else if (!isPerformingAction) {
             StartCoroutine(ChargeSequence());
-        } else {
-            // Chưa tới tầm thì đi bộ tiếp cận
-            if (anim) anim.SetBool("isWalking", true);
-            MoveTowardsPlayer();
         }
+    }
+
+    void MoveToX(float x) {
+        float dir = x > transform.position.x ? 1 : -1;
+        transform.Translate(Vector3.right * (dir * moveSpeed * Time.deltaTime));
+        transform.localScale = new Vector3(dir * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
     }
 
     IEnumerator ChargeSequence() {
         isPerformingAction = true;
 
-        // 1. GIAI ĐOẠN LẤY ĐÀ 
+        // BƯỚC 1: GỒNG (PREP)
         if (anim) {
-            anim.SetBool("isWalking", false);
+            anim.SetBool("walk", false);
             anim.SetTrigger("prepDash"); 
         }
         rb.velocity = Vector2.zero;
-        LookAtPlayer();
+
+        // Xác định điểm đối diện để lao tới
+        float nextDestX = (currentDestX == targetX) ? startX : targetX;
+        float dashDir = nextDestX > transform.position.x ? 1 : -1;
         
+        // Quay mặt về hướng sẽ Dash
+        transform.localScale = new Vector3(dashDir * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+
         yield return new WaitForSeconds(prepTime);
 
-        // 2. GIAI ĐOẠN LAO
+        // BƯỚC 2: LAO (DASH)
         if (anim) anim.SetTrigger("dash");
-        
-        float dashDir = player.position.x > transform.position.x ? 1 : -1;
-        // Điểm đích cách vị trí hiện tại 14f (vượt qua player)
-        float targetX = transform.position.x + (dashDir * dashRange * 2); 
-        
-        float dashTimer = 0;
-        while (dashTimer < 0.8f) { // Timeout 0.8s tránh trường hợp bị kẹt
-            rb.velocity = new Vector2(dashDir * dashSpeed, rb.velocity.y);
-            
-            // Check nếu đã vượt qua targetX
-            if ((dashDir > 0 && transform.position.x >= targetX) || 
-                (dashDir < 0 && transform.position.x <= targetX)) break;
+        isDashing = true;
 
-            dashTimer += Time.deltaTime;
+        while (isDashing) {
+            rb.velocity = new Vector2(dashDir * dashSpeed, rb.velocity.y);
+            CheckDamage();
+
+            // Kiểm tra nếu đã chạm hoặc vượt qua tọa độ đích
+            if ((dashDir > 0 && transform.position.x >= nextDestX) || 
+                (dashDir < 0 && transform.position.x <= nextDestX)) {
+                break;
+            }
             yield return null;
         }
 
+        // BƯỚC 3: DỪNG VÀ ĐỔI MỤC TIÊU
         rb.velocity = Vector2.zero;
-        
-        // Nghỉ một chút sau khi lao xong rồi mới mở khóa hành động
-        yield return new WaitForSeconds(0.5f);
+        isDashing = false;
+        currentDestX = nextDestX; // Lưu lại điểm vừa đến để làm mốc xuất phát mới
+
+        yield return new WaitForSeconds(1.0f); // Nghỉ 1s như bạn yêu cầu
         isPerformingAction = false;
     }
 
-    public override void GetHit(int damage, int hitType) {
-        // Nếu dính đòn khi đang có vũ khí -> Rơi vũ khí
-        if (hasWeapon) {
-            LoseWeapon();
-        }
+    void CheckDamage() {
+        // Kiểm tra trước mặt 1.5f có Player không
+        float dir = transform.localScale.x > 0 ? 1 : -1;
+        Vector2 checkPos = new Vector2(transform.position.x + (dir * 1.5f), transform.position.y);
         
-        // Xử lý bị đánh (mất máu, văng ngược) như EnemyBase
-        base.GetHit(damage, hitType);
+        if (Mathf.Abs(checkPos.x - player.position.x) < 0.8f && Mathf.Abs(checkPos.y - player.position.y) < 1.5f) {
+            PlayerController.Instance.TakeDamage();
+        }
     }
 
-    private void LoseWeapon() {
-        hasWeapon = false;
-        
-        // Nếu đang lao dở mà bị đánh trúng thì hủy ngay hành động đó
-        isPerformingAction = false; 
-        StopCoroutine("ChargeSequence"); 
+    public override void GetHit(int damage, int hitType) {
+        StopAllCoroutines(); // Ngắt ngay lập tức cú dash hoặc gồng
+        isPerformingAction = false;
+        isDashing = false;
+        rb.velocity = Vector2.zero;
 
-        if (anim) anim.SetTrigger("loseWeapon");
-
-        // Spawn vũ khí rơi (dùng logic của bạn)
-        if (weaponItemPrefab != null && CurrentWeaponTbScript != null) {
-            GameObject dropObj = GlobalPoolManager.Instance.Get(weaponItemPrefab, transform.position + Vector3.up);
-            dropObj.GetComponent<DroppedWeapon>()?.Init(CurrentWeaponTbScript, player);
-        }
-        
-        Debug.Log("Charger dropped weapon! Now acting as a normal enemy.");
+        base.GetHit(damage, hitType); // Chạy logic bị đẩy lùi và StunRoutine(1s) của cha
     }
 }

@@ -11,7 +11,7 @@ public class EnemyBase : Entity {
     protected bool isAirborne = false;
     protected Rigidbody2D rb;
     protected bool isStunned = false; 
-    private Vector3 originalScale;
+    public Vector3 originalScale;
     public WeaponTBScript CurrentWeaponTbScript; 
     public GameObject weaponItemPrefab;
     protected bool isPerformingAction = false;
@@ -46,7 +46,7 @@ public class EnemyBase : Entity {
         if (Health <= 0)
         {
             if (anim != null) anim.SetTrigger("death");
-            onDeath(); return;
+            OnDeathAction(); return;
         }
         if (Time.time - lastHitTime > comboWindow) comboCount = 0;
         comboCount++; 
