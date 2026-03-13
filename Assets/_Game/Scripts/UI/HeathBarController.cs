@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Scripts.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ public class HeathBarController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        EventManager.current.onPlayerHealthUpdateAction += SetHealth;
     }
 
     // Update is called once per frame
@@ -27,6 +28,7 @@ public class HeathBarController : MonoBehaviour
 
     public void SetHealth(int health)
     {
+        if (health > healthSlider.maxValue) healthSlider.maxValue = health;
         healthSlider.value = health;
         
     }
