@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Scripts.Core;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -23,6 +24,7 @@ public class PlayerHealth : MonoBehaviour
         if (IsInvincible || IsDead) return false;
 
         currentHealth -= damage;
+        EventManager.current.onPlayerHealthUpdate(currentHealth);
         
         if (currentHealth > 0)
         {
