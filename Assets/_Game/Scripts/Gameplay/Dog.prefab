@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -4324519760787494644}
   - component: {fileID: 8713514280812896424}
   - component: {fileID: 7978634904910473959}
+  - component: {fileID: 8045388235137096870}
   m_Layer: 6
   m_Name: Dog
   m_TagString: Enemy
@@ -147,7 +148,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 0.49
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -167,7 +168,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1717771465425058998}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ae7e95655729774499f0bbc79645c74e, type: 2}
   m_CullingMode: 0
@@ -180,3 +181,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8045388235137096870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717771465425058998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a12cf2f3776b02442af8353b356e8d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  comboWindow: 0.5
+  player: {fileID: 0}
+  originalScale: {x: 0, y: 0, z: 0}
+  CurrentWeaponTbScript: {fileID: 0}
+  weaponItemPrefab: {fileID: 0}
+  jumpForceX: 3.72
+  jumpForceY: 2.17
+  landRestTime: 0.8
+  leftBoundary: -3
+  rightBoundary: 3
+  hugRadius: 1

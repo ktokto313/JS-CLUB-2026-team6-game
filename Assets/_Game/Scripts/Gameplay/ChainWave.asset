@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ChainWave
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 4960510062423644082, guid: 279ed95dfa0cd2d4f92cdb64975bd1d3, type: 3}
-  count: 5
-  spawnInterval: 5.06
+  count: 4
+  spawnInterval: 4.43

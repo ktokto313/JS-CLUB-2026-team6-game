@@ -16,6 +16,7 @@ public class EnemyBase : Entity {
     public GameObject weaponItemPrefab;
     protected bool isPerformingAction = false;
     protected Animator anim;
+    private Coroutine stunCoroutine;
     protected virtual void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -40,40 +41,57 @@ public class EnemyBase : Entity {
         LookAtPlayer();
     }
     
-    public virtual void GetHit(int damage, int hitType) {// Hướng: 0 = Ngang, 1 = Up , 2 = Down, 3 Fly object
+    public virtual void GetHit(int damage, int hitType) {
         Health -= damage;
-        if (anim != null) anim.SetTrigger("gethit");
-        if (Health <= 0)
-        {
-            if (anim != null) anim.SetTrigger("death");
-            OnDeathAction(); return;
+        
+        if (anim != null) {
+            anim.SetTrigger("gethit");
         }
+
+        if (Health <= 0) {
+            if (anim != null) anim.SetTrigger("death");
+            OnDeathAction(); 
+            return;
+        }
+
+        // 3. Tính toán hướng bị đẩy
+        float pushDir = transform.position.x < player.position.x ? -1f : 1f;
+    
+        // 4. Reset combo window
         if (Time.time - lastHitTime > comboWindow) comboCount = 0;
         comboCount++; 
         lastHitTime = Time.time;
-        float pushDir = transform.position.x < player.position.x ? -1f : 1f;
-        
+
+        // 5. Xử lý Knockback và Stun
         switch (hitType) {
-            case 0: 
-                if (isAirborne) rb.AddForce(new Vector2(pushDir * 10f, 0f), ForceMode2D.Impulse);
-                else if (comboCount > 2) rb.AddForce(new Vector2(pushDir * 3f, 0f), ForceMode2D.Impulse);
-                else { StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(0.5f)); }
+            case 0: // Đòn ngang
+                if (isAirborne) {
+                    rb.velocity = new Vector2(pushDir * 6f, rb.velocity.y);
+                } else {
+                    if (comboCount > 2) rb.AddForce(new Vector2(pushDir * 5f, 0f), ForceMode2D.Impulse);
+                    ApplyStun(0.4f);
+                }
                 break;
-            case 1:
-                if (isAirborne) rb.AddForce(new Vector2(pushDir * 10f, 0f), ForceMode2D.Impulse);
-                else { isAirborne = true; rb.AddForce(new Vector2(0f, 4f), ForceMode2D.Impulse); }
+            case 1: // Đòn hất tung
+                isAirborne = true;
+                rb.velocity = Vector2.zero; // Reset vận tốc trước khi hất
+                rb.AddForce(new Vector2(pushDir * 2f, 6f), ForceMode2D.Impulse);
                 break;
-            case 2:
-                if (isAirborne) { rb.AddForce(new Vector2(pushDir * 5f, 0f), ForceMode2D.Impulse); StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(1f)); }
-                else { StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(0.5f)); }
+            case 2: // Đòn đập xuống
+                if (isAirborne) {
+                    rb.velocity = new Vector2(pushDir * 3f, -10f);
+                    ApplyStun(0.8f);
+                } else {
+                    ApplyStun(0.5f);
+                }
                 break;
-            case 3:
-                rb.velocity = isAirborne ? Vector2.zero : rb.velocity;
-                rb.AddForce(new Vector2(pushDir * (isAirborne ? 1f : 2f), 0f), ForceMode2D.Impulse);
-                if (!isAirborne) { StopCoroutine("StunRoutine"); StartCoroutine(StunRoutine(1.5f)); }
+            case 3: // Fly object
+                rb.velocity = Vector2.zero;
+                rb.AddForce(new Vector2(pushDir * 6f, 2f), ForceMode2D.Impulse);
+                ApplyStun(1.2f);
                 break;
         }
-        if (anim) anim.SetTrigger("stun");
+        if (anim != null) anim.SetTrigger("stun");
     }
 
 protected virtual void Update() {
@@ -123,9 +141,18 @@ protected virtual void Update() {
 
     IEnumerator StunRoutine(float duration) {
         isStunned = true; 
+
+
         yield return new WaitForSeconds(duration);
-        
+    
         isStunned = false;
+        stunCoroutine = null; // Reset khi chạy xong
+    }
+
+// Trong hàm GetHit, thay vì Start trực tiếp, hãy dùng hàm quản lý này:
+    private void ApplyStun(float duration) {
+        if (stunCoroutine != null) StopCoroutine(stunCoroutine);
+        stunCoroutine = StartCoroutine(StunRoutine(duration));
     }
 
     protected float LookAtPlayer() {

@@ -3,23 +3,26 @@ using System.Collections;
 
 public class ChargerEnemy : EnemyBase {
     [Header("Charger Fixed Settings")]
-    private float targetX = 5f; 
-    private float startX = -5f;  
+    private float right = 5f; 
+    private float left = -5f;  
     private float currentDestX;  
 
-    public float dashSpeed = 18f;
-    public float prepTime = 1.0f;
+    public float dashSpeed = 5f;
+    public float prepTime = 2f;
     private bool isDashing = false;
 
     protected override void Start() {
         base.Start();
         originalScale = transform.localScale;
-        // Chọn điểm đích ban đầu là điểm xa quái nhất để bắt đầu vòng lặp
-        currentDestX = (Mathf.Abs(transform.position.x - targetX) > Mathf.Abs(transform.position.x - startX)) ? targetX : startX;
+
+        float distToA = Mathf.Abs(transform.position.x - left); 
+        float distToB = Mathf.Abs(transform.position.x - right); 
+
+        currentDestX = (distToA < distToB) ? left : right;
     }
 
     protected override void Update() {
-        if (player == null || isAirborne || isStunned || isPerformingAction) return;
+        if (isAirborne || isStunned || isPerformingAction) return;
 
         float distToDest = Mathf.Abs(transform.position.x - currentDestX);
 
@@ -41,7 +44,7 @@ public class ChargerEnemy : EnemyBase {
     IEnumerator ChargeSequence() {
         isPerformingAction = true;
 
-        // BƯỚC 1: GỒNG (PREP)
+        //(PREP)
         if (anim) {
             anim.SetBool("walk", false);
             anim.SetTrigger("prepDash"); 
@@ -49,7 +52,7 @@ public class ChargerEnemy : EnemyBase {
         rb.velocity = Vector2.zero;
 
         // Xác định điểm đối diện để lao tới
-        float nextDestX = (currentDestX == targetX) ? startX : targetX;
+        float nextDestX = (currentDestX == right) ? left : right;
         float dashDir = nextDestX > transform.position.x ? 1 : -1;
         
         // Quay mặt về hướng sẽ Dash
@@ -57,7 +60,7 @@ public class ChargerEnemy : EnemyBase {
 
         yield return new WaitForSeconds(prepTime);
 
-        // BƯỚC 2: LAO (DASH)
+        // (DASH)
         if (anim) anim.SetTrigger("dash");
         isDashing = true;
 
@@ -73,7 +76,7 @@ public class ChargerEnemy : EnemyBase {
             yield return null;
         }
 
-        // BƯỚC 3: DỪNG VÀ ĐỔI MỤC TIÊU
+        //DỪNG VÀ ĐỔI MỤC TIÊU
         rb.velocity = Vector2.zero;
         isDashing = false;
         currentDestX = nextDestX; // Lưu lại điểm vừa đến để làm mốc xuất phát mới
@@ -89,15 +92,16 @@ public class ChargerEnemy : EnemyBase {
         
         if (Mathf.Abs(checkPos.x - player.position.x) < 0.8f && Mathf.Abs(checkPos.y - player.position.y) < 1.5f) {
             PlayerController.Instance.TakeDamage();
+            Debug.Log("Hit Playyer :########");
         }
     }
 
     public override void GetHit(int damage, int hitType) {
-        StopAllCoroutines(); // Ngắt ngay lập tức cú dash hoặc gồng
+        StopAllCoroutines(); 
         isPerformingAction = false;
         isDashing = false;
         rb.velocity = Vector2.zero;
-
-        base.GetHit(damage, hitType); // Chạy logic bị đẩy lùi và StunRoutine(1s) của cha
+        // Chạy logic  của cha
+        base.GetHit(damage, hitType);
     }
 }

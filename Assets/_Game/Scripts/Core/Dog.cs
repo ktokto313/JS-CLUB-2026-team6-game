@@ -1,204 +1,136 @@
 using UnityEngine;
 using System.Collections;
 
-public class JumpingHugger : MonoBehaviour
+public class JumpingHugger : EnemyBase 
 {
-    [Header("Health")]
-    public int health = 2;
+    [Header("Movement Settings")]
+    public float jumpForceX = 2f;
+    public float jumpForceY = 1f;
+    public float landRestTime = 1.0f;
+    public float leftBoundary = -5f;
+    public float rightBoundary = 5f;
 
-    [Header("Jump Settings")]
-    public float jumpForceX = 7f; 
-    public float jumpForceY = 12f; 
-    public float latchDuration = 2f; 
-    public float landStunTime = 0.5f; 
+    [Header("Detection Settings")]
+    public float hugRadius = 1f; // Bán kính để "dính" vào Player
 
-    [Header("Patrol Settings")]
-    public float leftBoundary = -10f;  
-    public float rightBoundary = 10f; 
-    private int targetDir = 1;        
-
-    private Rigidbody2D rb;
-    private Animator anim;
+    private bool isGrounded = false;
     private bool isHugging = false;
-    private bool isDead = false;
-    private bool isGrounded = true;
-    private bool isLanding = false;
-    private Vector3 originalScale;
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        originalScale = transform.localScale;
-    }
-
-    void OnEnable() 
-    {
-        if (rb == null) rb = GetComponent<Rigidbody2D>();
-
-        // 1. Reset các biến logic: Phải để FALSE để nó hiểu là đang rơi tự do
-        isGrounded = false; 
-        isLanding = false;
-        isHugging = false;
-        isDead = false;
-
-        // 2. ÉP VẬT LÝ HOẠT ĐỘNG
-        rb.bodyType = RigidbodyType2D.Dynamic; 
-        rb.isKinematic = false; 
-        rb.gravityScale = 3f; // Đảm bảo gravity đủ nặng để kéo nó xuống
-        rb.velocity = Vector2.zero; 
-        rb.WakeUp(); // Đánh thức Rigidbody ngay lập tức
     
-        // 3. Bật lại Collider
-        if(GetComponent<Collider2D>() != null) GetComponent<Collider2D>().enabled = true;
 
-        // 4. KHÔNG gọi JumpNext ngay. Hãy để nó rơi chạm đất rồi mới nhảy cú đầu tiên
-        CancelInvoke("JumpNext");
-    }
-
-    void Start()
-    {
-        targetDir = (transform.position.x > rightBoundary) ? -1 : 1;
-        // Xóa Invoke JumpNext ở đây, để va chạm đất (OnCollisionEnter) tự kích hoạt cú nhảy
-    }
-    void Update()
-    {
-        if (isDead || isHugging) return;
-        if (!isGrounded && !isLanding)
-        {
-            if (rb.velocity.y < -0.1f)
-            {
-                // Đang rơi xuống
-                anim.SetBool("isInAir", true);
-            }
-        }
-    }
-
-    // --- HÀM NHẢY ---
-    void JumpNext()
-    {
-        if (isHugging || isDead || isLanding) return;
+    protected override void Start() {
+        // Lấy thông tin player từ GameManager (đã có trong EnemyBase)
+        base.Start(); 
+        originalScale = transform.localScale;
         
-        if (transform.position.x >= rightBoundary) targetDir = -1;
-        else if (transform.position.x <= leftBoundary) targetDir = 1;
-
-        transform.localScale = new Vector3(targetDir * originalScale.x, originalScale.y, originalScale.z);
-
+        // Bắt đầu: Rơi tự do
         isGrounded = false;
-        anim.SetTrigger("jump"); 
-        anim.SetBool("isInAir", false);
-        anim.SetBool("isLanding", false);
-        
-        rb.velocity = new Vector2(targetDir * jumpForceX, jumpForceY);
+        isHugging = false;
+        rb.isKinematic = false;
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (isDead) return;
 
-        // Chạm Player
-        if (!isHugging && collision.gameObject.CompareTag("Player"))
-        {
-            StartCoroutine(HugPlayerRoutine(collision.gameObject));
-            return;
+    // GHI ĐÈ HOÀN TOÀN Update của EnemyBase
+    protected override void Update() {
+        if ( isStunned) return;
+
+        // Nếu đang ôm, khóa chặt vị trí vào Player
+        if (isHugging) {
+            return; 
         }
+
+        // Logic 1: Kiểm tra xem có chạm Player khi đang bay không
+        if (!isGrounded) {
+            CheckForHug();
+        }
+    }
+
+    void CheckForHug() {
+        // Quét vùng xung quanh xem có Player không
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, hugRadius);
+        if (hit != null && hit.CompareTag("Player")) {
+            StopAllCoroutines();
+            StartCoroutine(HugRoutine(hit.gameObject));
+        }
+    }
+
+    void Jump() {
+        if ( isHugging || isStunned) return;
+
+        // Xác định hướng nhảy dựa trên vị trí Player
+        float direction = (player.position.x > transform.position.x) ? 1 : -1;
         
-        // Chạm đất
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            // Chỉ tiếp đất nếu đang RƠI XUỐNG (vận tốc Y <= 0) 
-            // Điều này ngăn việc nó tự nhận đất ngay lúc vừa bấm nhảy
-            if (!isGrounded && rb.velocity.y <= 0.1f) 
-            {
-                StartCoroutine(LandingRoutine());
+        // Kiểm tra nếu chạm biên thì ép quay đầu
+        if (transform.position.x >= rightBoundary) direction = -1;
+        else if (transform.position.x <= leftBoundary) direction = 1;
+        LookAtPlayer();
+
+        // Nhảy
+        isGrounded = false;
+        rb.velocity = new Vector2(direction * jumpForceX, jumpForceY);
+        
+        Debug.Log("Quái: Nhảy về hướng " + direction);
+    }
+
+    // Xử lý va chạm đất
+    protected new void OnCollisionEnter2D(Collision2D col) {
+        if ( isHugging) return;
+
+        if (col.gameObject.CompareTag("Ground")) {
+            // Kiểm tra chạm mặt trên của Ground (Normal vector hướng lên)
+            if (col.contacts[0].normal.y > 0.5f) {
+                isGrounded = true;
+                rb.velocity = Vector2.zero;
+                StartCoroutine(WaitAndJump());
+                Debug.Log("Quái: Đã chạm đất");
             }
         }
     }
 
-    IEnumerator LandingRoutine()
-    {
-        isLanding = true;
-        isGrounded = true;
-        rb.velocity = Vector2.zero; 
-
-        anim.SetBool("isInAir", false);
-        anim.SetBool("isLanding", true);
-
-        yield return new WaitForSeconds(landStunTime);
-
-        anim.SetBool("isLanding", false);
-        isLanding = false;
-
-        if (!isDead && !isHugging) JumpNext();
+    IEnumerator WaitAndJump() {
+        yield return new WaitForSeconds(landRestTime);
+        if (isGrounded && !isHugging) {
+            Jump();
+        }
     }
 
-    // --- TRẠNG THÁI ÔM MẶT ---
-    IEnumerator HugPlayerRoutine(GameObject playerObj)
-    {
+    IEnumerator HugRoutine(GameObject target) {
         isHugging = true;
-        StopCoroutine(LandingRoutine()); 
+        isGrounded = false;
 
-        // Khóa Player (Yêu cầu PlayerController có biến canMove)
-        if(PlayerController.Instance != null) {
-            //PlayerController.Instance.canMove = false;
-        }
-        playerObj.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-
-        // Dính vào Player
-        rb.isKinematic = true; 
+        // Vô hiệu hóa vật lý
         rb.velocity = Vector2.zero;
-        transform.SetParent(playerObj.transform);
-        transform.localPosition = new Vector3(0, 0.8f, 0); // Vị trí ngang mặt
-
-        anim.SetBool("isHugging", true);
-
-        yield return new WaitForSeconds(latchDuration);
-
-        if (!isDead) Detach(playerObj);
-    }
-
-    void Detach(GameObject playerObj)
-    {
-        transform.SetParent(null);
-        rb.isKinematic = false;
-        isHugging = false;
-
-        // Văng ngược ra sau khi thả
-        float bounceDir = playerObj.transform.localScale.x > 0 ? -1 : 1;
-        rb.AddForce(new Vector2(bounceDir * 5f, 5f), ForceMode2D.Impulse);
-
-        //if(PlayerController.Instance != null) PlayerController.Instance.canMove = true;
-        anim.SetBool("isHugging", false);
-    }
-
-    // --- SÁT THƯƠNG & CHẾT ---
-    public void GetHit(int damage)
-    {
-        if (isDead) return;
-        health -= damage;
-        anim.SetTrigger("gethit");
-
-        if (health <= 0) Die();
-    }
-
-    void Die()
-    {
-        isDead = true;
-        StopAllCoroutines();
-        
-        if (isHugging)
-        {
-            //if (PlayerController.Instance != null) PlayerController.Instance.canMove = true;
-            transform.SetParent(null);
-        }
-
-        anim.SetTrigger("death");
-        rb.isKinematic = false;
-        rb.velocity = new Vector2(Random.Range(-2f, 2f), 5f);
+        rb.isKinematic = true;
         GetComponent<Collider2D>().enabled = false;
 
-        Invoke("DestroySelf", 1.5f);
+        // Làm "con" của Player
+        transform.SetParent(target.transform);
+        transform.localPosition = new Vector3(0, 0.2f, 0); // Vị trí ngang mặt
+        
+        Debug.Log("Quái: ĐANG ÔM PLAYER");
+
+        yield return new WaitForSeconds(2.0f); // Ôm trong 2s
+        
+        Detach();
     }
 
-    void DestroySelf() => GlobalPoolManager.Instance.Return(gameObject);
+    void Detach() {
+        transform.SetParent(null);
+        GetComponent<Collider2D>().enabled = true;
+        rb.isKinematic = false;
+        isHugging = false;
+        isGrounded = false;
 
+        // Văng ra phía sau
+        float bounceDir = (player.position.x > transform.position.x) ? -1 : 1;
+        rb.velocity = new Vector2(bounceDir * 3f, 5f);
+        
+        Debug.Log("Quái: Đã nhả Player");
+    }
+
+
+
+    // Gọi từ Player khi chém trúng
+    public override void GetHit(int damage, int hitType) {
+        if (isHugging) Detach();
+        base.GetHit(damage, hitType);
+    }
 }

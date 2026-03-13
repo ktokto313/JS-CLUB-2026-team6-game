@@ -263,7 +263,7 @@ MonoBehaviour:
   originalScale: {x: 0, y: 0, z: 0}
   CurrentWeaponTbScript: {fileID: 0}
   weaponItemPrefab: {fileID: 0}
-  dashSpeed: 15
+  dashSpeed: 5
   prepTime: 2
 --- !u!95 &3326374925118293500
 Animator:

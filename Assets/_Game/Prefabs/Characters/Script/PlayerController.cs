@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
     private void UpdatePhysicsGrounded()
     {
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        Debug.Log($"Ground Check: {isGrounded} | Radius: {groundCheckRadius}");
+        //Debug.Log($"Ground Check: {isGrounded} | Radius: {groundCheckRadius}");
         if (isGrounded)
         {
             // === CHẠM ĐẤT ===
