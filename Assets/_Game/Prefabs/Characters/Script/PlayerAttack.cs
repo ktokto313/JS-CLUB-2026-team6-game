@@ -17,18 +17,18 @@ public class PlayerAttack : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 1. NHÓM DUCK
-            PlayerController.Instance.OnPerformLowAttack += PerformAttack;
-            PlayerController.Instance.OnPerformSmash += PerformAttack;
+            PlayerController.Instance.OnPerformLowAttack += PerformNormalAttack;
+            PlayerController.Instance.OnPerformSmash += PerformSmashAttack;
 
             // 2. NHÓM JUMP
-            PlayerController.Instance.OnPerformJumpAttack += PerformAttack;
-            PlayerController.Instance.OnPerformRisingAttack += PerformAttack;
-            PlayerController.Instance.OnPerformAirSpin += PerformAttack;
+            PlayerController.Instance.OnPerformJumpAttack += PerformUppercutAttack;
+            PlayerController.Instance.OnPerformRisingAttack += PerformUppercutAttack;
+            PlayerController.Instance.OnPerformAirSpin += PerformNormalAttack;
 
             // 3. NHÓM ATTACK
-            PlayerController.Instance.OnPerformAttack += PerformAttack;
-            PlayerController.Instance.OnPerformUppercut += PerformAttack;
-            PlayerController.Instance.OnPerformAirAttack += PerformAttack; 
+            PlayerController.Instance.OnPerformAttack += PerformNormalAttack;
+            PlayerController.Instance.OnPerformUppercut += PerformUppercutAttack;
+            PlayerController.Instance.OnPerformAirAttack += PerformNormalAttack; 
             
         }
     }
@@ -38,43 +38,50 @@ public class PlayerAttack : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 1. NHÓM DUCK
-            PlayerController.Instance.OnPerformLowAttack -= PerformAttack;
-            PlayerController.Instance.OnPerformSmash -= PerformAttack;
+            PlayerController.Instance.OnPerformLowAttack -= PerformNormalAttack;
+            PlayerController.Instance.OnPerformSmash -= PerformSmashAttack;
 
             // 2. NHÓM JUMP
-            PlayerController.Instance.OnPerformJumpAttack -= PerformAttack;
-            PlayerController.Instance.OnPerformRisingAttack -= PerformAttack;
-            PlayerController.Instance.OnPerformAirSpin -= PerformAttack;
+            PlayerController.Instance.OnPerformJumpAttack -= PerformUppercutAttack;
+            PlayerController.Instance.OnPerformRisingAttack -= PerformUppercutAttack;
+            PlayerController.Instance.OnPerformAirSpin -= PerformNormalAttack;
 
             // 3. NHÓM ATTACK
-            PlayerController.Instance.OnPerformAttack -= PerformAttack;
-            PlayerController.Instance.OnPerformUppercut -= PerformAttack;
-            PlayerController.Instance.OnPerformAirAttack -= PerformAttack; 
+            PlayerController.Instance.OnPerformAttack -= PerformNormalAttack;
+            PlayerController.Instance.OnPerformUppercut -= PerformUppercutAttack;
+            PlayerController.Instance.OnPerformAirAttack -= PerformNormalAttack; 
         }
     }
 
-    private void PerformAttack()
+    // Các hàm wrapper tương ứng với từng loại đòn đánh
+    private void PerformNormalAttack() => PerformAttackWithType(1, 0); // Đòn ngang
+    private void PerformUppercutAttack() => PerformAttackWithType(1, 1); // Đòn hất tung
+    private void PerformSmashAttack() => PerformAttackWithType(1, 2); // Đòn đập xuống
+
+    private void PerformAttackWithType(int damage, int hitType)
     {
         StopAllCoroutines(); 
-        StartCoroutine(PunchRoutine());
+        StartCoroutine(PunchRoutine(damage, hitType));
     }
     
-    private IEnumerator PunchRoutine()
+    private IEnumerator PunchRoutine(int damage, int hitType)
     {
         float direction = Mathf.Sign(transform.localScale.x);
-        Vector2 hitboxCenter = (Vector2)transform.position + new Vector2(punchOffset.x * direction, punchOffset.y);
         
+        Vector2 hitboxCenter = (Vector2)transform.position + new Vector2(punchOffset.x * direction, punchOffset.y);
+
+        // Quét tất cả object (enemy + vũ khí rơi) không lọc theo layer
         Collider2D[] hitObjects = Physics2D.OverlapBoxAll(hitboxCenter, boxSize, 0);
 
         foreach (Collider2D obj in hitObjects)
         {   
-            // 1. Nếu là Kẻ địch 
-            EnemyBase entity = obj.GetComponentInParent<EnemyBase>();
-            if (entity != null)
+            // 1. Nếu là Kẻ địch
+            EnemyBase enemy = obj.GetComponentInParent<EnemyBase>();
+            if (enemy != null)
             {
-                Vector3 impactPosition = (gameObject.transform.position + entity.transform.position)/2;
+                Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position)/2;
                 EventManager.current.onHit(impactPosition);
-                entity.GetHit(1, 0); 
+                enemy.GetHit(damage, hitType); // Truyền parameters vào đây
                 continue;
             }
 
