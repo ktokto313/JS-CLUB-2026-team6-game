@@ -62,7 +62,6 @@ public class PlayerAttack : MonoBehaviour
 
     private void PerformNormalComboAttack(int comboStep) 
     {
-        // Ở đây tương lai có thể xét nếu comboStep == 3 thì x2 Damage hoặc Quăng Rìu chẳng hạn
         PerformAttackWithType(baseDamage, 0); 
     }
 
@@ -102,7 +101,14 @@ public class PlayerAttack : MonoBehaviour
             if (enemy != null)
             {
                 Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position)/2;
-                EventManager.current.onHit(impactPosition);
+                if (EventManager.current != null)
+                {
+                    EventManager.current.onHit(impactPosition); 
+                }
+                else
+                {
+                    Debug.LogWarning("Chưa có EventManager trong Scene!");
+                }
                 enemy.GetHit(finalDamage, hitType); // Sử dụng sát thương được cộng dồn vũ khí
                 continue;
             }
