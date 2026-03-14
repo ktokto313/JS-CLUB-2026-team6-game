@@ -133,17 +133,21 @@ public class PlayerController : MonoBehaviour
 
         if (health != null)
         {
-            bool isDead = health.TakeHit(damage);
+            // Trả về true nếu thực sự nhận sát thương (không bị chặn bởi I-frames)
+            bool tookDamage = health.TakeHit(damage);
 
-            if (isDead)
+            if (tookDamage)
             {
-                state = PlayerState.DEATH;
-                OnDeathAction?.Invoke();
-            }
-            else
-            {
-                // Gọi sự kiện để Movement và các class khác tự xử lý (Observer)
-                OnHitAction?.Invoke();
+                if (health.IsDead)
+                {
+                    state = PlayerState.DEATH;
+                    OnDeathAction?.Invoke();
+                }
+                else
+                {
+                    // Gọi sự kiện để Movement và Animation tự xử lý (Observer)
+                    OnHitAction?.Invoke();
+                }
             }
         }
     }

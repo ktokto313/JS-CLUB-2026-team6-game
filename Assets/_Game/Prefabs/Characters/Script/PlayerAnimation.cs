@@ -8,6 +8,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
+            // 0. HIT EFFECT
+            PlayerController.Instance.OnHitAction += PlayHitBlink;
+
             // 1. NHÓM DUCK (Phím S)
             PlayerController.Instance.OnPerformLowAttack += PlayLowAttack;
             PlayerController.Instance.OnPerformSmash += PlaySmash;
@@ -37,6 +40,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
+            // 0. HIT EFFECT
+            PlayerController.Instance.OnHitAction -= PlayHitBlink;
+
             // 1. NHÓM DUCK
             PlayerController.Instance.OnPerformLowAttack -= PlayLowAttack;
             PlayerController.Instance.OnPerformSmash -= PlaySmash;
@@ -52,9 +58,12 @@ public class PlayerAnimation : MonoBehaviour
             PlayerController.Instance.OnPerformAirAttack -= PlayAirAttack; 
         }
     }
+
+    private void PlayHitBlink()
+    {
+        anim.SetTrigger("Hit"); // Cứ để sẵn nếu sau này cần Anim Hit
+    }
     
-
-
     // 1. NHÓM DUCK (Phím S)
     private void PlayLowAttack()
     {
