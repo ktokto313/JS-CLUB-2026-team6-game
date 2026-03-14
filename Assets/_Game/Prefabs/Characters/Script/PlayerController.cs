@@ -142,8 +142,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                // Bị đẩy nảy lên khi nhận sát thương
-                if (movement != null) movement.ApplyKnockback(6f);
+                // Gọi sự kiện để Movement và các class khác tự xử lý (Observer)
                 OnHitAction?.Invoke();
             }
         }
@@ -167,7 +166,6 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.AIRBORNE:
-                if (movement != null) movement.PerformAirAttackHang(); // <-- Khựng trên không khi đánh
                 OnPerformAirAttack.Invoke();
                 break;
         }
@@ -178,12 +176,10 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
-                movement.PerformJump();
                 OnPerformJumpAttack?.Invoke();
                 break;
 
             case PlayerState.DUCKING:
-                movement.PerformJump();
                 OnPerformRisingAttack?.Invoke();
                 break;
 
@@ -191,7 +187,6 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.AIRBORNE:
-                if (movement != null) movement.PerformAirSpinHang(); // <-- Khựng trên không khi đá xoáy
                 OnPerformAirSpin?.Invoke();
                 break;
         }
@@ -215,7 +210,6 @@ public class PlayerController : MonoBehaviour
 
             case PlayerState.AIRBORNE:
                 state = PlayerState.SMASHING;
-                movement.PerformSmash(); // <-- Kích hoạt rơi cực nhanh
                 OnPerformSmash?.Invoke();
                 break;
         }

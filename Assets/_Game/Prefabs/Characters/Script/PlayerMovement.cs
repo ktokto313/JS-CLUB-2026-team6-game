@@ -15,6 +15,44 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float airAttackHangTime = 0.15f; 
     [SerializeField] private float airSpinHangTime = 0.4f;
 
+    private void Start()
+    {
+        // Nhận sự kiện từ Controller
+        if (PlayerController.Instance != null)
+        {
+            PlayerController.Instance.OnPerformJumpAttack += PerformJump;
+            PlayerController.Instance.OnPerformRisingAttack += PerformJump;
+
+            PlayerController.Instance.OnPerformSmash += PerformSmash;
+
+            PlayerController.Instance.OnPerformAirAttack += PerformAirAttackHang;
+            PlayerController.Instance.OnPerformAirSpin += PerformAirSpinHang;
+
+            PlayerController.Instance.OnHitAction += HandleKnockbackOnHit;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (PlayerController.Instance != null)
+        {
+            PlayerController.Instance.OnPerformJumpAttack -= PerformJump;
+            PlayerController.Instance.OnPerformRisingAttack -= PerformJump;
+
+            PlayerController.Instance.OnPerformSmash -= PerformSmash;
+
+            PlayerController.Instance.OnPerformAirAttack -= PerformAirAttackHang;
+            PlayerController.Instance.OnPerformAirSpin -= PerformAirSpinHang;
+
+            PlayerController.Instance.OnHitAction -= HandleKnockbackOnHit;
+        }
+    }
+
+    private void HandleKnockbackOnHit()
+    {
+        ApplyKnockback(6f);
+    }
+
     public void SetFacing(Facing newFacing)
     {
         if (currentFacing != newFacing)
