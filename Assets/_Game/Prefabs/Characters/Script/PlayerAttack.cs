@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Scripts.Core;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -71,6 +72,8 @@ public class PlayerAttack : MonoBehaviour
             EnemyBase entity = obj.GetComponentInParent<EnemyBase>();
             if (entity != null)
             {
+                Vector3 impactPosition = (gameObject.transform.position + entity.transform.position)/2;
+                EventManager.current.onHit(impactPosition);
                 entity.GetHit(1, 0); 
                 continue;
             }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using _Game.Scripts.Core;
 
 public class EnemyBase : Entity {
     public float moveSpeed = 3f;
@@ -126,6 +127,8 @@ protected virtual void Update() {
         if (attackTimer >= attackCooldown)
         {
             PlayerController.Instance.TakeDamage();
+            Vector3 impactPosition = (gameObject.transform.position + player.position) / 2;
+            EventManager.current.onPlayerHit(impactPosition);
             Debug.Log("Hit Playyer :########");
             attackTimer = 0;
         }

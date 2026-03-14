@@ -1,3 +1,4 @@
+using _Game.Scripts.Core;
 using UnityEngine;
 
 public class FlyObject : MonoBehaviour
@@ -92,6 +93,8 @@ public class FlyObject : MonoBehaviour
             {
                 if (!hasPassedPlayer)
                 {
+                    Vector3 impactPosition = (gameObject.transform.position + playerTransform.position) / 2;
+                    EventManager.current.onHit(impactPosition);
                     Debug.Log("<color=red>ĐÃ GÂY SÁT THƯƠNG CHO PLAYER!</color>");
                     GlobalPoolManager.Instance.Return(gameObject);
                 }
@@ -118,6 +121,8 @@ public class FlyObject : MonoBehaviour
         {
             // Gây sát thương ngay lập tức
             enemy.GetHit(_weaponTbScriptData.damage, 3);
+            Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position) / 2;
+            EventManager.current.onHit(impactPosition);
             Debug.Log("<color=red>ĐÃ GÂY SÁT THƯƠNG CHO Mosterrrrr!</color>");
             // Trả về Pool ngay lập tức để không bị hiện tượng "khựng" 1 giây
             GlobalPoolManager.Instance.Return(gameObject);
