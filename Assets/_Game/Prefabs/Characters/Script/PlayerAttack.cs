@@ -6,8 +6,10 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    // Value
-    [SerializeField] private Vector2 boxSize;
+    [Header("Combat Stats")]
+    [SerializeField] private int baseDamage = 1;
+    [UnityEngine.Serialization.FormerlySerializedAs("boxSize")]
+    [SerializeField] private Vector2 baseBoxSize = new Vector2(1.5f, 1.5f);
     [SerializeField] private Vector2 punchOffset = new Vector2(0.8f, 1.0f);
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float showHitboxTime = 0.1f;
@@ -54,9 +56,9 @@ public class PlayerAttack : MonoBehaviour
     }
 
     // Các hàm wrapper tương ứng với từng loại đòn đánh
-    private void PerformNormalAttack() => PerformAttackWithType(1, 0); // Đòn ngang
-    private void PerformUppercutAttack() => PerformAttackWithType(1, 1); // Đòn hất tung
-    private void PerformSmashAttack() => PerformAttackWithType(1, 2); // Đòn đập xuống
+    private void PerformNormalAttack() => PerformAttackWithType(baseDamage, 0); // Đòn ngang
+    private void PerformUppercutAttack() => PerformAttackWithType(baseDamage, 1); // Đòn hất tung
+    private void PerformSmashAttack() => PerformAttackWithType(baseDamage, 2); // Đòn đập xuống
 
     private void PerformAttackWithType(int damage, int hitType)
     {
@@ -68,10 +70,21 @@ public class PlayerAttack : MonoBehaviour
     {
         float direction = Mathf.Sign(transform.localScale.x);
         
+        // Tổng hợp chỉ số
+        int finalDamage = damage;
+        Vector2 currentBoxSize = baseBoxSize;
+
+        if (PlayerController.Instance.currentWeapon != null)
+        {
+            finalDamage += PlayerController.Instance.currentWeapon.damage;
+            currentBoxSize.x += PlayerController.Instance.currentWeapon.attackRange;
+            currentBoxSize.y += PlayerController.Instance.currentWeapon.attackRange * 0.2f; 
+        }
+
         Vector2 hitboxCenter = (Vector2)transform.position + new Vector2(punchOffset.x * direction, punchOffset.y);
 
         // Quét tất cả object (enemy + vũ khí rơi) không lọc theo layer
-        Collider2D[] hitObjects = Physics2D.OverlapBoxAll(hitboxCenter, boxSize, 0);
+        Collider2D[] hitObjects = Physics2D.OverlapBoxAll(hitboxCenter, currentBoxSize, 0);
 
         foreach (Collider2D obj in hitObjects)
         {   
@@ -81,7 +94,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position)/2;
                 EventManager.current.onHit(impactPosition);
-                enemy.GetHit(damage, hitType); // Truyền parameters vào đây
+                enemy.GetHit(finalDamage, hitType); // Sử dụng sát thương được cộng dồn vũ khí
                 continue;
             }
 
@@ -110,6 +123,14 @@ public class PlayerAttack : MonoBehaviour
         Gizmos.color = Color.red;
         float direction = Mathf.Sign(transform.localScale.x);
         Vector2 drawCenter = (Vector2)transform.position + new Vector2(punchOffset.x * direction, punchOffset.y);
-        Gizmos.DrawWireCube(drawCenter, boxSize);
+
+        Vector2 drawBoxSize = baseBoxSize;
+        if (Application.isPlaying && PlayerController.Instance != null && PlayerController.Instance.currentWeapon != null)
+        {
+            drawBoxSize.x += PlayerController.Instance.currentWeapon.attackRange;
+            drawBoxSize.y += PlayerController.Instance.currentWeapon.attackRange * 0.2f;
+        }
+
+        Gizmos.DrawWireCube(drawCenter, drawBoxSize);
     }
 }

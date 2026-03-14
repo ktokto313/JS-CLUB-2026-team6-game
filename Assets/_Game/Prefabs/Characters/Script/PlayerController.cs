@@ -15,7 +15,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerHealth health;
 
     // Check Ground
-    [SerializeField] private GroundSensor groundSensor;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private Transform groundCheck;
 
     // Check Death
     public event Action OnHitAction;
@@ -92,9 +94,9 @@ public class PlayerController : MonoBehaviour
 
     private void UpdatePhysicsGrounded()
     {
-        if (groundSensor == null) return;
+        if (groundCheck == null) return;
         
-        bool isGrounded = groundSensor.IsGrounded;
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         
         // Only trigger log and state change when grounded state changes
         if (isGrounded != wasGrounded)
@@ -123,6 +125,15 @@ public class PlayerController : MonoBehaviour
             {
                 state = PlayerState.AIRBORNE;
             }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
 
@@ -180,12 +191,15 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
+                state = PlayerState.AIRBORNE; // Đảm bảo chuyển state ngay lập tức
                 OnPerformJumpAttack?.Invoke();
                 break;
 
             case PlayerState.DUCKING:
+                state = PlayerState.AIRBORNE; // Tương tự bảo vệ State
                 OnPerformRisingAttack?.Invoke();
                 break;
+
 
             case PlayerState.SMASHING:
                 break;
