@@ -12,9 +12,9 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    public bool TakeHit()
+    public bool TakeHit(int damage = 1)
     {
-        currentHealth--;
+        currentHealth -= damage;
         return currentHealth <= 0;
     }
 }

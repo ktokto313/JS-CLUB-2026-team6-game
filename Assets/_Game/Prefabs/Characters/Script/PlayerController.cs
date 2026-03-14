@@ -140,13 +140,13 @@ public class PlayerController : MonoBehaviour
     }
 
     // Xu ly Death
-    public void TakeDamage()
+    public void TakeDamage(int damage = 1)
     {
         if (state == PlayerState.DEATH) return;
 
         if (health != null)
         {
-            bool isDead = health.TakeHit();
+            bool isDead = health.TakeHit(damage);
 
             if (isDead)
             {
