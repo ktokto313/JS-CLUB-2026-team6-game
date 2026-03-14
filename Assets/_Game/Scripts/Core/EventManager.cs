@@ -1,5 +1,7 @@
 using System;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 namespace _Game.Scripts.Core
 {
@@ -7,8 +9,8 @@ namespace _Game.Scripts.Core
     {
         public static EventManager current { get; private set; }
         
-        public event Action onHitAction;
-        public event Action onPlayerHitAction;
+        public event Action<Vector3> onHitAction;
+        public event Action<Vector3> onPlayerHitAction;
         public event Action onDeadAction;
         public event Action onPlayerDeadAction;
         public event Action onPlayerAttackAction;
@@ -20,14 +22,14 @@ namespace _Game.Scripts.Core
             current = this;
         }
 
-        public void onHit()
+        public void onHit(Vector3 hitPosition)
         {
-            onHitAction?.Invoke();
+            onHitAction?.Invoke(hitPosition);
         }
 
-        public void onPlayerHit()
+        public void onPlayerHit(Vector3 hitPosition)
         {
-            onPlayerHitAction?.Invoke();
+            onPlayerHitAction?.Invoke(hitPosition);
         }
 
         public void onDead()
