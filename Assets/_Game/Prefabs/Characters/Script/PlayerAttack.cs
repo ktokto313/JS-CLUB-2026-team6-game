@@ -19,18 +19,18 @@ public class PlayerAttack : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 1. NHÓM DUCK
-            PlayerController.Instance.OnPerformLowAttack += PerformNormalAttack;
+            PlayerController.Instance.OnPerformLowAttack += PerformLowAttackWrapper;
             PlayerController.Instance.OnPerformSmash += PerformSmashAttack;
 
             // 2. NHÓM JUMP
             PlayerController.Instance.OnPerformJumpAttack += PerformUppercutAttack;
             PlayerController.Instance.OnPerformRisingAttack += PerformUppercutAttack;
-            PlayerController.Instance.OnPerformAirSpin += PerformNormalAttack;
+            PlayerController.Instance.OnPerformAirSpin += PerformAirSpinWrapper;
 
             // 3. NHÓM ATTACK
-            PlayerController.Instance.OnPerformAttack += PerformNormalAttack;
+            PlayerController.Instance.OnPerformAttack += PerformNormalComboAttack;
             PlayerController.Instance.OnPerformUppercut += PerformUppercutAttack;
-            PlayerController.Instance.OnPerformAirAttack += PerformNormalAttack; 
+            PlayerController.Instance.OnPerformAirAttack += PerformAirAttackWrapper; 
             
         }
     }
@@ -40,23 +40,32 @@ public class PlayerAttack : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 1. NHÓM DUCK
-            PlayerController.Instance.OnPerformLowAttack -= PerformNormalAttack;
+            PlayerController.Instance.OnPerformLowAttack -= PerformLowAttackWrapper;
             PlayerController.Instance.OnPerformSmash -= PerformSmashAttack;
 
             // 2. NHÓM JUMP
             PlayerController.Instance.OnPerformJumpAttack -= PerformUppercutAttack;
             PlayerController.Instance.OnPerformRisingAttack -= PerformUppercutAttack;
-            PlayerController.Instance.OnPerformAirSpin -= PerformNormalAttack;
+            PlayerController.Instance.OnPerformAirSpin -= PerformAirSpinWrapper;
 
             // 3. NHÓM ATTACK
-            PlayerController.Instance.OnPerformAttack -= PerformNormalAttack;
+            PlayerController.Instance.OnPerformAttack -= PerformNormalComboAttack;
             PlayerController.Instance.OnPerformUppercut -= PerformUppercutAttack;
-            PlayerController.Instance.OnPerformAirAttack -= PerformNormalAttack; 
+            PlayerController.Instance.OnPerformAirAttack -= PerformAirAttackWrapper; 
         }
     }
 
     // Các hàm wrapper tương ứng với từng loại đòn đánh
-    private void PerformNormalAttack() => PerformAttackWithType(baseDamage, 0); // Đòn ngang
+    private void PerformLowAttackWrapper() => PerformAttackWithType(baseDamage, 0);
+    private void PerformAirSpinWrapper() => PerformAttackWithType(baseDamage, 0);
+    private void PerformAirAttackWrapper() => PerformAttackWithType(baseDamage, 0);
+
+    private void PerformNormalComboAttack(int comboStep) 
+    {
+        // Ở đây tương lai có thể xét nếu comboStep == 3 thì x2 Damage hoặc Quăng Rìu chẳng hạn
+        PerformAttackWithType(baseDamage, 0); 
+    }
+
     private void PerformUppercutAttack() => PerformAttackWithType(baseDamage, 1); // Đòn hất tung
     private void PerformSmashAttack() => PerformAttackWithType(baseDamage, 2); // Đòn đập xuống
 

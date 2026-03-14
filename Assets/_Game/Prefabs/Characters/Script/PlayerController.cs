@@ -33,12 +33,17 @@ public class PlayerController : MonoBehaviour
     public event Action OnPerformAirSpin;
 
     // Nhom A D
-    public event Action OnPerformAttack;
+    public event Action<int> OnPerformAttack; // Truyền theo Combo Step
     public event Action OnPerformUppercut;
     public event Action OnPerformAirAttack;
 
 
     public PlayerState state { get; private set; } = PlayerState.STANDING;
+
+    [Header("Combo Settings")]
+    [SerializeField] private float comboTimeout = 0.8f; 
+    private int comboStep = 0;
+    private float lastAttackTime = 0f;
 
     private void Awake()
     {
@@ -169,7 +174,17 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
-                OnPerformAttack?.Invoke();
+                if (Time.time - lastAttackTime > comboTimeout)
+                {
+                    comboStep = 0;
+                }
+
+                comboStep++;
+                if (comboStep > 3) comboStep = 1; 
+
+                lastAttackTime = Time.time;
+                
+                OnPerformAttack?.Invoke(comboStep);
                 break;
 
             case PlayerState.DUCKING:

@@ -91,31 +91,10 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetTrigger("AirSpin");
     }
 
-    [Header("Combo Settings")]
-    [SerializeField] private float comboTimeout = 0.8f; 
-    private int comboStep = 0;
-    private float lastAttackTime = 0f;
-
-    private void PlayAttack()
+    // 3. NHÓM ATTACK (Phím A/D)
+    private void PlayAttack(int comboStep)
     {
-        // Kiểm tra xem đã quá thời gian reset combo chưa
-        if (Time.time - lastAttackTime > comboTimeout)
-        {
-            comboStep = 0;
-        }
-
-        comboStep++;
-        
-        // Chạy từ 1 đến 3 sau đó lặp lại
-        if (comboStep > 3)
-        {
-            comboStep = 1; 
-        }
-
-        lastAttackTime = Time.time;
-
-        // Gọi Trigger theo tên: Attack1, Attack2, Attack3
-        // Đảm bảo trong Animator bạn đã tạo các Trigger này
+        // Nhận trực tiếp comboStep từ Controller (1, 2, hoặc 3)
         anim.SetTrigger("Attack" + comboStep);
     }
 
