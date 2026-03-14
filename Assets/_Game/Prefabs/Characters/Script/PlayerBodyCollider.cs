@@ -25,20 +25,17 @@ public class PlayerBodyCollider : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
-            // 1. NHÓM DUCK
+            // Nhóm đòn đánh bắt buộc phải cúi người (hitbox duck)
             PlayerController.Instance.OnPerformLowAttack += SetColliderDucking;
+            
+            // Tất cả các đòn khác đều làm đứng hitbox
             PlayerController.Instance.OnPerformSmash += SetColliderStanding;
-
-            // 2. NHÓM JUMP
             PlayerController.Instance.OnPerformJumpAttack += SetColliderStanding;
             PlayerController.Instance.OnPerformRisingAttack += SetColliderStanding;
             PlayerController.Instance.OnPerformAirSpin += SetColliderStanding;
-
-            // 3. NHÓM ATTACK
             PlayerController.Instance.OnPerformAttack += SetColliderStanding;
             PlayerController.Instance.OnPerformUppercut += SetColliderStanding;
             PlayerController.Instance.OnPerformAirAttack += SetColliderStanding; 
-            
         }
     }
 

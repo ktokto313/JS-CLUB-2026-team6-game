@@ -39,8 +39,6 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState state { get; private set; } = PlayerState.STANDING;
 
-    private Facing facing = Facing.RIGHT;
-
     [SerializeField] private Transform groundCheck;
 
     private void Awake()
@@ -88,15 +86,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         UpdatePhysicsGrounded();
     }
 
+    private bool wasGrounded = true;
+
     private void UpdatePhysicsGrounded()
     {
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+<<<<<<< Updated upstream
         //Debug.Log($"Ground Check: {isGrounded} | Radius: {groundCheckRadius}");
+=======
+        // Only trigger log and state change when grounded state changes
+        if (isGrounded != wasGrounded)
+        {
+            Debug.Log($"Ground Check Changed: {isGrounded} | state: {state}");
+            wasGrounded = isGrounded;
+        }
+
+>>>>>>> Stashed changes
         if (isGrounded)
         {
             // === CHẠM ĐẤT ===
@@ -223,6 +233,7 @@ public class PlayerController : MonoBehaviour
 
     // Private Helper
 
+<<<<<<< Updated upstream
     private void SetFacing(Facing newFacing)
     {
         if (facing != newFacing)
@@ -247,4 +258,6 @@ public class PlayerController : MonoBehaviour
     
         // Ở đây bạn có thể thêm logic thay đổi Sprite trên tay Player nếu muốn
     }
+=======
+>>>>>>> Stashed changes
 }

@@ -26,23 +26,44 @@ public class GameInput : MonoBehaviour
         Instance = this;
     }
 
+    [SerializeField] private float inputBufferTime = 0.2f;
+    private float lastUpTime = -100f;
+    private float lastDownTime = -100f;
+    private float lastLeftTime = -100f;
+    private float lastRightTime = -100f;
+
     private void Update()
     {
+        // 1. Record input presses
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            lastUpTime = Time.time;
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            lastDownTime = Time.time;
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            lastLeftTime = Time.time;
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            lastRightTime = Time.time;
+
+        // 2. Consume input if within buffer time
+        if (Time.time - lastUpTime <= inputBufferTime)
         {
             OnInputUp?.Invoke();
+            lastUpTime = -100f; // Consume
         }
-        if (Input.GetKeyDown(KeyCode.S) ||  Input.GetKeyDown(KeyCode.DownArrow))
+        if (Time.time - lastDownTime <= inputBufferTime)
         {
             OnInputDown?.Invoke();
+            lastDownTime = -100f;
         }
-        if (Input.GetKeyDown(KeyCode.A) ||  Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Time.time - lastLeftTime <= inputBufferTime)
         {
             OnInputLeft?.Invoke();
+            lastLeftTime = -100f;
         }
-        if (Input.GetKeyDown(KeyCode.D)  ||  Input.GetKeyDown(KeyCode.RightArrow))
+        if (Time.time - lastRightTime <= inputBufferTime)
         {
             OnInputRight?.Invoke();
+            lastRightTime = -100f;
         }
     }
     
