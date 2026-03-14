@@ -230,25 +230,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    // Private Helper
-
-<<<<<<< Updated upstream
-    private void SetFacing(Facing newFacing)
-    {
-        if (facing != newFacing)
-        {
-            facing = newFacing;
-
-            Vector3 scale = transform.localScale;
-
-            float size = Mathf.Abs(scale.x);
-
-            scale.x = (facing == Facing.RIGHT) ? size : -size;
-            transform.localScale = scale;
-        }
-    }
-    
     [Header("Weapon System")]
     public WeaponTBScript currentWeapon;
     public void EquipWeapon(WeaponTBScript newWeapon)
@@ -258,6 +239,4 @@ public class PlayerController : MonoBehaviour
     
         // Ở đây bạn có thể thêm logic thay đổi Sprite trên tay Player nếu muốn
     }
-=======
->>>>>>> Stashed changes
 }
