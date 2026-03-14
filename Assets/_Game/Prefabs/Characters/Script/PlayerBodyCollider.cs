@@ -33,9 +33,33 @@ public class PlayerBodyCollider : MonoBehaviour
             PlayerController.Instance.OnPerformJumpAttack += SetColliderStanding;
             PlayerController.Instance.OnPerformRisingAttack += SetColliderStanding;
             PlayerController.Instance.OnPerformAirSpin += SetColliderStanding;
-            PlayerController.Instance.OnPerformAttack += SetColliderStanding;
+            
+            // --- SỬA Ở ĐÂY ---
+            // Trỏ vào hàm có nhận tham số int
+            PlayerController.Instance.OnPerformAttack += SetColliderStandingWithCombo; 
+            
             PlayerController.Instance.OnPerformUppercut += SetColliderStanding;
             PlayerController.Instance.OnPerformAirAttack += SetColliderStanding; 
+        }
+    }
+
+    // --- THÊM ONDESTROY ---
+    // Bắt buộc phải có để dọn dẹp bộ nhớ khi Player chết/Reload Scene
+    private void OnDestroy()
+    {
+        if (PlayerController.Instance != null)
+        {
+            PlayerController.Instance.OnPerformLowAttack -= SetColliderDucking;
+            
+            PlayerController.Instance.OnPerformSmash -= SetColliderStanding;
+            PlayerController.Instance.OnPerformJumpAttack -= SetColliderStanding;
+            PlayerController.Instance.OnPerformRisingAttack -= SetColliderStanding;
+            PlayerController.Instance.OnPerformAirSpin -= SetColliderStanding;
+            
+            PlayerController.Instance.OnPerformAttack -= SetColliderStandingWithCombo; 
+            
+            PlayerController.Instance.OnPerformUppercut -= SetColliderStanding;
+            PlayerController.Instance.OnPerformAirAttack -= SetColliderStanding; 
         }
     }
 
@@ -49,6 +73,12 @@ public class PlayerBodyCollider : MonoBehaviour
         SetDucking(false);
     }
     
+    // Hàm phụ để khớp với Action<int> của OnPerformAttack
+    private void SetColliderStandingWithCombo(int comboStep)
+    {
+        // Ta không quan tâm comboStep là mấy, chỉ cần biết nó đang đứng đánh
+        SetDucking(false);
+    }
 
     private void CalculateStat()
     {   

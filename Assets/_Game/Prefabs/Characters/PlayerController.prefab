@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 588989707569372357}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.016315343, y: 0.009265508, z: 0}
+  m_LocalPosition: {x: -0.012, y: 0.001, z: 0}
   m_LocalScale: {x: 0.070005, y: 0.070005, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -156,6 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 623214f9f96ed3b468dca488af787bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputBufferTime: 0.2
 --- !u!114 &3219139331191528268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,6 +171,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpAttackForce: 16
   rb: {fileID: 718575305729760486}
+  defaultGravity: 5
+  airAttackHangTime: 0.15
+  airSpinHangTime: 0.4
 --- !u!114 &4579215552543128142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,12 +187,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: {fileID: 3219139331191528268}
-  health: {fileID: 0}
+  health: {fileID: 5553352419273494973}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   groundCheckRadius: 0.2
   groundCheck: {fileID: 2266856191104021108}
+  comboTimeout: 0.8
   currentWeapon: {fileID: 0}
 --- !u!114 &5793345459179436425
 MonoBehaviour:
@@ -216,7 +221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f7c8a094678374f964032f16916654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxSize: {x: 1.02, y: 3.07}
+  baseDamage: 1
+  baseBoxSize: {x: 1.02, y: 3.07}
   punchOffset: {x: 0.79, y: 1.52}
   enemyLayer:
     serializedVersion: 2
@@ -235,6 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 8
+  invincibilityDuration: 1
 --- !u!1 &6467640713610120558
 GameObject:
   m_ObjectHideFlags: 0
