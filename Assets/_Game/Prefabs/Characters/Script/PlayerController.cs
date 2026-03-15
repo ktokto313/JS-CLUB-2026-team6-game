@@ -40,10 +40,14 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState state { get; private set; } = PlayerState.STANDING;
 
-    [Header("Combo Settings")]
-    [SerializeField] private float comboTimeout = 0.8f; 
+    [Header("Combo Settings")] [SerializeField]
+    private float comboTimeout = 0.8f;
+
     private int comboStep = 0;
     private float lastAttackTime = 0f;
+
+    [Header("Air Action Flags")] private bool hasUsedAirSpin = false;
+    private bool hasDefeatedAirAttack = false;
 
     private void Awake()
     {
@@ -99,38 +103,32 @@ public class PlayerController : MonoBehaviour
 
     private void UpdatePhysicsGrounded()
     {
-        if (groundCheck == null) return;
-        
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        
-        // Only trigger log and state change when grounded state changes
-        if (isGrounded != wasGrounded)
-        {
-            Debug.Log($"Ground Check Changed: {isGrounded} | state: {state}");
-            wasGrounded = isGrounded;
-        }
 
         if (isGrounded)
         {
-            // === CHẠM ĐẤT ===
             if (state == PlayerState.AIRBORNE || state == PlayerState.SMASHING)
             {
-                // Nếu đang lao xuống (Smash) -> Nổ (Sau này thêm logic)
-                if (state == PlayerState.SMASHING) Debug.Log("Smash Landed!");
-
                 state = PlayerState.STANDING;
+
+                ResetAirActions();
             }
         }
         else
         {
-            // === TRÊN KHÔNG ===
-            // Nếu đang Đứng/Ngồi mà hẫng chân -> Airborne
-            // (Giữ nguyên nếu đang Smash)
             if (state == PlayerState.STANDING || state == PlayerState.DUCKING)
             {
                 state = PlayerState.AIRBORNE;
+
+                ResetAirActions();
             }
         }
+    }
+
+    private void ResetAirActions()
+    {
+        hasUsedAirSpin = false;
+        hasDefeatedAirAttack = false;
     }
 
     private void OnDrawGizmos()
@@ -142,14 +140,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Xu ly Death
     public void TakeDamage(int damage = 1)
     {
         if (state == PlayerState.DEATH) return;
 
         if (health != null)
         {
-            // Trả về true nếu thực sự nhận sát thương (không bị chặn bởi I-frames)
             bool tookDamage = health.TakeHit(damage);
 
             if (tookDamage)
@@ -161,7 +157,6 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    // Gọi sự kiện để Movement và Animation tự xử lý (Observer)
                     OnHitAction?.Invoke();
                 }
             }
@@ -180,10 +175,10 @@ public class PlayerController : MonoBehaviour
                 }
 
                 comboStep++;
-                if (comboStep > 3) comboStep = 1; 
+                if (comboStep > 3) comboStep = 1;
 
                 lastAttackTime = Time.time;
-                
+
                 OnPerformAttack?.Invoke(comboStep);
                 break;
 
@@ -196,7 +191,11 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.AIRBORNE:
-                OnPerformAirAttack.Invoke();
+                if (!hasDefeatedAirAttack)
+                {
+                    hasDefeatedAirAttack = true;
+                    OnPerformAirAttack?.Invoke();
+                }
                 break;
         }
     }
@@ -206,12 +205,12 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
-                state = PlayerState.AIRBORNE; // Đảm bảo chuyển state ngay lập tức
+                state = PlayerState.AIRBORNE;
                 OnPerformJumpAttack?.Invoke();
                 break;
 
             case PlayerState.DUCKING:
-                state = PlayerState.AIRBORNE; // Tương tự bảo vệ State
+                state = PlayerState.AIRBORNE; 
                 OnPerformRisingAttack?.Invoke();
                 break;
 
@@ -220,7 +219,12 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.AIRBORNE:
-                OnPerformAirSpin?.Invoke();
+                if (!hasUsedAirSpin)
+                {
+                    hasUsedAirSpin = true; 
+                    OnPerformAirSpin?.Invoke();
+                }
+
                 break;
         }
     }
@@ -248,13 +252,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    [Header("Weapon System")]
-    public WeaponTBScript currentWeapon;
+    [Header("Weapon System")] public WeaponTBScript currentWeapon;
+
     public void EquipWeapon(WeaponTBScript newWeapon)
     {
         currentWeapon = newWeapon;
         Debug.Log("Player đã trang bị: " + newWeapon.weaponName);
-    
-        // Ở đây bạn có thể thêm logic thay đổi Sprite trên tay Player nếu muốn
+
     }
 }

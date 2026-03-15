@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float airAttackHangTime = 0.15f; 
     [SerializeField] private float airSpinHangTime = 0.4f;
 
+    private bool isHang = false;
+    
     private void Start()
     {
         // Nhận sự kiện từ Controller
@@ -83,8 +85,6 @@ public class PlayerMovement : MonoBehaviour
     
     public void ApplyKnockback(float knockbackForce = 10f)
     {
-        // Vì trục X bị khoá (freeze x), knockback hợp lý nhất là làm người chơi nảy nhẹ lên trên 
-        // để tạo cảm giác bị hất tung (Stagger) và ngắt nhịp rơi.
         rb.velocity = new Vector2(rb.velocity.x, 0); 
         rb.AddForce(Vector2.up * knockbackForce, ForceMode2D.Impulse);
     }
@@ -102,10 +102,11 @@ public class PlayerMovement : MonoBehaviour
     private System.Collections.IEnumerator AirHangRoutine(float hangTime)
     {
         // Đình chỉ trọng lực và dừng rơi
+        
         float currentGravity = rb.gravityScale;
-        rb.gravityScale = 0f;
+        rb.gravityScale = 0f;   
         rb.velocity = new Vector2(rb.velocity.x, 0f);
-
+        
         yield return new WaitForSeconds(hangTime);
 
         // Trả lại trọng lực
