@@ -62,7 +62,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &8172432519360031098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,6 +78,7 @@ MonoBehaviour:
   moveSpeed: 3
   comboWindow: 0.5
   player: {fileID: 0}
+  originalScale: {x: 0, y: 0, z: 0}
   CurrentWeaponTbScript: {fileID: 0}
   weaponItemPrefab: {fileID: 0}
 --- !u!212 &1373397946880363727

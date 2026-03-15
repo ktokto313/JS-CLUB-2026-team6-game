@@ -9,7 +9,7 @@ public class ChargerEnemy : EnemyBase {
     private float currentDestX;  
 
     public float dashSpeed = 5f;
-    public float prepTime = 2f;
+    public float prepTime = 0.5f;
     private bool isDashing = false;
 
     protected override void Start() {
@@ -48,7 +48,7 @@ public class ChargerEnemy : EnemyBase {
         //(PREP)
         if (anim) {
             anim.SetBool("walk", false);
-            anim.SetTrigger("prepDash"); 
+            anim.SetTrigger("prepDash");
         }
         rb.velocity = Vector2.zero;
 

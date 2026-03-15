@@ -52,6 +52,7 @@ MonoBehaviour:
   moveSpeed: 1.5
   comboWindow: 0.5
   player: {fileID: 0}
+  originalScale: {x: 0, y: 0, z: 0}
   CurrentWeaponTbScript: {fileID: 11400000, guid: c45cb0e037dd2c340ac39c9dceabccd4, type: 2}
   weaponItemPrefab: {fileID: 3314233954150932537, guid: d0cee1403e57ef04d9ca6a7b4266a704, type: 3}
   flyObjectPrefab: {fileID: 3314233954150932537, guid: d0cee1403e57ef04d9ca6a7b4266a704, type: 3}
@@ -128,7 +129,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!95 &5527056160160591949
 Animator:
   serializedVersion: 5
