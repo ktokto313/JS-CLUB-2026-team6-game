@@ -15,8 +15,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerHealth health;
 
     // Check Ground
-    [SerializeField] private LayerMask groundLayer; // Lớp đất
+    [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private Transform groundCheck;
 
     // Check Death
     public event Action OnHitAction;
@@ -32,16 +33,21 @@ public class PlayerController : MonoBehaviour
     public event Action OnPerformAirSpin;
 
     // Nhom A D
-    public event Action OnPerformAttack;
+    public event Action<int> OnPerformAttack; // Truyền theo Combo Step
     public event Action OnPerformUppercut;
     public event Action OnPerformAirAttack;
 
 
     public PlayerState state { get; private set; } = PlayerState.STANDING;
 
-    private Facing facing = Facing.RIGHT;
+    [Header("Combo Settings")] [SerializeField]
+    private float comboTimeout = 0.8f;
 
-    [SerializeField] private Transform groundCheck;
+    private int comboStep = 0;
+    private float lastAttackTime = 0f;
+
+    [Header("Air Action Flags")] private bool hasUsedAirSpin = false;
+    private bool hasDefeatedAirAttack = false;
 
     private void Awake()
     {
@@ -88,36 +94,41 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         UpdatePhysicsGrounded();
     }
 
+    private bool wasGrounded = true;
+
     private void UpdatePhysicsGrounded()
     {
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        //Debug.Log($"Ground Check: {isGrounded} | Radius: {groundCheckRadius}");
+
         if (isGrounded)
         {
-            // === CHẠM ĐẤT ===
             if (state == PlayerState.AIRBORNE || state == PlayerState.SMASHING)
             {
-                // Nếu đang lao xuống (Smash) -> Nổ (Sau này thêm logic)
-                if (state == PlayerState.SMASHING) Debug.Log("Smash Landed!");
-
                 state = PlayerState.STANDING;
+
+                ResetAirActions();
             }
         }
         else
         {
-            // === TRÊN KHÔNG ===
-            // Nếu đang Đứng/Ngồi mà hẫng chân -> Airborne
-            // (Giữ nguyên nếu đang Smash)
             if (state == PlayerState.STANDING || state == PlayerState.DUCKING)
             {
                 state = PlayerState.AIRBORNE;
+
+                ResetAirActions();
             }
         }
+    }
+
+    private void ResetAirActions()
+    {
+        hasUsedAirSpin = false;
+        hasDefeatedAirAttack = false;
     }
 
     private void OnDrawGizmos()
@@ -129,27 +140,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Xu ly Death
-    public void TakeDamage()
+    public void TakeDamage(int damage = 1)
     {
         if (state == PlayerState.DEATH) return;
 
         if (health != null)
         {
-            bool isDead = health.TakeHit();
+            bool tookDamage = health.TakeHit(damage);
 
-            if (isDead)
+            if (tookDamage)
             {
-                state = PlayerState.DEATH;
-                OnDeathAction?.Invoke();
-            }
-            else
-            {
-                OnHitAction?.Invoke();
+                if (health.IsDead)
+                {
+                    state = PlayerState.DEATH;
+                    OnDeathAction?.Invoke();
+                }
+                else
+                {
+                    OnHitAction?.Invoke();
+                }
             }
         }
     }
-
 
     // Xu ly Action:
     private void HandleAttack()
@@ -157,7 +169,17 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
-                OnPerformAttack?.Invoke();
+                if (Time.time - lastAttackTime > comboTimeout)
+                {
+                    comboStep = 0;
+                }
+
+                comboStep++;
+                if (comboStep > 3) comboStep = 1;
+
+                lastAttackTime = Time.time;
+
+                OnPerformAttack?.Invoke(comboStep);
                 break;
 
             case PlayerState.DUCKING:
@@ -169,7 +191,11 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerState.AIRBORNE:
-                OnPerformAirAttack.Invoke();
+                if (!hasDefeatedAirAttack)
+                {
+                    hasDefeatedAirAttack = true;
+                    OnPerformAirAttack?.Invoke();
+                }
                 break;
         }
     }
@@ -179,20 +205,26 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
-                movement.PerformJump();
+                state = PlayerState.AIRBORNE;
                 OnPerformJumpAttack?.Invoke();
                 break;
 
             case PlayerState.DUCKING:
-                movement.PerformJump();
+                state = PlayerState.AIRBORNE; 
                 OnPerformRisingAttack?.Invoke();
                 break;
+
 
             case PlayerState.SMASHING:
                 break;
 
             case PlayerState.AIRBORNE:
-                OnPerformAirSpin?.Invoke();
+                if (!hasUsedAirSpin)
+                {
+                    hasUsedAirSpin = true; 
+                    OnPerformAirSpin?.Invoke();
+                }
+
                 break;
         }
     }
@@ -220,31 +252,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    [Header("Weapon System")] public WeaponTBScript currentWeapon;
 
-    // Private Helper
-
-    private void SetFacing(Facing newFacing)
-    {
-        if (facing != newFacing)
-        {
-            facing = newFacing;
-
-            Vector3 scale = transform.localScale;
-
-            float size = Mathf.Abs(scale.x);
-
-            scale.x = (facing == Facing.RIGHT) ? size : -size;
-            transform.localScale = scale;
-        }
-    }
-    
-    [Header("Weapon System")]
-    public WeaponTBScript currentWeapon;
     public void EquipWeapon(WeaponTBScript newWeapon)
     {
         currentWeapon = newWeapon;
         Debug.Log("Player đã trang bị: " + newWeapon.weaponName);
-    
-        // Ở đây bạn có thể thêm logic thay đổi Sprite trên tay Player nếu muốn
+
     }
 }

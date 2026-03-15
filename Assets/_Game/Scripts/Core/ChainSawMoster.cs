@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using _Game.Scripts.Core;
 
 public class ChargerEnemy : EnemyBase {
     [Header("Charger Fixed Settings")]
@@ -92,6 +93,8 @@ public class ChargerEnemy : EnemyBase {
         
         if (Mathf.Abs(checkPos.x - player.position.x) < 0.8f && Mathf.Abs(checkPos.y - player.position.y) < 1.5f) {
             PlayerController.Instance.TakeDamage();
+            Vector3 impactPosition = (gameObject.transform.position + player.position) / 2;
+            EventManager.current.onPlayerHit(impactPosition);
             Debug.Log("Hit Playyer :########");
         }
     }

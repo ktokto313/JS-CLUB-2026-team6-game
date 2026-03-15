@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
@@ -8,6 +8,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
+            // 0. HIT EFFECT
+            PlayerController.Instance.OnHitAction += PlayHitBlink;
+
             // 1. NHÓM DUCK (Phím S)
             PlayerController.Instance.OnPerformLowAttack += PlayLowAttack;
             PlayerController.Instance.OnPerformSmash += PlaySmash;
@@ -37,6 +40,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
+            // 0. HIT EFFECT
+            PlayerController.Instance.OnHitAction -= PlayHitBlink;
+
             // 1. NHÓM DUCK
             PlayerController.Instance.OnPerformLowAttack -= PlayLowAttack;
             PlayerController.Instance.OnPerformSmash -= PlaySmash;
@@ -52,9 +58,12 @@ public class PlayerAnimation : MonoBehaviour
             PlayerController.Instance.OnPerformAirAttack -= PlayAirAttack; 
         }
     }
+
+    private void PlayHitBlink()
+    {
+        anim.SetTrigger("Hit"); // Cứ để sẵn nếu sau này cần Anim Hit
+    }
     
-
-
     // 1. NHÓM DUCK (Phím S)
     private void PlayLowAttack()
     {
@@ -83,10 +92,10 @@ public class PlayerAnimation : MonoBehaviour
     }
 
     // 3. NHÓM ATTACK (Phím A/D)
-    
-    private void PlayAttack()
+    private void PlayAttack(int comboStep)
     {
-        anim.SetTrigger("Attack");
+        // Nhận trực tiếp comboStep từ Controller (1, 2, hoặc 3)
+        anim.SetTrigger("Attack" + comboStep);
     }
 
     private void PlayUppercut()

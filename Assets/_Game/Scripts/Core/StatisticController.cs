@@ -43,13 +43,13 @@ namespace _Game.Scripts.Core
             attack++;
         }
 
-        private void onHit()
+        private void onHit(Vector3 position)
         {
             hit++;
             currentCombo++;
         }
 
-        private void resetCombo()
+        private void resetCombo(Vector3 position)
         {
             if (currentCombo > bestCombo)
             {
