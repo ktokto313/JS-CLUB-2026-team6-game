@@ -328,6 +328,10 @@ PrefabInstance:
       propertyPath: timeBetweenWaves
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8125511615641333691, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
+      propertyPath: waves.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d55fcc78b7a1c248ab4145c3ae004d1, type: 2}
     - target: {fileID: 8674375970346404925, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
       propertyPath: m_Name
       value: pool
@@ -501,7 +505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 663306cc765117a488d478c4f2ce3484, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effect: {fileID: 478650471173990759, guid: 4f2db7b75508a434d9685059c5ed3e53, type: 3}
+  effect: {fileID: 0}
 --- !u!114 &1454709890
 MonoBehaviour:
   m_ObjectHideFlags: 0
