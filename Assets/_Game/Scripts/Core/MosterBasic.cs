@@ -162,7 +162,10 @@ protected virtual void Update() {
         return direction;
     }
 
-    protected void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.CompareTag("Ground")) { isAirborne = false; rb.velocity = Vector2.zero; }
+    protected virtual void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.CompareTag("Ground")) { 
+            isAirborne = false; 
+            // Không nên ép rb.velocity = zero ở đây vì sẽ làm quái khựng lại mất tự nhiên
+        }
     }
 }
