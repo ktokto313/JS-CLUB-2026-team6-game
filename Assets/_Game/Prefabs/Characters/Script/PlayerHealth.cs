@@ -16,6 +16,7 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
+        EventManager.current.onPlayerHealthUpdate(currentHealth);
     }
 
     // Trả về TRUE nếu nhận sát thương thành công, FALSE nếu bị chặn (bất tử/đã chết)
