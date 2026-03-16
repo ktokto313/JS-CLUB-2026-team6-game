@@ -452,7 +452,15 @@ PrefabInstance:
       value: PlayerHeathBar
       objectReference: {fileID: 0}
     - target: {fileID: 5963010569488948392, guid: fee0f8a8b040e9c4288334f747634dab, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5963010569488948392, guid: fee0f8a8b040e9c4288334f747634dab, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8709638096353030564, guid: fee0f8a8b040e9c4288334f747634dab, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
