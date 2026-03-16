@@ -69,7 +69,7 @@ public class EnemyBase : Entity {
                 if (isAirborne) {
                     rb.velocity = new Vector2(pushDir * 6f, rb.velocity.y);
                 } else {
-                    if (comboCount > 1) rb.AddForce(new Vector2(pushDir * 3f, 0.8f), ForceMode2D.Impulse);
+                    if (comboCount > 1) rb.AddForce(new Vector2(pushDir * 3f, 1f), ForceMode2D.Impulse);
                     ApplyStun(1f);
                 }
                 break;
@@ -167,8 +167,7 @@ protected virtual void Update() {
 
     protected virtual void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("Ground")) { 
-            isAirborne = false; 
-            // Không nên ép rb.velocity = zero ở đây vì sẽ làm quái khựng lại mất tự nhiên
+            isAirborne = false;
         }
     }
 }

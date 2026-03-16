@@ -4,59 +4,66 @@ using _Game.Scripts.Core;
 
 public class ChargerEnemy : EnemyBase {
     [Header("Charger Fixed Settings")]
-    private float right = 5f; 
-    private float left = -5f;  
-    private float currentDestX;  
+    [SerializeField] private float rightBoundary = 5f; 
+    [SerializeField] private float leftBoundary = -5f;  
 
-    public float dashSpeed = 5f;
+    public float dashSpeed = 12f;
     public float prepTime = 0.5f;
     private bool isDashing = false;
-
-    protected override void Start() {
-        base.Start();
-        originalScale = transform.localScale;
-
-        float distToA = Mathf.Abs(transform.position.x - left); 
-        float distToB = Mathf.Abs(transform.position.x - right); 
-
-        currentDestX = (distToA < distToB) ? left : right;
-    }
+    private bool hasHitPlayerInThisDash;
 
     protected override void Update() {
+        // Nếu đang bị hất tung, choáng hoặc đang thực hiện Dash thì không chạy logic Update
         if (isAirborne || isStunned || isPerformingAction) return;
 
-        float distToDest = Mathf.Abs(transform.position.x - currentDestX);
-
-        if (distToDest > 0.3f && !isDashing) {
-            if (anim) anim.SetBool("walk", true);
-            MoveToX(currentDestX);
+        // KIỂM TRA BIÊN: Nếu văng ra ngoài map, phải đi bộ về biên trước
+        if (transform.position.x > rightBoundary + 0.2f) {
+            MoveToX(rightBoundary);
+            return;
         } 
-        else if (!isPerformingAction) {
+        else if (transform.position.x < leftBoundary - 0.2f) {
+            MoveToX(leftBoundary);
+            return;
+        }
+
+        // Nếu đã ở trong vùng an toàn, thực hiện chuỗi hành động Dash
+        if (!isPerformingAction) {
             StartCoroutine(ChargeSequence());
         }
     }
 
-    void MoveToX(float x) {
-        float dir = x > transform.position.x ? 1 : -1;
-        transform.Translate(Vector3.right * (dir * moveSpeed * Time.deltaTime));
+    void MoveToX(float targetX) {
+        if (anim) anim.SetBool("walk", true);
+        float dir = targetX > transform.position.x ? 1 : -1;
+        
+        // Sử dụng Velocity thay vì Translate để mượt hơn với hệ thống GetHit của bạn
+        rb.velocity = new Vector2(dir * moveSpeed, rb.velocity.y);
+        
         transform.localScale = new Vector3(dir * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+
+        // Nếu đã đến rất gần điểm cần về biên, dừng lại để chuẩn bị Dash
+        if (Mathf.Abs(transform.position.x - targetX) < 0.2f) {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            if (anim) anim.SetBool("walk", false);
+        }
     }
 
     IEnumerator ChargeSequence() {
         isPerformingAction = true;
+        hasHitPlayerInThisDash = false;
 
-        //(PREP)
+        // (PREP)
         if (anim) {
             anim.SetBool("walk", false);
             anim.SetTrigger("prepDash");
         }
         rb.velocity = Vector2.zero;
 
-        // Xác định điểm đối diện để lao tới
-        float nextDestX = (currentDestX == right) ? left : right;
-        float dashDir = nextDestX > transform.position.x ? 1 : -1;
+        // TỰ ĐỘNG XÁC ĐỊNH ĐÍCH: 
+        // Nếu đang đứng gần biên trái -> Dash sang phải Boundary. Và ngược lại.
+        float targetX = (transform.position.x < (leftBoundary + rightBoundary) / 2f) ? rightBoundary : leftBoundary;
+        float dashDir = targetX > transform.position.x ? 1 : -1;
         
-        // Quay mặt về hướng sẽ Dash
         transform.localScale = new Vector3(dashDir * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
 
         yield return new WaitForSeconds(prepTime);
@@ -66,45 +73,48 @@ public class ChargerEnemy : EnemyBase {
         isDashing = true;
 
         while (isDashing) {
+            // Kiểm tra nếu bị Stun/Airborne giữa chừng (do GetHit gọi StopAllCoroutines thì vòng lặp này tự dừng)
             rb.velocity = new Vector2(dashDir * dashSpeed, rb.velocity.y);
-            CheckDamage();
+            
+            if (!hasHitPlayerInThisDash) CheckDamage();
 
-            // Kiểm tra nếu đã chạm hoặc vượt qua tọa độ đích
-            if ((dashDir > 0 && transform.position.x >= nextDestX) || 
-                (dashDir < 0 && transform.position.x <= nextDestX)) {
+            // Kiểm tra chạm biên
+            if ((dashDir > 0 && transform.position.x >= rightBoundary) || 
+                (dashDir < 0 && transform.position.x <= leftBoundary)) {
                 break;
             }
             yield return null;
         }
 
-        //DỪNG VÀ ĐỔI MỤC TIÊU
-        rb.velocity = Vector2.zero;
+        // KẾT THÚC DASH
+        rb.velocity = new Vector2(0, rb.velocity.y);
         isDashing = false;
-        currentDestX = nextDestX; // Lưu lại điểm vừa đến để làm mốc xuất phát mới
 
-        yield return new WaitForSeconds(1.0f); // Nghỉ 1s như bạn yêu cầu
+        yield return new WaitForSeconds(1.0f); // Nghỉ 1s
         isPerformingAction = false;
     }
 
     void CheckDamage() {
-        // Kiểm tra trước mặt 1.5f có Player không
+// Kiểm tra trước mặt 1.5f có Player không
         float dir = transform.localScale.x > 0 ? 1 : -1;
         Vector2 checkPos = new Vector2(transform.position.x + (dir * 1.5f), transform.position.y);
-        
         if (Mathf.Abs(checkPos.x - player.position.x) < 0.8f && Mathf.Abs(checkPos.y - player.position.y) < 1.5f) {
+            hasHitPlayerInThisDash = true;
             PlayerController.Instance.TakeDamage();
             Vector3 impactPosition = (gameObject.transform.position + player.position) / 2;
             EventManager.current.onPlayerHit(impactPosition);
             Debug.Log("Hit Playyer :########");
         }
     }
-
     public override void GetHit(int damage, int hitType) {
-        StopAllCoroutines(); 
-        isPerformingAction = false;
+        // Khi bị đánh, reset toàn bộ trạng thái hành động ngay lập tức
         isDashing = false;
-        rb.velocity = Vector2.zero;
-        // Chạy logic  của cha
+        isPerformingAction = false;
+        hasHitPlayerInThisDash = false;
+        
+        // Quan trọng: Dừng vận tốc ngang để Knockback của Base hoạt động chuẩn
+        rb.velocity = new Vector2(0, rb.velocity.y);
+
         base.GetHit(damage, hitType);
     }
 }
