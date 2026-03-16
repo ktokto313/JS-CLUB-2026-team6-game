@@ -14,7 +14,7 @@ namespace _Game.Scripts.Core
         private int bestCombo = 0;
         private int currentCombo = 0;
 
-        private void Awake()
+        private void Start()
         {
             current = this;
             EventManager.current.onDeadAction += onScoreIncrease;
