@@ -543,7 +543,7 @@ PrefabInstance:
     - target: {fileID: 8125511615641333691, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
       propertyPath: waves.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 2d55fcc78b7a1c248ab4145c3ae004d1, type: 2}
+      objectReference: {fileID: 11400000, guid: 31d3505f7f1ddf44d96f0e6c9e98aa9f, type: 2}
     - target: {fileID: 8674375970346404925, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
       propertyPath: m_Name
       value: pool

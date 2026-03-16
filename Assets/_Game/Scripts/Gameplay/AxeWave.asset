@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AxeWave
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 2083373894443671076, guid: 1fa0c4967cf48664f84c814baceec6e0, type: 3}
-  count: 3
+  count: 30
   spawnInterval: 5

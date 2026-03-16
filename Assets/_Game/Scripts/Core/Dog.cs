@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class JumpingHugger : EnemyBase 
 {
@@ -55,21 +56,37 @@ public class JumpingHugger : EnemyBase
     // --- DI CHUYỂN ---
     void Jump() {
         if (isHugging || isStunned) return;
-
         if (anim != null) anim.SetTrigger("jump");
 
-        DetermineNextJumpDirection(); 
-        lastJumpDir = currentDir;   
+        DetermineNextJumpDirection();
         isGrounded = false;
 
-        // Tắt vật lý tạm thời để Code Transform làm chủ hoàn toàn
-     //   rb.isKinematic = true; 
-       // rb.velocity = Vector2.zero;
+        // 1. Tính toán điểm đích
+        Vector3 jumpTarget = transform.position + new Vector3(currentDir * jumpForceX, 0, 0);
+        float jumpDuration = 0.8f;
 
-    }
+        // 2. TÍNH TOÁN GÓC NGHIÊNG
+        // Nếu nhảy sang phải (currentDir = 1), nghiêng sang phải (ví dụ -20 độ)
+        // Nếu nhảy sang trái (currentDir = -1), nghiêng sang trái (ví dụ 20 độ)
+        float tiltAngle = currentDir * 20f; 
 
+        // 3. THỰC HIỆN NHẢY (DOJump)
+        transform.DOJump(jumpTarget, jumpForceY, 1, jumpDuration)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => {
+                if (anim != null) anim.SetTrigger("land");
+                isGrounded = true;
+                rb.velocity = Vector2.zero;
+                StartJumpCycle();
+            });
+
+        // 4. THỰC HIỆN XOAY (DORotate) - Chạy song song với DOJump
+        // Dùng Sequence để xoay đi rồi xoay về ngay khi chạm đất
+        Sequence rotationSequence = DOTween.Sequence();
     
-
+        rotationSequence.Append(transform.DORotate(new Vector3(0, 0, tiltAngle), jumpDuration * 0.5f).SetEase(Ease.OutQuad)); // Xoay nghiêng khi đang lên đỉnh
+        rotationSequence.Append(transform.DORotate(Vector3.zero, jumpDuration * 0.5f).SetEase(Ease.InQuad)); // Xoay thẳng lại khi đang rơi xuống
+    }
     protected override void OnCollisionEnter2D(Collision2D col) {
         base.OnCollisionEnter2D(col); // Reset isAirborne của cha
         if (isHugging) return;
