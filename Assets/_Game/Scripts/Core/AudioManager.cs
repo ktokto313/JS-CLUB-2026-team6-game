@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource musicSound;
     [SerializeField] private AudioSource sfxSound;
     
-    [Header("Sounds")]
+    //[Header("Sounds")]
     
     
     // Start is called before the first frame update

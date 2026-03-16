@@ -69,26 +69,26 @@ public class EnemyBase : Entity {
                 if (isAirborne) {
                     rb.velocity = new Vector2(pushDir * 6f, rb.velocity.y);
                 } else {
-                    if (comboCount > 2) rb.AddForce(new Vector2(pushDir * 5f, 0f), ForceMode2D.Impulse);
-                    ApplyStun(0.4f);
+                    if (comboCount > 1) rb.AddForce(new Vector2(pushDir * 3f, 0.8f), ForceMode2D.Impulse);
+                    ApplyStun(1f);
                 }
                 break;
             case 1: // Đòn hất tung
                 isAirborne = true;
                 rb.velocity = Vector2.zero; // Reset vận tốc trước khi hất
-                rb.AddForce(new Vector2(pushDir * 2f, 6f), ForceMode2D.Impulse);
+                rb.AddForce(new Vector2(pushDir * 0.5f, 7f), ForceMode2D.Impulse);
                 break;
             case 2: // Đòn đập xuống
                 if (isAirborne) {
-                    rb.velocity = new Vector2(pushDir * 3f, -10f);
-                    ApplyStun(0.8f);
+                    rb.velocity = new Vector2(pushDir * 3f, -5f);
+                    ApplyStun(2.5f);
                 } else {
-                    ApplyStun(0.5f);
+                    ApplyStun(1.5f);
                 }
                 break;
             case 3: // Fly object
                 rb.velocity = Vector2.zero;
-                rb.AddForce(new Vector2(pushDir * 6f, 2f), ForceMode2D.Impulse);
+                rb.AddForce(new Vector2(pushDir * 5f, 2f), ForceMode2D.Impulse);
                 ApplyStun(1.2f);
                 break;
         }
