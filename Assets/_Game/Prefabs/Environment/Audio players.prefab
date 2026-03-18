@@ -46,6 +46,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a4673fec2e673a449300db247d8433e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicSource: {fileID: 8661313347849341856}
+  sfxSource: {fileID: 3800396405020500216}
+  music: {fileID: 0}
+  hitClip: {fileID: 0}
+  playerHitClip: {fileID: 0}
+  deadClip: {fileID: 0}
+  playerDeadClip: {fileID: 0}
+  playerAttackClip: {fileID: 0}
+  playerHealthUpdateClip: {fileID: 0}
+  pointUpdateClip: {fileID: 0}
+  musicVolume: 0.97
+  positionalSfxVolume: 1
+  oneShotSfxVolume: 1
 --- !u!1 &5484892288028194632
 GameObject:
   m_ObjectHideFlags: 0
@@ -57,7 +70,7 @@ GameObject:
   - component: {fileID: 2784524584484911034}
   - component: {fileID: 8661313347849341856}
   m_Layer: 0
-  m_Name: Sound
+  m_Name: Music
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
