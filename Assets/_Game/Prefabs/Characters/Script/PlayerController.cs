@@ -256,8 +256,13 @@ public class PlayerController : MonoBehaviour
 
     public void EquipWeapon(WeaponTBScript newWeapon)
     {
+        if (newWeapon == null) 
+        {
+            Debug.LogWarning("Không thể trang bị vì Weapon ScriptableObject bị NULL!");
+            return;
+        }
+
         currentWeapon = newWeapon;
         Debug.Log("Player đã trang bị: " + newWeapon.weaponName);
-
     }
 }

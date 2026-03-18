@@ -1,10 +1,11 @@
 using UnityEngine;
 using _Game.Scripts.Core;
+using System.Collections;
 
 public class RocketRider : EnemyBase 
 {
     [Header("Rocket Movement")]
-    [SerializeField] private float dashSpeed = 10f; // Tên lửa nên bay nhanh
+    [SerializeField] private float dashSpeed = 10f; 
     [SerializeField] private float mapLimitLeft = -15f;
     [SerializeField] private float mapLimitRight = 15f;
     [SerializeField] private float[] phaseHeights = { 5f, 3f, 1f };
@@ -17,54 +18,74 @@ public class RocketRider : EnemyBase
     private int dirX = 1;
     private bool isExploded = false;
 
-    protected override void Start() {
-        base.Start();
-        Health = 1; 
-        rb.gravityScale = 0;
-        moveSpeed = dashSpeed;
+    // HÀM QUAN TRỌNG NHẤT CHO POOLING
+    protected override void OnEnable() {
+        base.OnEnable(); // Reset Health, anim, velocity trong EnemyBase
 
-        if (phaseHeights.Length > 0) {
+        // Reset trạng thái riêng của Rocket
+        isExploded = false;
+        currentPhaseIndex = 0;
+        isStunned = false;
+        isAirborne = false;
+        
+        // Reset Vật lý
+        if (rb != null) {
+            rb.gravityScale = 0;
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        // Reset Rotation (về nằm ngang)
+        transform.rotation = Quaternion.identity;
+
+        // Đặt lại vị trí độ cao ban đầu nếu có
+        if (phaseHeights != null && phaseHeights.Length > 0) {
             transform.position = new Vector3(transform.position.x, phaseHeights[0], transform.position.z);
         }
+
+        // Quyết định hướng bay ban đầu (ví dụ: luôn bay về phía player hoặc theo vị trí map)
+        dirX = transform.position.x > 0 ? -1 : 1; 
         UpdateFacing();
     }
 
+    protected override void Start() {
+        base.Start();
+        // Các thiết lập cố định không đổi trong suốt vòng đời object
+        moveSpeed = dashSpeed;
+    }
+
     protected override void Update() {
-        // Nếu đã nổ thì biến mất luôn, không chạy gì thêm
         if (isExploded) return;
 
-        // Nếu bị đánh trúng (Stun/Airborne từ EnemyBase)
+        // Nếu bị đánh trúng hoặc đang rơi
         if (isStunned || isAirborne) {
             if (rb.gravityScale == 0) rb.gravityScale = 2f;
             RotateTowardsVelocity();
-            CheckDamageLikeCharger(); // Quan trọng: Đang rơi trúng player vẫn phải nổ
+            CheckDamageLikeCharger(); 
             return;
         }
 
         HandleFlight();
         CheckBoundaries();
-        CheckDamageLikeCharger(); // Gây dame liên tục khi đang bay
+        CheckDamageLikeCharger(); 
     }
 
     private void HandleFlight() {
-        rb.velocity = new Vector2(dirX * moveSpeed, 0);
+        if (rb != null) {
+            rb.velocity = new Vector2(dirX * moveSpeed, 0);
+        }
     }
 
-    // COPY CHUẨN LOGIC GÂY DAME CỦA CHARGER
     void CheckDamageLikeCharger() {
         if (isExploded || player == null) return;
 
-        // Charger dùng: checkPos = transform.position + (dir * 1.5f)
-        // Với Rocket, ta để 1.0f để nó sát mũi hơn
-        float facingDir = transform.localScale.x > 0 ? 1 : -1;
+        float facingDir = dirX; // Dùng dirX trực tiếp cho chính xác hướng bay
         Vector2 checkPos = new Vector2(transform.position.x + (facingDir * 1.0f), transform.position.y);
 
-        // Tăng độ rộng kiểm tra (0.8f -> 1.2f) để dễ trúng Player hơn
         float diffX = Mathf.Abs(checkPos.x - player.position.x);
         float diffY = Mathf.Abs(checkPos.y - player.position.y);
 
         if (diffX < 1.2f && diffY < 1.5f) {
-            Debug.Log("Rocket đâm trúng Player bằng tọa độ!");
             Explode();
         }
     }
@@ -72,21 +93,20 @@ public class RocketRider : EnemyBase
     public override void GetHit(int damage, int hitType) {
         if (isExploded) return;
         
-        // Không gọi base.GetHit để bỏ qua logic máu 5, combo...
         Health = 0;
         isStunned = true; 
         rb.gravityScale = 2f;
         
-        // Văng ra khi bị đánh (giữ nguyên hướng văng vật lý)
         float pushDir = transform.position.x < player.position.x ? -1f : 1f;
         rb.velocity = Vector2.zero;
         rb.AddForce(new Vector2(pushDir * 5f, 5f), ForceMode2D.Impulse);
 
         if (anim) anim.SetTrigger("gethit");
+        // Không gọi CheckAndDropWeapon vì Rocket thường nổ chứ không rơi vũ khí (tùy bạn)
     }
 
     protected override void OnCollisionEnter2D(Collision2D collision) {
-        // Luôn check va chạm với đất
+        // Nếu chạm đất hoặc tường khi đang bay/rơi -> Nổ
         if (collision.gameObject.CompareTag("Ground")) {
             Explode();
         }
@@ -96,21 +116,25 @@ public class RocketRider : EnemyBase
         if (isExploded) return;
         isExploded = true;
 
+        // Ngừng mọi chuyển động vật lý
+        if (rb != null) rb.velocity = Vector2.zero;
+
         if (explosionEffect != null) {
+            // Dùng Pool cho Effect nếu có, nếu không thì Instantiate
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
 
-        // Gây sát thương nổ diện rộng (Radius nổ)
         if (Vector2.Distance(transform.position, player.position) <= explosionRadius) {
             PlayerController.Instance.TakeDamage();
             EventManager.current.onPlayerHit(transform.position);
         }
 
+        // Trả về Pool
         OnDeathAction?.Invoke(); 
     }
 
-    // --- CÁC LOGIC HỖ TRỢ KHÁC ---
     private void UpdateFacing() {
+        // originalScale.x có thể âm hoặc dương tùy prefab, nên dùng Mathf.Abs để tránh bị ngược
         transform.localScale = new Vector3(dirX * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
     }
 
@@ -133,7 +157,7 @@ public class RocketRider : EnemyBase
     }
 
     private void RotateTowardsVelocity() {
-        if (rb.velocity.sqrMagnitude > 0.1f) {
+        if (rb != null && rb.velocity.sqrMagnitude > 0.1f) {
             float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }

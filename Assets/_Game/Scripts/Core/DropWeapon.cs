@@ -21,9 +21,13 @@ public class DroppedWeapon : MonoBehaviour
         this.enabled = true; 
         if (col != null) col.isTrigger = true;
         if (rb != null) {
-            rb.gravityScale = 0.5f;
+            rb.gravityScale = 0.2f;
             rb.velocity = Vector2.zero;
+            // TRIỆT TIÊU VẬN TỐC XOAY CŨ: Tránh lỗi Spear vẫn quay do quán tính từ Pool
+            rb.angularVelocity = 0f; 
         }
+        // Reset góc về mặc định trước khi Init gán góc mới
+        transform.rotation = Quaternion.identity;
     }
 
     public void Init(WeaponTBScript data, Transform player)
@@ -31,14 +35,24 @@ public class DroppedWeapon : MonoBehaviour
         _weaponTbScriptData = data;
         playerTransform = player;
         gameObject.tag = "DroppedWeapon"; 
+
+        // NẾU LÀ SPEAR: Xoay đứng lên 90 độ vì model mặc định nằm ngang
+        if (_weaponTbScriptData != null && _weaponTbScriptData.type == WeaponType.Spear)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 90f);
+        }
+        else
+        {
+            transform.rotation = Quaternion.identity;
+        }
     }
 
-    // --- HÀM CHO PLAYER GỌI ---
-    /// Player gọi hàm này khi muốn NHẶT vũ khí.
-    public WeaponTBScript Collect()
+    public WeaponTBScript GetWeaponData()
     {
+        // Lưu data ra biến tạm trước khi Return để tránh bị null khi gán cho Player
+        WeaponTBScript tempData = _weaponTbScriptData;
         GlobalPoolManager.Instance.Return(gameObject);
-        return _weaponTbScriptData;
+        return tempData;
     }
 
     public void Reflect(Vector2 launchDirection, float speed)
@@ -55,15 +69,25 @@ public class DroppedWeapon : MonoBehaviour
         else fly.enabled = true;
         
         fly.Launch(_weaponTbScriptData, direction, speed, playerTransform, true);
-        
-        this.enabled = false; 
     }
 
     private void Update()
     {
-        if (isFalling)
+        if (isFalling && _weaponTbScriptData != null)
         {
-            transform.Rotate(0, 0, 180 * Time.deltaTime);
+            if (_weaponTbScriptData.type == WeaponType.Spear)
+            {
+                // ÉP CHẾT GÓC 90: Không cho bất cứ lực nào xoay nó
+                transform.rotation = Quaternion.Euler(0, 0, 90f);
+            
+                // Triệt tiêu lực xoay vật lý mỗi frame
+                if (rb != null) rb.angularVelocity = 0f; 
+            }
+            else
+            {
+                // Rìu hoặc kiếm thì mới cho phép xoay
+                transform.Rotate(0, 0, 180 * Time.deltaTime);
+            }
         }
     }
 

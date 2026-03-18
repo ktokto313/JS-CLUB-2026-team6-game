@@ -14,56 +14,77 @@ public class EnemyBase : Entity {
     protected bool isStunned = false; 
     public Vector3 originalScale;
     public WeaponTBScript CurrentWeaponTbScript; 
-    public GameObject weaponItemPrefab;
     protected bool isPerformingAction = false;
     protected Animator anim;
     private Coroutine stunCoroutine;
+    [SerializeField] private GameObject visualAxe;
     protected virtual void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
     protected virtual void OnEnable() {
-        isStunned = false;
-        isAirborne = false;
         comboCount = 0;
         attackTimer = 0; 
         if (rb) rb.velocity = Vector2.zero;
         Health = 5;
+        isPerformingAction = false;
+        isStunned = false; 
+        
+        
+        if (anim != null) {
+            anim.ResetTrigger("throw");
+            anim.ResetTrigger("death");
+            anim.ResetTrigger("gethit");
+            anim.SetBool("canAttack", false);
+            anim.SetBool("isWalking", false);
+        
+            anim.Rebind();
+            anim.Update(0f);
+        }
+        if (visualAxe != null) {
+            visualAxe.SetActive(true);
+        
+            // THÊM DÒNG NÀY: Ép trực tiếp Component Renderer bật lên
+            SpriteRenderer sr = visualAxe.GetComponent<SpriteRenderer>();
+            if (sr != null) {
+                sr.enabled = true; 
+            }
+        }
     }
 
     protected virtual void Start() {
         originalScale = transform.localScale;
-        if (GameManager.Instance != null)  player = GameManager.Instance.PlayerTransform;
+        if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
 
         OnDeathAction = () => {
-            // đang lỗi CheckAndDropWeapon();
             GlobalPoolManager.Instance.Return(gameObject);
+
         };
         LookAtPlayer();
     }
     
     public virtual void GetHit(int damage, int hitType) {
         Health -= damage;
-        
+        isPerformingAction = false;
         if (anim != null) {
             anim.SetTrigger("gethit");
+            anim.SetBool("isWalking", false); 
+            anim.SetBool("canAttack", false);
         }
 
         if (Health <= 0) {
             if (anim != null) anim.SetTrigger("death");
+            CheckAndDropWeapon();
             OnDeathAction(); 
             return;
         }
 
-        // 3. Tính toán hướng bị đẩy
         float pushDir = transform.position.x < player.position.x ? -1f : 1f;
     
-        // 4. Reset combo window
         if (Time.time - lastHitTime > comboWindow) comboCount = 0;
         comboCount++; 
         lastHitTime = Time.time;
 
-        // 5. Xử lý Knockback và Stun
         switch (hitType) {
             case 0: // Đòn ngang
                 if (isAirborne) {
@@ -87,17 +108,20 @@ public class EnemyBase : Entity {
                 }
                 break;
             case 3: // Fly object
-                rb.velocity = Vector2.zero;
+                rb.velocity = Vector2.zero;isAirborne = true;
                 rb.AddForce(new Vector2(pushDir * 5f, 2f), ForceMode2D.Impulse);
                 ApplyStun(1.2f);
                 break;
         }
-        if (anim != null) anim.SetTrigger("stun");
+        if (visualAxe != null) visualAxe.SetActive(true);
     }
 
 protected virtual void Update() {
-        if (player == null || isAirborne || isStunned || isPerformingAction) {
-            if (anim && isStunned) anim.SetBool("isWalking", false);
+        if (isAirborne || isStunned || isPerformingAction) {
+            if (anim) {
+                anim.SetBool("isWalking", false);
+                anim.SetBool("canAttack", false); 
+            }
             return;
         }
         float currentRange = (CurrentWeaponTbScript != null) ? CurrentWeaponTbScript.attackRange : 1.5f;
@@ -105,11 +129,16 @@ protected virtual void Update() {
 
         if (distance > currentRange) {
             // Đang ở xa: Đi bộ
-            if (anim) anim.SetBool("isWalking", true); 
+            if (anim) {
+                anim.SetBool("isWalking", true); 
+                anim.SetBool("canAttack", false); 
+            }
             MoveTowardsPlayer();
         } else {
-            // Đã đến gần: Dừng đi bộ và tấn công
-            if (anim) anim.SetBool("isWalking", false);
+            if (anim) {
+                anim.SetBool("isWalking", false);
+                anim.SetBool("canAttack", true); 
+            }
             HandleAttack();
         }
     }
@@ -135,10 +164,45 @@ protected virtual void Update() {
     }
     
     private void CheckAndDropWeapon() {
-        if (CurrentWeaponTbScript == null) return;
-        if (Random.value <= 0.5f) {
-            GameObject dropObj = GlobalPoolManager.Instance.Get(weaponItemPrefab, transform.position + Vector3.up);//
-            dropObj.GetComponent<DroppedWeapon>()?.Init(CurrentWeaponTbScript, player);
+        // 1. Kiểm tra an toàn trước khi chạy logic
+        if (CurrentWeaponTbScript == null || CurrentWeaponTbScript.projectilePrefab == null ) return;
+
+        // 2. TÍNH TOÁN VỊ TRÍ SPAWN THEO HƯỚNG
+        // Kiểm tra xem quái đang đứng bên phải hay bên trái Player
+        float direction = transform.position.x > player.position.x ? 1f : -1f;
+    
+        // Vị trí spawn = Vị trí Player + (1.5f hoặc -1.5f tùy hướng)
+        float offsetX = direction * 1.2f;
+        Vector3 spawnPosition = new Vector3(player.position.x + offsetX, player.position.y + 3f, 0);
+
+        // 3. LẤY VŨ KHÍ TỪ POOL
+        Debug.Log($"Quái đang ở bên {(direction > 0 ? "Phải" : "Trái")}. Spawn vũ khí tại X: {spawnPosition.x}");
+    
+        GameObject dropObj = GlobalPoolManager.Instance.Get(CurrentWeaponTbScript.projectilePrefab, spawnPosition);
+
+        if (dropObj != null) {
+            dropObj.tag = "Untagged"; 
+
+            DroppedWeapon droppedWeaponComp = dropObj.GetComponent<DroppedWeapon>();
+            if (droppedWeaponComp != null) {
+                droppedWeaponComp.Init(CurrentWeaponTbScript, player);
+            
+                // Chạy Coroutine đổi Tag trên chính cái vũ khí (để tránh bị hủy khi quái biến mất)
+                droppedWeaponComp.StartCoroutine(EnableWeaponTag(dropObj));
+
+                Rigidbody2D weaponRb = dropObj.GetComponent<Rigidbody2D>();
+                if (weaponRb != null) {
+                    // Cho vũ khí nảy lên một chút cho đẹp
+                    weaponRb.velocity = new Vector2(0, 5f); 
+                }
+            }
+        }
+    }
+
+    private IEnumerator EnableWeaponTag(GameObject obj) {
+        yield return new WaitForSeconds(0.8f); 
+        if (obj != null && obj.activeSelf) {
+            obj.tag = "DroppedWeapon";
         }
     }
 

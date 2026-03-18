@@ -12,11 +12,15 @@ public class ChargerEnemy : EnemyBase {
     private bool isDashing = false;
     private bool hasHitPlayerInThisDash;
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        hasHitPlayerInThisDash = false;
+        isDashing = false;
+    }
     protected override void Update() {
-        // Nếu đang bị hất tung, choáng hoặc đang thực hiện Dash thì không chạy logic Update
         if (isAirborne || isStunned || isPerformingAction) return;
 
-        // KIỂM TRA BIÊN: Nếu văng ra ngoài map, phải đi bộ về biên trước
         if (transform.position.x > rightBoundary + 0.2f) {
             MoveToX(rightBoundary);
             return;
@@ -26,7 +30,6 @@ public class ChargerEnemy : EnemyBase {
             return;
         }
 
-        // Nếu đã ở trong vùng an toàn, thực hiện chuỗi hành động Dash
         if (!isPerformingAction) {
             StartCoroutine(ChargeSequence());
         }
@@ -73,12 +76,10 @@ public class ChargerEnemy : EnemyBase {
         isDashing = true;
 
         while (isDashing) {
-            // Kiểm tra nếu bị Stun/Airborne giữa chừng (do GetHit gọi StopAllCoroutines thì vòng lặp này tự dừng)
             rb.velocity = new Vector2(dashDir * dashSpeed, rb.velocity.y);
             
             if (!hasHitPlayerInThisDash) CheckDamage();
 
-            // Kiểm tra chạm biên
             if ((dashDir > 0 && transform.position.x >= rightBoundary) || 
                 (dashDir < 0 && transform.position.x <= leftBoundary)) {
                 break;
@@ -90,12 +91,11 @@ public class ChargerEnemy : EnemyBase {
         rb.velocity = new Vector2(0, rb.velocity.y);
         isDashing = false;
 
-        yield return new WaitForSeconds(1.0f); // Nghỉ 1s
+        yield return new WaitForSeconds(2f); 
         isPerformingAction = false;
     }
 
     void CheckDamage() {
-// Kiểm tra trước mặt 1.5f có Player không
         float dir = transform.localScale.x > 0 ? 1 : -1;
         Vector2 checkPos = new Vector2(transform.position.x + (dir * 1.5f), transform.position.y);
         if (Mathf.Abs(checkPos.x - player.position.x) < 0.8f && Mathf.Abs(checkPos.y - player.position.y) < 1.5f) {

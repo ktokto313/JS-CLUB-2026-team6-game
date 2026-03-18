@@ -6,12 +6,9 @@ public class FlyObject : MonoBehaviour
     private WeaponTBScript _weaponTbScriptData;
     private Transform playerTransform; 
     private Rigidbody2D rb;
-    
     private bool hasPassedPlayer = false;
     private bool isPlayerOwned = false; 
-    private float leftBoundary = -20f;
-    private float rightBoundary = 20f;
-
+    private bool isReturning = false;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -19,11 +16,14 @@ public class FlyObject : MonoBehaviour
     
     private void OnEnable()
     {
+        isReturning = false; // Reset cờ
         hasPassedPlayer = false;
         isPlayerOwned = false;
+        gameObject.tag = "FlyObject";
+        CancelInvoke();
     }
 
-    public void Launch(WeaponTBScript data, Vector2 direction, float speed, Transform player, bool fromPlayer)
+    public void Launch(WeaponTBScript data, Vector2 direction, float speedOverride, Transform player, bool fromPlayer)
     {
         _weaponTbScriptData = data;
         playerTransform = player;
@@ -31,45 +31,52 @@ public class FlyObject : MonoBehaviour
 
         if (rb == null) rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
-        rb.velocity = direction * speed;
+
+        // DÙNG FLYSPEED TỪ SCRIPTABLE OBJECT (nếu có), nếu không thì dùng speed truyền vào
+        float finalSpeed = (_weaponTbScriptData.flySpeed > 0) ? _weaponTbScriptData.flySpeed : speedOverride;
+        rb.velocity = direction * finalSpeed;
 
         gameObject.tag = "FlyObject"; 
+
+        // DÙNG LIFETIME ĐỂ TỰ HỦY THAY VÌ BIÊN
+        float lifeTime = (_weaponTbScriptData.lifeTime > 0) ? _weaponTbScriptData.lifeTime : 5f; 
+        Invoke("ReturnToPool", lifeTime);
     }
 
     void Update()
     {
+        // Hiệu ứng xoay rìu
         transform.Rotate(0, 0, 1000 * Time.deltaTime);
-        CheckMapBoundaries();
         
         if (!isPlayerOwned && !hasPassedPlayer && playerTransform != null)
         {
             CheckIfPassedPlayer();
         }
     }
-    
-    public void GetCaught()
-    {
-        this.enabled = false; 
-    }
 
-    private void CheckMapBoundaries()
+    private void ReturnToPool()
     {
-        float currentX = transform.position.x;
-        if (currentX > rightBoundary || currentX < leftBoundary)
-        {
-            GlobalPoolManager.Instance.Return(gameObject);
+        CancelInvoke();
+    
+        // Tách cha ngay tại đây, ĐỪNG đợi đến khi vào Pool mới tách
+        transform.SetParent(null); 
+    
+        if (rb != null) {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0;
         }
+
+        GlobalPoolManager.Instance.Return(gameObject);
     }
+    
 
     private void CheckIfPassedPlayer()
     {
+        // Logic đổi tag khi bay qua vị trí Player để tránh gây sát thương liên tục
         float moveDir = rb.velocity.x;
-
-        // Nếu rìu bay sang phải (moveDir > 0) và tọa độ x đã > 0
-        // HOẶC rìu bay sang trái (moveDir < 0) và tọa độ x đã < 0
-        if ((moveDir > 0 && transform.position.x > 0) || (moveDir < 0 && transform.position.x < 0))
+        if ((moveDir > 0 && transform.position.x > playerTransform.position.x) || 
+            (moveDir < 0 && transform.position.x < playerTransform.position.x))
         {
-            Debug.Log("<color=red>ĐÃ Doi trang thai!</color>");
             hasPassedPlayer = true;
             gameObject.tag = "DroppedWeapon"; 
         }
@@ -77,59 +84,60 @@ public class FlyObject : MonoBehaviour
     
     public void Reflect(Vector2 newDir)
     {
+        CancelInvoke(); // Reset thời gian sống khi bị phản đòn
         isPlayerOwned = true;
         gameObject.tag = "FlyObject";
-        rb.velocity = newDir * 15f;
+        
+        // Có thể lấy tốc độ phản đòn từ data nếu muốn
+        rb.velocity = newDir * (_weaponTbScriptData.flySpeed * 1.5f); 
+        
+        Invoke("ReturnToPool", _weaponTbScriptData.lifeTime);
     }
-    
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // TRƯỜNG HỢP 1: Rìu của QUÁI ném (Chưa bị Player phản đòn)
         if (!isPlayerOwned) 
         {
-            // A. Đâm trúng Player (Chỉ tính khi CHƯA vượt qua x=0)
+            // Khi bay trúng Player
             if (collision.CompareTag("Player") && !hasPassedPlayer)
             {
-                if (!hasPassedPlayer)
-                {
-                    Vector3 impactPosition = (gameObject.transform.position + playerTransform.position) / 2;
-                    EventManager.current.onHit(impactPosition);
-                    Debug.Log("<color=red>ĐÃ GÂY SÁT THƯƠNG CHO PLAYER!</color>");
-                    GlobalPoolManager.Instance.Return(gameObject);
+                // Kiểm tra playerTransform tránh lỗi khi Player bị Destroy/Null
+                if (playerTransform != null && EventManager.current != null) {
+                    EventManager.current.onHit(playerTransform.position);
                 }
+                ReturnToPool();
             }
 
-            // B. Đâm trúng Quái khác (Chỉ tính sau khi ĐÃ vượt qua x=0)
             if (collision.CompareTag("Enemy") && hasPassedPlayer)
             {
                 HandleEnemyHit(collision);
             }
         }
-        // TRƯỜNG HỢP 2: Rìu đã bị Player phản đòn (isPlayerOwned = true)
         else if (collision.CompareTag("Enemy"))
         {
             HandleEnemyHit(collision);
         }
     }
 
-	// Tách hàm xử lý trúng quái để dùng chung, tránh bị trễ
     private void HandleEnemyHit(Collider2D collision)
     {
+        // Kiểm tra dữ liệu vũ khí có tồn tại không trước khi làm việc
+        if (_weaponTbScriptData == null) return; 
+
         EnemyBase enemy = collision.GetComponentInParent<EnemyBase>();
         if (enemy != null)
         {
-            // Gây sát thương ngay lập tức
             enemy.GetHit(_weaponTbScriptData.damage, 3);
-            Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position) / 2;
-            EventManager.current.onHit(impactPosition);
-            Debug.Log("<color=red>ĐÃ GÂY SÁT THƯƠNG CHO Mosterrrrr!</color>");
-            // Trả về Pool ngay lập tức để không bị hiện tượng "khựng" 1 giây
-            GlobalPoolManager.Instance.Return(gameObject);
+        
+            // Kiểm tra EventManager cũng có thể null nếu chưa khởi tạo
+            if (EventManager.current != null) {
+                Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position) / 2;
+                EventManager.current.onHit(impactPosition);
+            }
+        
+            ReturnToPool();
         }
     }
-    public WeaponTBScript GetWeaponData()
-    {
-        return _weaponTbScriptData;
-    }
+
+    public WeaponTBScript GetWeaponData() => _weaponTbScriptData;
 }

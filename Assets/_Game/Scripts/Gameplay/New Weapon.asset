@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b0be40f54e9463dad0cde9f84e13cc7, type: 3}
-  m_Name: Spear
+  m_Name: New Weapon
   m_EditorClassIdentifier: 
   weaponName: 
-  icon: {fileID: 21300000, guid: 1bdc38b7b50ff8e4bae32a2cd1638dcd, type: 3}
-  worldSprite: {fileID: 21300000, guid: 1bdc38b7b50ff8e4bae32a2cd1638dcd, type: 3}
-  type: 2
-  damage: 1
-  attackRange: 1.5
-  attackSpeed: 0.5
-  flySpeed: 0
-  lifeTime: 6
-  projectilePrefab: {fileID: 3594500867767463166, guid: a8534c85159e00c4896875a702d6a896, type: 3}
+  icon: {fileID: 0}
+  worldSprite: {fileID: 0}
+  type: 0
+  damage: 10
+  attackRange: 3
+  attackSpeed: 1
+  flySpeed: 15
+  lifeTime: 5
+  projectilePrefab: {fileID: 0}
+  weaponModelPrefab: {fileID: 0}

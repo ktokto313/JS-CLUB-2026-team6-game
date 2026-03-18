@@ -261,8 +261,10 @@ MonoBehaviour:
   comboWindow: 0.5
   player: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
-  CurrentWeaponTbScript: {fileID: 0}
-  weaponItemPrefab: {fileID: 0}
+  CurrentWeaponTbScript: {fileID: 11400000, guid: c45cb0e037dd2c340ac39c9dceabccd4, type: 2}
+  visualAxe: {fileID: 176173905455505152}
+  rightBoundary: 5
+  leftBoundary: -5
   dashSpeed: 9.76
   prepTime: 1
 --- !u!95 &3326374925118293500

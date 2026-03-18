@@ -21,6 +21,4 @@ public class WeaponTBScript : ScriptableObject
     public float lifeTime = 5f; // Thời gian tự hủy nếu không trúng mục tiêu
     public GameObject projectilePrefab; // Prefab dùng cho FlyObject
 
-    [Header("Visuals")]
-    public GameObject weaponModelPrefab; // Prefab dùng khi Player cầm trên tay
 }

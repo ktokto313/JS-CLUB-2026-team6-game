@@ -116,18 +116,27 @@ public class PlayerAttack : MonoBehaviour
             // 2. Nếu là cái rìu 
             if (obj.CompareTag("DroppedWeapon"))
             {
+                DroppedWeapon drop=obj.GetComponent<DroppedWeapon>();
                 FlyObject fly = obj.GetComponent<FlyObject>();
-                if (fly != null)
+                if (fly != null ||  drop != null)
                 {
-                    // Lấy dữ liệu vũ khí
-                    WeaponTBScript caughtData = fly.GetWeaponData();
-
-                    PlayerController.Instance.EquipWeapon(caughtData);
-                    
-                    GlobalPoolManager.Instance.Return(obj.gameObject);
-                
-                    Debug.Log("<color=cyan>Đã bắt được vũ khí!</color>");
-                    break; 
+                    WeaponTBScript fl = fly.GetWeaponData();
+                    WeaponTBScript dr = drop.GetWeaponData();
+                    WeaponTBScript caught;
+                    if (fl != null)
+                    {
+                        caught = fl;
+                    } else caught = dr;
+                    if (caught != null) 
+                    {
+                        PlayerController.Instance.EquipWeapon(caught);
+                        GlobalPoolManager.Instance.Return(obj.gameObject);
+                        Debug.Log("<color=cyan>Đã bắt được vũ khí!</color>");
+                    }
+                    else 
+                    {
+                        Debug.LogError("Thís Weapon không mang theo dữ liệu WeaponTBScript!");
+                    }
                 }
             }
         }
