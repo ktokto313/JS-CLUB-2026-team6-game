@@ -49,13 +49,13 @@ MonoBehaviour:
   musicSource: {fileID: 8661313347849341856}
   sfxSource: {fileID: 3800396405020500216}
   music: {fileID: 0}
-  hitClip: {fileID: 0}
-  playerHitClip: {fileID: 0}
-  deadClip: {fileID: 0}
-  playerDeadClip: {fileID: 0}
-  playerAttackClip: {fileID: 0}
+  hitClip: {fileID: 8300000, guid: 7a0db9ef18347094d9681c381dff81a7, type: 3}
+  playerHitClip: {fileID: 8300000, guid: 3f038dd5f734fe34e88a63ebe4c488cc, type: 3}
+  deadClip: {fileID: 8300000, guid: 2a6e236f8a4cbce4aa5f8e289b0671d4, type: 3}
+  playerDeadClip: {fileID: 8300000, guid: 44d35252c8e765345b7c3abc24deaca4, type: 3}
+  playerAttackClip: {fileID: 8300000, guid: cb794113063a2fe4f855ed13cee0a89b, type: 3}
   playerHealthUpdateClip: {fileID: 0}
-  pointUpdateClip: {fileID: 0}
+  pointUpdateClip: {fileID: 8300000, guid: 76e5d51b3c885ea4ca6e73d031a587fc, type: 3}
   musicVolume: 0.97
   positionalSfxVolume: 1
   oneShotSfxVolume: 1
