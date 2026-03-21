@@ -1,3 +1,4 @@
+using _Game.Scripts.Core;
 using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
@@ -9,8 +10,8 @@ public class PlayerAnimation : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 0. HIT EFFECT VÀ DEATH
-            PlayerController.Instance.OnHitAction += PlayHitBlink;
-            PlayerController.Instance.OnDeathAction += PlayDeath;
+            EventManager.current.onHitAction += PlayHitBlink;
+            EventManager.current.onPlayerDeadAction += PlayDeath;
 
             // 1. NHÓM DUCK (Phím S)
             PlayerController.Instance.OnPerformLowAttack += PlayLowAttack;
@@ -42,8 +43,8 @@ public class PlayerAnimation : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 0. HIT EFFECT VÀ DEATH
-            PlayerController.Instance.OnHitAction -= PlayHitBlink;
-            PlayerController.Instance.OnDeathAction -= PlayDeath;
+            EventManager.current.onHitAction += PlayHitBlink;
+            EventManager.current.onPlayerDeadAction += PlayDeath;
 
             // 1. NHÓM DUCK
             PlayerController.Instance.OnPerformLowAttack -= PlayLowAttack;
@@ -61,7 +62,7 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    private void PlayHitBlink()
+    private void PlayHitBlink(Vector3 pos)
     {
         anim.SetTrigger("Hit"); 
     }
