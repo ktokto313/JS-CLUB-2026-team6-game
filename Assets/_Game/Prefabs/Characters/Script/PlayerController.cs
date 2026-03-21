@@ -177,7 +177,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 comboStep++;
-                if (comboStep > 3) comboStep = 1;
+                if (comboStep > 4) comboStep = 1;
 
                 lastAttackTime = Time.time;
 
@@ -261,20 +261,37 @@ public class PlayerController : MonoBehaviour
     [Header("Weapon System")] 
     public WeaponTBScript currentWeapon;
     public bool weaponHasBeenUsedMelee = false;
-    [SerializeField] private SpriteRenderer weaponSpriteRenderer;
+    [SerializeField] private Transform handSocket;
+    private GameObject currentWeaponObject;
 
-    public void EquipWeapon(WeaponTBScript newWeapon)
+    public void EquipWeapon(WeaponTBScript newWeapon, GameObject weaponObject = null)
     {
+        // 1. Trả vũ khí trên tay về Pool trước khi nhận cái mới
+        if (currentWeaponObject != null)
+        {
+            currentWeaponObject.transform.SetParent(null);
+            
+            var rbObj = currentWeaponObject.GetComponent<Rigidbody2D>();
+            if (rbObj != null) rbObj.simulated = true;
+            
+            var colObj = currentWeaponObject.GetComponent<Collider2D>();
+            if (colObj != null) colObj.enabled = true;
+
+            var flyObj = currentWeaponObject.GetComponent<FlyObject>();
+            if (flyObj != null) flyObj.enabled = true;
+
+            if (GlobalPoolManager.Instance != null)
+                GlobalPoolManager.Instance.Return(currentWeaponObject);
+            else
+                Destroy(currentWeaponObject);
+                
+            currentWeaponObject = null;
+        }
+
         if (newWeapon == null) 
         {
             currentWeapon = null;
             weaponHasBeenUsedMelee = false;
-            
-            if (weaponSpriteRenderer != null) 
-            {
-                weaponSpriteRenderer.sprite = null; 
-                weaponSpriteRenderer.gameObject.SetActive(false);
-            }
             OnWeaponEquipped?.Invoke(false);
             return;
         }
@@ -282,14 +299,53 @@ public class PlayerController : MonoBehaviour
         currentWeapon = newWeapon;
         weaponHasBeenUsedMelee = false;
         
-        if (weaponSpriteRenderer != null) 
+        // 2. Gắn Vũ Khí Thật vào tay
+        if (weaponObject != null && handSocket != null)
         {
-            weaponSpriteRenderer.sprite = newWeapon.worldSprite;
-            weaponSpriteRenderer.gameObject.SetActive(true); 
+            currentWeaponObject = weaponObject;
+            currentWeaponObject.transform.SetParent(handSocket);
+            currentWeaponObject.transform.localPosition = Vector3.zero;
+            currentWeaponObject.transform.localRotation = Quaternion.identity;
+            
+            // Tắt vật lý để nó nằm im trên tay
+            var rb = currentWeaponObject.GetComponent<Rigidbody2D>();
+            if (rb != null) rb.simulated = false; 
+            
+            var col = currentWeaponObject.GetComponent<Collider2D>();
+            if (col != null) col.enabled = false;
+            
+            var fly = currentWeaponObject.GetComponent<FlyObject>();
+            if (fly != null) fly.enabled = false;
         }
-        else
+        else if (newWeapon != null)
         {
-            Debug.LogWarning("Chưa kéo Weapon Sprite Renderer vào PlayerController!");
+            // 3. Fallback: Sinh ra vũ khí thật nếu Equip thẳng từ Code (ví dụ đầu game)
+            if (handSocket != null && newWeapon.projectilePrefab != null)
+            {
+                if (GlobalPoolManager.Instance != null)
+                {
+                    currentWeaponObject = GlobalPoolManager.Instance.Get(newWeapon.projectilePrefab, handSocket.position);
+                }
+                else
+                {
+                    currentWeaponObject = Instantiate(newWeapon.projectilePrefab, handSocket.position, Quaternion.identity);
+                }
+
+                currentWeaponObject.transform.SetParent(handSocket);
+                currentWeaponObject.transform.localPosition = Vector3.zero;
+                currentWeaponObject.transform.localRotation = Quaternion.identity;
+
+                var rb = currentWeaponObject.GetComponent<Rigidbody2D>();
+                if (rb != null) rb.simulated = false; 
+                var col = currentWeaponObject.GetComponent<Collider2D>();
+                if (col != null) col.enabled = false;
+                var fly = currentWeaponObject.GetComponent<FlyObject>();
+                if (fly != null) fly.enabled = false;
+            }
+            else
+            {
+                Debug.LogWarning("Không thể khởi tạo vũ khí! Thiếu Hand Socket hoặc Prefab rỗng.");
+            }
         }
         
         OnWeaponEquipped?.Invoke(true);

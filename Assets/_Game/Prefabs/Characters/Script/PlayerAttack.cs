@@ -221,8 +221,7 @@ public class PlayerAttack : MonoBehaviour
 
             if (caught != null) 
             {
-                PlayerController.Instance.EquipWeapon(caught);
-                GlobalPoolManager.Instance.Return(obj.gameObject);
+                PlayerController.Instance.EquipWeapon(caught, obj.gameObject);
                 Debug.Log("<color=cyan>Đã bắt được vũ khí!</color>");
             }
             else 
