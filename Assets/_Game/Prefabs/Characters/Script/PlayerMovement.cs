@@ -5,17 +5,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float jumpAttackForce = 16f; 
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private float defaultGravity = 2f;
     
     // Biến lưu trạng thái hướng hiện tại
     private Facing currentFacing = Facing.RIGHT;
 
     
     [Header("Air Combat Controls")]
-    [SerializeField] private float airAttackHangTime = 0.15f; 
-    [SerializeField] private float airSpinHangTime = 0.4f;
-
-    private bool isHang = false;
+    [SerializeField] private float airSpinUpwardForce = 12f;
     
     private void Start()
     {
@@ -27,10 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
             PlayerController.Instance.OnPerformSmash += PerformSmash;
 
-            PlayerController.Instance.OnPerformAirAttack += PerformAirAttackHang;
             PlayerController.Instance.OnPerformAirSpin += PerformAirSpinHang;
-
-            PlayerController.Instance.OnHitAction += HandleKnockbackOnHit;
         }
     }
 
@@ -43,16 +36,8 @@ public class PlayerMovement : MonoBehaviour
 
             PlayerController.Instance.OnPerformSmash -= PerformSmash;
 
-            PlayerController.Instance.OnPerformAirAttack -= PerformAirAttackHang;
             PlayerController.Instance.OnPerformAirSpin -= PerformAirSpinHang;
-
-            PlayerController.Instance.OnHitAction -= HandleKnockbackOnHit;
         }
-    }
-
-    private void HandleKnockbackOnHit()
-    {
-        ApplyKnockback(6f);
     }
 
     public void SetFacing(Facing newFacing)
@@ -82,34 +67,15 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, 0); // Reset Y velocity
         rb.AddForce(Vector2.down * jumpAttackForce * 1.5f, ForceMode2D.Impulse); // Rơi xuống nhanh hơn lúc nhảy lên
     }
-    
-    public void ApplyKnockback(float knockbackForce = 10f)
-    {
-        rb.velocity = new Vector2(rb.velocity.x, 0); 
-        rb.AddForce(Vector2.up * knockbackForce, ForceMode2D.Impulse);
-    }
-
-    public void PerformAirAttackHang()
-    {
-        StartCoroutine(AirHangRoutine(airAttackHangTime));
-    }
 
     public void PerformAirSpinHang()
     {
-        StartCoroutine(AirHangRoutine(airSpinHangTime));
+        HopInAir(airSpinUpwardForce);
     }
 
-    private System.Collections.IEnumerator AirHangRoutine(float hangTime)
+    private void HopInAir(float upwardForce)
     {
-        // Đình chỉ trọng lực và dừng rơi
-        
-        float currentGravity = rb.gravityScale;
-        rb.gravityScale = 0f;   
         rb.velocity = new Vector2(rb.velocity.x, 0f);
-        
-        yield return new WaitForSeconds(hangTime);
-
-        // Trả lại trọng lực
-        rb.gravityScale = currentGravity != 0 ? currentGravity : defaultGravity;
+        rb.AddForce(Vector2.up * upwardForce, ForceMode2D.Impulse);
     }
 }

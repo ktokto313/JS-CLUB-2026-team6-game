@@ -8,8 +8,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
-            // 0. HIT EFFECT
+            // 0. HIT EFFECT VÀ DEATH
             PlayerController.Instance.OnHitAction += PlayHitBlink;
+            PlayerController.Instance.OnDeathAction += PlayDeath;
 
             // 1. NHÓM DUCK (Phím S)
             PlayerController.Instance.OnPerformLowAttack += PlayLowAttack;
@@ -40,8 +41,9 @@ public class PlayerAnimation : MonoBehaviour
     {
         if (PlayerController.Instance != null)
         {
-            // 0. HIT EFFECT
+            // 0. HIT EFFECT VÀ DEATH
             PlayerController.Instance.OnHitAction -= PlayHitBlink;
+            PlayerController.Instance.OnDeathAction -= PlayDeath;
 
             // 1. NHÓM DUCK
             PlayerController.Instance.OnPerformLowAttack -= PlayLowAttack;
@@ -61,7 +63,12 @@ public class PlayerAnimation : MonoBehaviour
 
     private void PlayHitBlink()
     {
-        anim.SetTrigger("Hit"); // Cứ để sẵn nếu sau này cần Anim Hit
+        anim.SetTrigger("Hit"); 
+    }
+
+    private void PlayDeath()
+    {
+        anim.SetBool("IsDead", true);
     }
     
     // 1. NHÓM DUCK (Phím S)

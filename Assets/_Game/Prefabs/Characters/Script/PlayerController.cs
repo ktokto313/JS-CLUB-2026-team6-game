@@ -33,9 +33,12 @@ public class PlayerController : MonoBehaviour
     public event Action OnPerformAirSpin;
 
     // Nhom A D
-    public event Action<int> OnPerformAttack; // Truyền theo Combo Step
+    public event Action<int> OnPerformAttack; 
     public event Action OnPerformUppercut;
     public event Action OnPerformAirAttack;
+
+    // Weapon Action
+    public event Action<bool> OnWeaponEquipped;
 
 
     public PlayerState state { get; private set; } = PlayerState.STANDING;
@@ -73,12 +76,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttackLeft()
     {
+        if (state == PlayerState.DEATH) return;
         movement.SetFacing(Facing.LEFT);
         HandleAttack();
     }
 
     private void HandleAttackRight()
     {
+        if (state == PlayerState.DEATH) return;
         movement.SetFacing(Facing.RIGHT);
         HandleAttack();
     }
@@ -99,10 +104,10 @@ public class PlayerController : MonoBehaviour
         UpdatePhysicsGrounded();
     }
 
-    private bool wasGrounded = true;
-
     private void UpdatePhysicsGrounded()
     {
+        if (state == PlayerState.DEATH) return;
+
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
         if (isGrounded)
@@ -202,6 +207,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
+        if (state == PlayerState.DEATH) return;
+
         switch (state)
         {
             case PlayerState.STANDING:
@@ -231,6 +238,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleDuck()
     {
+        if (state == PlayerState.DEATH) return;
+
         switch (state)
         {
             case PlayerState.STANDING:
@@ -252,17 +261,42 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    [Header("Weapon System")] public WeaponTBScript currentWeapon;
+    [Header("Weapon System")] 
+    public WeaponTBScript currentWeapon;
+    public bool weaponHasBeenUsedMelee = false;
+    [SerializeField] private SpriteRenderer weaponSpriteRenderer;
 
     public void EquipWeapon(WeaponTBScript newWeapon)
     {
         if (newWeapon == null) 
         {
-            Debug.LogWarning("Không thể trang bị vì Weapon ScriptableObject bị NULL!");
+            currentWeapon = null;
+            weaponHasBeenUsedMelee = false;
+            
+            if (weaponSpriteRenderer != null) 
+            {
+                weaponSpriteRenderer.sprite = null; 
+                weaponSpriteRenderer.gameObject.SetActive(false);
+            }
+            OnWeaponEquipped?.Invoke(false);
             return;
         }
 
         currentWeapon = newWeapon;
+        weaponHasBeenUsedMelee = false;
+        
+        if (weaponSpriteRenderer != null) 
+        {
+            weaponSpriteRenderer.sprite = newWeapon.worldSprite;
+            weaponSpriteRenderer.gameObject.SetActive(true); 
+        }
+        else
+        {
+            Debug.LogWarning("Chưa kéo Weapon Sprite Renderer vào PlayerController!");
+        }
+        
+        OnWeaponEquipped?.Invoke(true);
+            
         Debug.Log("Player đã trang bị: " + newWeapon.weaponName);
     }
 }
