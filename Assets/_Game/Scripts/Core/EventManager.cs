@@ -17,6 +17,8 @@ namespace _Game.Scripts.Core
         public event Action<int> onPlayerHealthUpdateAction;
         public event Action<int> onPointUpdateAction;
 
+        public event Action<float> onVolumeSliderUpdateAction;
+
         public void Awake()
         {
             current = this;
@@ -55,6 +57,11 @@ namespace _Game.Scripts.Core
         public void onPointUpdate(int newPoint)
         {
             onPointUpdateAction?.Invoke(newPoint);
+        }
+
+        public void onVolumeSliderUpdate(float volume)
+        {
+            onVolumeSliderUpdateAction?.Invoke(volume);
         }
     }
 }
