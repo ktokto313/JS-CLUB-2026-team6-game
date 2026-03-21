@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ca84fc230bd7fbf4686af1e482f3c84c
+guid: 67dba537cb1440f42b99ab5f0987af95
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: NES_Ranger_Idle_1_strip4_0
+      name: idie.sprite_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 14
-        height: 30
+        x: 0
+        y: 0
+        width: 64
+        height: 64
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9232e9bd3871bb44098402912cf5deff
-      internalID: 370604276
+      spriteID: adf76062ef717614994e259e05db546f
+      internalID: -1028239631
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NES_Ranger_Idle_1_strip4_1
+      name: idie.sprite_1
       rect:
         serializedVersion: 2
-        x: 17
-        y: 1
-        width: 14
-        height: 30
+        x: 64
+        y: 0
+        width: 64
+        height: 64
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b33265bee3f6cf14da7ee456eb8283c6
-      internalID: -1727521186
+      spriteID: 48ae36897ffca974eaaba89eb6e95ec0
+      internalID: 755669342
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NES_Ranger_Idle_1_strip4_2
+      name: idie.sprite_2
       rect:
         serializedVersion: 2
-        x: 33
-        y: 1
-        width: 14
-        height: 29
+        x: 128
+        y: 0
+        width: 64
+        height: 64
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ca56ecc2a4d21c84da58dd6f1a296196
-      internalID: 129511318
+      spriteID: 1172f25fc05d82342b4ab95fa2c2fe91
+      internalID: -1934155319
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NES_Ranger_Idle_1_strip4_3
+      name: idie.sprite_3
       rect:
         serializedVersion: 2
-        x: 49
-        y: 1
-        width: 14
-        height: 29
+        x: 192
+        y: 0
+        width: 64
+        height: 64
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,8 +174,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dbecc4de34d51264caedfaf5ab2bec0f
-      internalID: 1396427164
+      spriteID: 0cfe6b6fbd57745499d423bbc0110086
+      internalID: 80429698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idie.sprite_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: abbbe19810044e145bffcae3400cbce7
+      internalID: -1813393282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: idie.sprite_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 562eb81c501e29244a810e829dcf41e6
+      internalID: -431804951
       vertices: []
       indices: 
       edges: []
@@ -191,10 +233,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      NES_Ranger_Idle_1_strip4_0: 370604276
-      NES_Ranger_Idle_1_strip4_1: -1727521186
-      NES_Ranger_Idle_1_strip4_2: 129511318
-      NES_Ranger_Idle_1_strip4_3: 1396427164
+      idie.sprite_0: -1028239631
+      idie.sprite_1: 755669342
+      idie.sprite_2: -1934155319
+      idie.sprite_3: 80429698
+      idie.sprite_4: -1813393282
+      idie.sprite_5: -431804951
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
