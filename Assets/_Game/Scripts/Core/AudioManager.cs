@@ -27,6 +27,7 @@ namespace _Game.Scripts.Core
 
         private void Start()
         {
+            
             musicSource.volume = musicVolume;
             sfxSource.volume = musicVolume;
             PlayMusic();
@@ -65,7 +66,9 @@ namespace _Game.Scripts.Core
 
         private void HandleDead()
         {
+            sfxSource.volume = oneShotSfxVolume * 0.1f;
             PlayOneShot(deadClip);
+            sfxSource.volume = oneShotSfxVolume;
         }
 
         private void HandlePlayerDead()

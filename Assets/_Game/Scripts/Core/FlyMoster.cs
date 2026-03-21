@@ -130,7 +130,7 @@ public class RocketRider : EnemyBase
         }
 
         // Trả về Pool
-        OnDeathAction?.Invoke(); 
+        onDeath();
     }
 
     private void UpdateFacing() {

@@ -19,7 +19,11 @@ public class PlayerHealth : MonoBehaviour
     // Trả về TRUE nếu nhận sát thương thành công, FALSE nếu bị chặn (đã chết)
     public bool TakeHit(int damage = 1)
     {
-        if (IsDead) return false;
+        if (IsDead)
+        {
+            EventManager.current?.onPlayerDead();
+            return false;
+        }
 
         currentHealth -= damage;
         EventManager.current.onPlayerHealthUpdate(currentHealth);

@@ -87,6 +87,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void PerformAttackWithType(int damage, int hitType, AttackHitboxType hitboxType = AttackHitboxType.Normal)
     {
+        EventManager.current?.onPlayerAttack();
         StopAllCoroutines(); 
         StartCoroutine(PunchRoutine(damage, hitType, hitboxType));
     }

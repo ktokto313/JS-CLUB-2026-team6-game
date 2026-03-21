@@ -56,7 +56,7 @@ public class EnemyBase : Entity {
         originalScale = transform.localScale;
         if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
 
-        OnDeathAction = () => {
+        OnDeathAction += () => {
             GlobalPoolManager.Instance.Return(gameObject);
 
         };
@@ -75,7 +75,7 @@ public class EnemyBase : Entity {
         if (Health <= 0) {
             if (anim != null) anim.SetTrigger("death");
             CheckAndDropWeapon();
-            OnDeathAction(); 
+            onDeath(); 
             return;
         }
 
