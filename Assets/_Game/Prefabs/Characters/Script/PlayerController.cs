@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _Game.Prefabs.Characters.Script;
+using _Game.Scripts.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR;
@@ -18,10 +19,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private Transform groundCheck;
-
-    // Check Death
-    public event Action OnHitAction;
-    public event Action OnDeathAction;
 
     // Nhom S
     public event Action OnPerformLowAttack;
@@ -158,11 +155,11 @@ public class PlayerController : MonoBehaviour
                 if (health.IsDead)
                 {
                     state = PlayerState.DEATH;
-                    OnDeathAction?.Invoke();
+                    EventManager.current?.onPlayerDead();
                 }
                 else
                 {
-                    OnHitAction?.Invoke();
+                    EventManager.current?.onPlayerHit(transform.position);
                 }
             }
         }

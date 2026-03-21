@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Scripts.Core;
 using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
@@ -21,10 +22,12 @@ public abstract class Entity : MonoBehaviour
     {
         // gọi getHit();
         OnHitAction?.Invoke();
+        EventManager.current?.onHit(transform.position);
     }
     
     protected void onDeath() 
     {
         OnDeathAction?.Invoke();
+        EventManager.current?.onDead();
     }
 }
