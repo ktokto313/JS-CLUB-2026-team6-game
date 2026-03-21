@@ -41,6 +41,8 @@ namespace _Game.Scripts.Core
             EventManager.current.onPlayerAttackAction += HandlePlayerAttack;
             EventManager.current.onPlayerHealthUpdateAction += HandlePlayerHealthUpdate;
             EventManager.current.onPointUpdateAction += HandlePointUpdate;
+            EventManager.current.onMusicVolumeSliderUpdateAction += HandleMusicVolumeSliderUpdate;
+            EventManager.current.onSFXVolumeSliderUpdateAction += HandleSFXVolumeSliderUpdate;
         }
 
         public void ChangeMusicVolume(float volume)
@@ -89,6 +91,17 @@ namespace _Game.Scripts.Core
         private void HandlePointUpdate(int _)
         {
             PlayOneShot(pointUpdateClip);
+        }
+
+        private void HandleMusicVolumeSliderUpdate(float volume)
+        {
+            musicVolume = volume;
+        }
+
+        private void HandleSFXVolumeSliderUpdate(float volume)
+        {
+            oneShotSfxVolume = volume;
+            positionalSfxVolume = volume;
         }
 
         private void PlayOneShot(AudioClip clip)
