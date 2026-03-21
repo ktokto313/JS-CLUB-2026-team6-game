@@ -85,7 +85,10 @@ public class JumpingHugger : EnemyBase
 
     void OnLanded() {
         isGrounded = true;
-        ResetPosture();
+        StopMovement(); 
+        DetermineNextJumpDirection(); 
+        ResetPosture(); 
+    
         rb.velocity = Vector2.zero;
         StartJumpCycle();
     }
@@ -173,7 +176,15 @@ public class JumpingHugger : EnemyBase
     }
 
     void DetermineNextJumpDirection() {
-        currentDir = (Mathf.Abs(transform.position.x - leftBoundary) > Mathf.Abs(transform.position.x - rightBoundary)) ? -1 : 1;
+        if (player != null) {
+            currentDir = (player.position.x > transform.position.x) ? 1 : -1;
+        } else {
+            currentDir = (Mathf.Abs(transform.position.x - leftBoundary) > Mathf.Abs(transform.position.x - rightBoundary)) ? -1 : 1;
+        }
+    
+        if (transform.position.x <= leftBoundary) currentDir = 1;
+        if (transform.position.x >= rightBoundary) currentDir = -1;
+
         SetFacingDirection(currentDir);
     }
 

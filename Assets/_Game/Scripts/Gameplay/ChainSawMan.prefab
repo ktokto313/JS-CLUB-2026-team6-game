@@ -265,7 +265,7 @@ MonoBehaviour:
   visualAxe: {fileID: 176173905455505152}
   rightBoundary: 5
   leftBoundary: -5
-  dashSpeed: 9.76
+  dashSpeed: 5
   prepTime: 1
 --- !u!95 &3326374925118293500
 Animator:
