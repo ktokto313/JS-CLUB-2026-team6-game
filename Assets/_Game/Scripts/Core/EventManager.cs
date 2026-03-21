@@ -17,7 +17,8 @@ namespace _Game.Scripts.Core
         public event Action<int> onPlayerHealthUpdateAction;
         public event Action<int> onPointUpdateAction;
 
-        public event Action<float> onVolumeSliderUpdateAction;
+        public event Action<float> onMusicVolumeSliderUpdateAction;
+        public event Action<float> onSFXVolumeSliderUpdateAction;
 
         public void Awake()
         {
@@ -59,9 +60,14 @@ namespace _Game.Scripts.Core
             onPointUpdateAction?.Invoke(newPoint);
         }
 
-        public void onVolumeSliderUpdate(float volume)
+        public void onMusicVolumeSliderUpdate(float volume)
         {
-            onVolumeSliderUpdateAction?.Invoke(volume);
+            onMusicVolumeSliderUpdateAction?.Invoke(volume);
+        }
+
+        public void onSFXVolumeSliderUpdate(float volume)
+        {
+            onSFXVolumeSliderUpdateAction?.Invoke(volume);
         }
     }
 }
