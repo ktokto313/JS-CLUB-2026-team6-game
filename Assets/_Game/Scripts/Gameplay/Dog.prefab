@@ -174,13 +174,13 @@ MonoBehaviour:
   moveSpeed: 3
   comboWindow: 0.5
   player: {fileID: 0}
-  originalScale: {x: 0, y: 0, z: 0}
+  originalScale: {x: 4, y: 4, z: 4}
   CurrentWeaponTbScript: {fileID: 0}
   visualAxe: {fileID: 0}
-  jumpForceX: 3.72
-  jumpForceY: 2.17
+  jumpForceX: 2.6
+  jumpForceY: 7.35
   landRestTime: 0.8
   leftBoundary: -3
   rightBoundary: 3
-  hugRadius: 1
+  hugRadius: 0.83
   hugCooldownTime: 1

@@ -17,7 +17,7 @@ public class EnemyBase : Entity {
     protected bool isPerformingAction = false;
     protected Animator anim;
     private Coroutine stunCoroutine;
-    [SerializeField] private GameObject visualAxe;
+    [SerializeField] public GameObject visualAxe;
     protected virtual void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();

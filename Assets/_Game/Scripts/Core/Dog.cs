@@ -1,196 +1,127 @@
 using UnityEngine;
 using System.Collections;
-using DG.Tweening;
 
-public class JumpingHugger : EnemyBase 
-{
+public class JumpingHugger : EnemyBase {
     [Header("Movement Settings")]
-    public float jumpForceX = 4f;
-    public float jumpForceY = 10f;
-    public float landRestTime = 1.0f;
-    [SerializeField] private float leftBoundary = -5f;
-    [SerializeField] private float rightBoundary = 5f;
+    public float jumpForceX = 5f;
+    public float jumpForceY = 12f;
+    public float landRestTime = 1.2f;
+    [SerializeField] private float leftBoundary = -10f;
+    [SerializeField] private float rightBoundary = 10f;
 
     [Header("Detection Settings")]
-    public float hugRadius = 1.2f; 
-    public float hugCooldownTime = 1.0f; // Thời gian chờ giữa 2 lần ôm
+    public float hugRadius = 0.1f; 
+    public float hugCooldownTime = 1.5f;
 
-    private bool isGrounded, isHugging;
-    private bool canHug = true; 
-    private int currentDir = 1; 
-    private Coroutine jumpCycleRoutine;
-    private Transform targetPlayer;
-    private Tween rotateTween; // Quản lý riêng Tween xoay
+    private bool isGrounded = true, isHugging, canHug = true;
+    private int currentDir = 1;
+    private float nextJumpTime;
 
-    protected override void Start() {
-        base.Start();
-        originalScale = transform.localScale;
+    protected override void OnEnable() {
+        base.OnEnable();
+        StopAllCoroutines();
+        isHugging = false; isGrounded = true; canHug = true;
+        rb.isKinematic = false; 
+        rb.gravityScale = 0.5f; 
+        GetComponent<Collider2D>().enabled = true;
+        
+        nextJumpTime = Time.time + landRestTime;
         DetermineNextJumpDirection();
     }
-    
+
     protected override void Update() {
-        if (isStunned) return;
+        if (isStunned || isHugging) return;
 
-        // Nếu đang ôm, thoát Update sớm (logic Follow nằm ở LateUpdate)
-        if (isHugging && targetPlayer != null) return;
+        if (!isGrounded && canHug && player != null) {
+            float diffX = transform.position.x - player.position.x;
+            if (Mathf.Abs(diffX) < hugRadius) {
+                TryCatchPlayer();
+            }
+        }
 
-        // Chỉ quét Player khi đang bay và không trong thời gian hồi chiêu
-        if (!isGrounded && canHug) TryCatchPlayer();
-    }
-
-    // Dùng LateUpdate để đảm bảo vị trí và góc xoay được cập nhật SAU CÙNG
-    void LateUpdate() {
-        if (isHugging && targetPlayer != null) {
-            FollowPlayerHead();
-            // ÉP CỨNG GÓC XOAY: Không cho phép bất kỳ Tween nào làm nghiêng con chó
-            transform.rotation = Quaternion.identity;
+        if (isGrounded && Time.time >= nextJumpTime) {
+            Jump();
         }
     }
 
-    void FollowPlayerHead() {
-        Collider2D playerCol = targetPlayer.GetComponent<Collider2D>();
-        if (playerCol != null) {
-            // Ghim vào điểm cao nhất của Collider Player + một chút offset
-            float topY = playerCol.bounds.max.y + 0.1f;
-            transform.position = new Vector3(targetPlayer.position.x, topY, transform.position.z);
+    void LateUpdate() {
+        if (isHugging && player != null) {
+            transform.rotation = Quaternion.identity;
+            float topY = player.GetComponent<Collider2D>().bounds.max.y + 0.1f;
+            transform.position = new Vector3(player.position.x, topY, transform.position.z);
         }
     }
 
     void Jump() {
-        if (isHugging || isStunned) return;
-        
-        DetermineNextJumpDirection();
         isGrounded = false;
+        DetermineNextJumpDirection();
 
-        Vector3 targetPos = transform.position + new Vector3(currentDir * jumpForceX, 0, 0);
-        float duration = 0.8f;
+        Vector2 force = new Vector2(currentDir * jumpForceX, jumpForceY);
+        rb.AddForce(force, ForceMode2D.Impulse);
 
-        StopMovement();
-
-        // 1. Tween Nhảy
-        transform.DOJump(targetPos, jumpForceY, 1, duration)
-            .SetEase(Ease.Linear)
-            .OnComplete(() => {
-                if (!gameObject.activeInHierarchy || isHugging) return;
-                OnLanded();
-            });
-
-        // 2. Tween Xoay (Lưu vào biến để dễ Kill)
-        rotateTween?.Kill();
-        Sequence s = DOTween.Sequence();
-        s.Append(transform.DORotate(new Vector3(0, 0, currentDir * 30f), duration * 0.4f).SetEase(Ease.OutQuad));
-        s.Append(transform.DORotate(new Vector3(0, 0, currentDir * -40f), duration * 0.6f).SetEase(Ease.InQuad));
-        rotateTween = s;
-    }
-
-    void OnLanded() {
-        isGrounded = true;
-        StopMovement(); 
-        DetermineNextJumpDirection(); 
-        ResetPosture(); 
-    
-        rb.velocity = Vector2.zero;
-        StartJumpCycle();
-    }
-
-    void StopMovement() {
-        transform.DOKill();
-        rotateTween?.Kill();
-        if (jumpCycleRoutine != null) StopCoroutine(jumpCycleRoutine);
-    }
-
-    void ResetPosture() {
-        rotateTween?.Kill();
-        transform.rotation = Quaternion.identity;
-        transform.localScale = originalScale;
+        if (anim) anim.SetTrigger("jump"); // Nếu bạn có animation
     }
 
     void TryCatchPlayer() {
-        if (isHugging || isStunned || !canHug) return;
-
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, hugRadius);
-        if (hit != null && hit.CompareTag("Player")) {
-            StopMovement();
-            StartCoroutine(HugRoutine(hit.transform));
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, hugRadius, LayerMask.GetMask("Player"));
+        if (hit) {
+            StartCoroutine(HugRoutine());
         }
     }
 
-    IEnumerator HugRoutine(Transform player) {
-        isHugging = true;
-        canHug = false; 
-        targetPlayer = player;
-    
-        // Dừng tuyệt đối mọi Tween cũ
-        transform.DOKill(true);
-        rotateTween?.Kill();
-        
-        rb.isKinematic = true;
+    IEnumerator HugRoutine() {
+        isHugging = true; canHug = false;
         rb.velocity = Vector2.zero;
+        rb.isKinematic = true; 
         GetComponent<Collider2D>().enabled = false;
+        
+        if (anim) anim.SetTrigger("hug");
 
-        // Reset về tư thế đứng thẳng ngay frame đầu tiên
-        ResetPosture();
-
-        yield return new WaitForSeconds(2.0f);
-    
-        if (gameObject.activeInHierarchy) Detach();
+        yield return new WaitForSeconds(1.5f);
+        
+        Detach();
     }
 
     void Detach() {
-        targetPlayer = null;
-        ResetPosture();
-        
-        GetComponent<Collider2D>().enabled = true;
+        isHugging = false;
         rb.isKinematic = false;
-        isHugging = isGrounded = false;
+        GetComponent<Collider2D>().enabled = true;
         
-        // Văng ngược hướng vừa nhảy
-        SetFacingDirection(-currentDir); 
-        rb.velocity = new Vector2(-currentDir * 3f, 5f);
-
-        StartCoroutine(HugCooldownRoutine());
+        // Văng ra sau khi ôm xong
+        rb.velocity = new Vector2(-currentDir * 4f, 6f);
+        
+        StartCoroutine(Cooldown());
     }
 
-    IEnumerator HugCooldownRoutine() {
+    IEnumerator Cooldown() {
         yield return new WaitForSeconds(hugCooldownTime);
         canHug = true;
+        nextJumpTime = Time.time + landRestTime;
     }
 
-    void StartJumpCycle() {
-        if (!gameObject.activeInHierarchy) return;
-        if (jumpCycleRoutine != null) StopCoroutine(jumpCycleRoutine);
-        jumpCycleRoutine = StartCoroutine(WaitAndJump());
-    }
-
-    IEnumerator WaitAndJump() {
-        yield return new WaitForSeconds(landRestTime);
-        if (isGrounded && !isHugging && !isStunned) Jump();
+    public override void GetHit(int damage, int hitType) {
+        if (isHugging) Detach(); 
+        
+        base.GetHit(damage, hitType);
+        
+        nextJumpTime = Time.time + landRestTime; 
     }
 
     protected override void OnCollisionEnter2D(Collision2D col) {
-        base.OnCollisionEnter2D(col);
-        if (col.gameObject.CompareTag("Ground") && !isHugging) {
-            StopMovement();
-            OnLanded();
+        if (col.gameObject.CompareTag("Ground")) {
+            isGrounded = true;
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            nextJumpTime = Time.time + landRestTime;
+            DetermineNextJumpDirection();
         }
     }
 
     void DetermineNextJumpDirection() {
-        if (player != null) {
-            currentDir = (player.position.x > transform.position.x) ? 1 : -1;
-        } else {
-            currentDir = (Mathf.Abs(transform.position.x - leftBoundary) > Mathf.Abs(transform.position.x - rightBoundary)) ? -1 : 1;
-        }
-    
+        if (player) currentDir = (player.position.x > transform.position.x) ? 1 : -1;
+        
         if (transform.position.x <= leftBoundary) currentDir = 1;
-        if (transform.position.x >= rightBoundary) currentDir = -1;
-
-        SetFacingDirection(currentDir);
-    }
-
-    void SetFacingDirection(float dir) {
-        if (dir == 0) return;
-        float facing = dir > 0 ? 1 : -1;
-        transform.localScale = new Vector3(facing * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+        else if (transform.position.x >= rightBoundary) currentDir = -1;
+        
+        transform.localScale = new Vector3(currentDir * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
     }
 }

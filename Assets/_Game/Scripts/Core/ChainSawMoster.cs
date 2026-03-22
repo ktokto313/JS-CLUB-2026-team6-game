@@ -6,7 +6,8 @@ public class ChargerEnemy : EnemyBase {
     [Header("Charger Fixed Settings")]
     [SerializeField] private float rightBoundary = 5f; 
     [SerializeField] private float leftBoundary = -5f;  
-
+    public float spearRadius = 0.5f;
+    public float offsetForward = 0.5f;
     public float dashSpeed = 12f;
     public float prepTime = 0.5f;
     private bool isDashing = false;
@@ -96,23 +97,24 @@ public class ChargerEnemy : EnemyBase {
     }
 
     void CheckDamage() {
-        float dir = transform.localScale.x > 0 ? 1 : -1;
-        Vector2 checkPos = new Vector2(transform.position.x + (dir * 1.5f), transform.position.y);
-        if (Mathf.Abs(checkPos.x - player.position.x) < 0.8f && Mathf.Abs(checkPos.y - player.position.y) < 1.5f) {
+        if (visualAxe == null) return;
+        float facingDir = transform.localScale.x > 0 ? 1 : -1;
+
+        Vector2 checkPos = (Vector2)visualAxe.transform.position + new Vector2(facingDir * offsetForward, 0);
+
+        // 3. Quét Player
+        Collider2D hit = Physics2D.OverlapCircle(checkPos, spearRadius, LayerMask.GetMask("Player"));
+
+        if (hit != null) {
             hasHitPlayerInThisDash = true;
             PlayerController.Instance.TakeDamage();
-            Vector3 impactPosition = (gameObject.transform.position + player.position) / 2;
-            EventManager.current.onPlayerHit(impactPosition);
-            Debug.Log("Hit Playyer :########");
+            EventManager.current.onPlayerHit(checkPos);
         }
     }
     public override void GetHit(int damage, int hitType) {
-        // Khi bị đánh, reset toàn bộ trạng thái hành động ngay lập tức
         isDashing = false;
         isPerformingAction = false;
         hasHitPlayerInThisDash = false;
-        
-        // Quan trọng: Dừng vận tốc ngang để Knockback của Base hoạt động chuẩn
         rb.velocity = new Vector2(0, rb.velocity.y);
 
         base.GetHit(damage, hitType);
