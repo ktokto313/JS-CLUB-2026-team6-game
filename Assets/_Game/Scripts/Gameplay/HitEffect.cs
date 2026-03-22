@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class HitEffect : MonoBehaviour
 {
-    [SerializeField] private float secondsToDisappear = 0.2f;
+    [SerializeField] private float secondsToDisappear = 20.0f;
 
     private void OnEnable()
     {
