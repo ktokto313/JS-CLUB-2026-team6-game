@@ -40,16 +40,14 @@ public class RocketRider : EnemyBase
 
         // --- SỬA LỖI HƯỚNG BAN ĐẦU ---
         if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
-    
-        // Đảm bảo lấy vị trí mới nhất để tính hướng
+        
         if (player != null) {
-            // Nếu quái ở bên PHẢI player (x quái > x player) -> bay sang TRÁI (dirX = -1)
-            dirX = (transform.position.x > player.position.x) ? -1 : 1;
+            // Luôn bay về hướng có Player lúc mới sinh ra
+            dirX = transform.position.x > player.position.x ? -1 : 1;
         } else {
-            dirX = (transform.position.x > 0) ? -1 : 1; 
+            dirX = transform.position.x > 0 ? -1 : 1; 
         }
-    
-        // Gọi trực tiếp để lật hình ảnh ngay lập tức trước khi Update chạy
+        
         UpdateFacing();
     }
 
@@ -100,12 +98,8 @@ public class RocketRider : EnemyBase
 
     private void UpdateFacing() {
         float sX = Mathf.Abs(originalScale.x);
-    
-        // Nếu Model gốc hướng sang PHẢI: dùng dirX * sX
-        // Nếu Model gốc hướng sang TRÁI: dùng -dirX * sX
         transform.localScale = new Vector3(dirX * sX, originalScale.y, originalScale.z);
 
-        // Khóa góc quay khi đang bay thẳng
         if (!isStunned && !isAirborne) {
             transform.rotation = Quaternion.identity;
         }
