@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70aca7d7d3474d9ca8089b6c826e0ffd, type: 3}
+  m_Name: wave5
+  m_EditorClassIdentifier: 
+  waveName: wave5
+  spawnSteps:
+  - label: 
+    enemyPrefab: {fileID: 3463495847834036775, guid: 7f4ad67a4cc40364fa95bfd91e0fea78, type: 3}
+    delayAfterLastStep: 0
+    count: 1
+    interval: 0
+    useRandomPoint: 0
+    specificPointIndex: 1
+  - label: 
+    enemyPrefab: {fileID: 2083373894443671076, guid: 1fa0c4967cf48664f84c814baceec6e0, type: 3}
+    delayAfterLastStep: 2
+    count: 2
+    interval: 1
+    useRandomPoint: 1
+    specificPointIndex: 1
+  - label: 
+    enemyPrefab: {fileID: 1717771465425058998, guid: e666f5aefaf70224aac4be64805fca5b, type: 3}
+    delayAfterLastStep: 4
+    count: 2
+    interval: 2
+    useRandomPoint: 0
+    specificPointIndex: 0
+  - label: 
+    enemyPrefab: {fileID: 4960510062423644082, guid: 279ed95dfa0cd2d4f92cdb64975bd1d3, type: 3}
+    delayAfterLastStep: 5
+    count: 2
+    interval: 2
+    useRandomPoint: 1
+    specificPointIndex: 0
+  - label: 
+    enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
+    delayAfterLastStep: 2
+    count: 5
+    interval: 2
+    useRandomPoint: 1
+    specificPointIndex: 0
