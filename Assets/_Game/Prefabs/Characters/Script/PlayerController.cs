@@ -168,6 +168,8 @@ public class PlayerController : MonoBehaviour
     // Xu ly Action:
     private void HandleAttack()
     {
+        if (state == PlayerState.DEATH) return;
+
         switch (state)
         {
             case PlayerState.STANDING:

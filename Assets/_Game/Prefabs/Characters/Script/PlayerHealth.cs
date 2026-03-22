@@ -21,7 +21,6 @@ public class PlayerHealth : MonoBehaviour
     {
         if (IsDead)
         {
-            EventManager.current?.onPlayerDead();
             return false;
         }
 

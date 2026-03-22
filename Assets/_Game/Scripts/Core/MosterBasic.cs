@@ -173,7 +173,7 @@ protected virtual void Update() {
         {
             PlayerController.Instance.TakeDamage();
             Vector3 impactPosition = (gameObject.transform.position + player.position) / 2;
-            EventManager.current.onPlayerHit(impactPosition);
+            // EventManager.current.onPlayerHit(impactPosition);
             Debug.Log("Hit Playyer :########");
             attackTimer = 0;
         }
