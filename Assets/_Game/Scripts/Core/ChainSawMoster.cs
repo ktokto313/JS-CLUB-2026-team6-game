@@ -91,8 +91,8 @@ public class ChargerEnemy : EnemyBase {
         // KẾT THÚC DASH
         rb.velocity = new Vector2(0, rb.velocity.y);
         isDashing = false;
-
-        yield return new WaitForSeconds(2f); 
+        anim.SetTrigger("rotate");
+        yield return new WaitForSeconds(1.5f); 
         isPerformingAction = false;
     }
 
@@ -116,7 +116,7 @@ public class ChargerEnemy : EnemyBase {
         isPerformingAction = false;
         hasHitPlayerInThisDash = false;
         rb.velocity = new Vector2(0, rb.velocity.y);
-
+    
         base.GetHit(damage, hitType);
     }
 }

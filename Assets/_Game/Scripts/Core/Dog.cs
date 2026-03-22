@@ -25,6 +25,9 @@ public class JumpingHugger : EnemyBase {
         rb.gravityScale = 0.5f; 
         GetComponent<Collider2D>().enabled = true;
         
+        // Reset trạng thái animation khi spawn/respawn
+        if (anim) anim.SetBool("inAir", false);
+        
         nextJumpTime = Time.time + landRestTime;
         DetermineNextJumpDirection();
     }
@@ -56,10 +59,13 @@ public class JumpingHugger : EnemyBase {
         isGrounded = false;
         DetermineNextJumpDirection();
 
+        // SET INAIR TRUE KHI RỜI ĐẤT
+        if (anim) anim.SetBool("inAir", true);
+
         Vector2 force = new Vector2(currentDir * jumpForceX, jumpForceY);
         rb.AddForce(force, ForceMode2D.Impulse);
 
-        if (anim) anim.SetTrigger("jump"); // Nếu bạn có animation
+        if (anim) anim.SetTrigger("jump"); 
     }
 
     void TryCatchPlayer() {
@@ -75,10 +81,12 @@ public class JumpingHugger : EnemyBase {
         rb.isKinematic = true; 
         GetComponent<Collider2D>().enabled = false;
         
+        // Khi ôm cũng coi như không còn "đang nhảy" tự do
+       
         if (anim) anim.SetTrigger("hug");
-
-        yield return new WaitForSeconds(1.5f);
-        
+        if (anim) anim.SetBool("inAir", false);
+        yield return new WaitForSeconds(2f);
+        if (anim) anim.SetBool("inAir", true);
         Detach();
     }
 
@@ -87,7 +95,8 @@ public class JumpingHugger : EnemyBase {
         rb.isKinematic = false;
         GetComponent<Collider2D>().enabled = true;
         
-        // Văng ra sau khi ôm xong
+        // Văng ra sau khi ôm xong (tạm thời coi như inAir lại để rơi xuống)
+        
         rb.velocity = new Vector2(-currentDir * 4f, 6f);
         
         StartCoroutine(Cooldown());
@@ -101,14 +110,34 @@ public class JumpingHugger : EnemyBase {
 
     public override void GetHit(int damage, int hitType) {
         if (isHugging) Detach(); 
+
+        // RESET MỌI TRIGGER KHI BỊ TRÚNG ĐÒN
+        ResetAllAnimationTriggers();
         
         base.GetHit(damage, hitType);
         
         nextJumpTime = Time.time + landRestTime; 
     }
 
+    private void ResetAllAnimationTriggers() {
+        if (anim == null) return;
+        
+        // Reset thủ công các trigger quan trọng
+        anim.ResetTrigger("jump");
+        anim.ResetTrigger("hug");
+        anim.ResetTrigger("land");
+        // Bạn có thể dùng foreach qua anim.parameters nếu có quá nhiều trigger, 
+        // nhưng liệt kê thế này sẽ an toàn và hiệu năng tốt hơn.
+    }
+
     protected override void OnCollisionEnter2D(Collision2D col) {
         if (col.gameObject.CompareTag("Ground")) {
+            // SET INAIR FALSE KHI CHẠM ĐẤT
+            if (anim) {
+                anim.SetBool("inAir", false);
+                anim.SetTrigger("land");
+            }
+
             isGrounded = true;
             rb.velocity = new Vector2(0, rb.velocity.y);
             nextJumpTime = Time.time + landRestTime;

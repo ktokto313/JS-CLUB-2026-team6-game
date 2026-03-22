@@ -35,6 +35,8 @@ public class EnemyBase : Entity {
             anim.ResetTrigger("throw");
             anim.ResetTrigger("death");
             anim.ResetTrigger("gethit");
+            anim.ResetTrigger("dash");
+            anim.ResetTrigger("predash");
             anim.SetBool("canAttack", false);
             anim.SetBool("isWalking", false);
         
