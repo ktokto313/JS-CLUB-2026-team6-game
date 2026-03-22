@@ -7,6 +7,7 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour
 {
     public int Health { set; get;  }
+    public float moveSpeed { set; get;  }
     private WeaponTBScript _weaponTbScript;
 
     public Action OnDeathAction;
@@ -16,11 +17,11 @@ public abstract class Entity : MonoBehaviour
     void Start()
     {
         Health = 0;
+        moveSpeed = 0;
     }
 
     protected void onHit() 
     {
-        // gọi getHit();
         OnHitAction?.Invoke();
         EventManager.current?.onHit(transform.position);
     }

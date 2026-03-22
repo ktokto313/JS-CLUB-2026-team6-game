@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: eb2d7e0412ce6f84681f196cdf205706, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -172,10 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0783cb22ace0347acd7b4a505770d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  comboWindow: 0.5
-  player: {fileID: 0}
-  originalScale: {x: 7, y: 8, z: 0}
+  data: {fileID: 11400000, guid: 3391d2f4409dd094d8aae8e2ad1e767b, type: 2}
   CurrentWeaponTbScript: {fileID: 0}
   visualAxe: {fileID: 0}
   dashSpeed: 10

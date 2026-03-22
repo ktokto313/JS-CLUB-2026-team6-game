@@ -12,7 +12,7 @@ public class RocketRider : EnemyBase
 
     [Header("Rocket Explosion")]
     [SerializeField] private GameObject explosionEffect;
-    [SerializeField] private float explosionRadius = 3f; // Tăng nhẹ để dễ trúng
+    [SerializeField] private float explosionRadius = 3f; 
     [SerializeField] private float headOffset = 0.8f; 
 
     private int currentPhaseIndex = 0;
@@ -37,19 +37,12 @@ public class RocketRider : EnemyBase
         if (phaseHeights != null && phaseHeights.Length > 0) {
             transform.position = new Vector3(transform.position.x, phaseHeights[0], transform.position.z);
         }
-
-        // --- SỬA LỖI HƯỚNG BAN ĐẦU ---
         if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
-    
-        // Đảm bảo lấy vị trí mới nhất để tính hướng
         if (player != null) {
-            // Nếu quái ở bên PHẢI player (x quái > x player) -> bay sang TRÁI (dirX = -1)
             dirX = (transform.position.x > player.position.x) ? -1 : 1;
         } else {
             dirX = (transform.position.x > 0) ? -1 : 1; 
         }
-    
-        // Gọi trực tiếp để lật hình ảnh ngay lập tức trước khi Update chạy
         UpdateFacing();
     }
 
@@ -70,11 +63,7 @@ public class RocketRider : EnemyBase
 
     private void CheckCollisionWithPlayer() {
         if (isExploded || player == null) return;
-
-        // Dùng dirX trực tiếp để tính vị trí mũi quét cho chính xác
         Vector2 headPos = (Vector2)transform.position + new Vector2(dirX * headOffset, 0);
-
-        // Dùng OverlapCircle để quét va chạm (nhạy hơn so với distance)
         Collider2D hit = Physics2D.OverlapCircle(headPos, 0.7f);
         if (hit != null && hit.CompareTag("Player")) {
             Explode();
@@ -93,19 +82,14 @@ public class RocketRider : EnemyBase
 
         if (hitRight || hitLeft) {
             dirX *= -1; 
-            UpdateFacing(); // Chỉ quay đầu khi chạm biên
+            UpdateFacing(); 
             MoveToNextPhase();
         }
     }
 
     private void UpdateFacing() {
         float sX = Mathf.Abs(originalScale.x);
-    
-        // Nếu Model gốc hướng sang PHẢI: dùng dirX * sX
-        // Nếu Model gốc hướng sang TRÁI: dùng -dirX * sX
         transform.localScale = new Vector3(dirX * sX, originalScale.y, originalScale.z);
-
-        // Khóa góc quay khi đang bay thẳng
         if (!isStunned && !isAirborne) {
             transform.rotation = Quaternion.identity;
         }
@@ -125,7 +109,6 @@ public class RocketRider : EnemyBase
 
     protected override void OnCollisionEnter2D(Collision2D collision) {
         if (isExploded) return;
-        // Chạm đất hoặc bất kỳ vật cản nào cũng nổ
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player")) {
             Explode();
         }
@@ -134,8 +117,6 @@ public class RocketRider : EnemyBase
     private void Explode() {
         if (isExploded) return;
         isExploded = true;
-
-        // Lấy vị trí nổ ngay tại thời điểm va chạm
         Vector3 impactPos = transform.position;
 
         if (rb != null) {
@@ -146,9 +127,6 @@ public class RocketRider : EnemyBase
         if (explosionEffect != null) {
             Instantiate(explosionEffect, impactPos, Quaternion.identity);
         }
-
-        // --- SỬA LỖI KHÔNG GÂY DAMAGE ---
-        // Quét diện rộng tại điểm nổ để ép Player phải nhận sát thương
         Collider2D[] hits = Physics2D.OverlapCircleAll(impactPos, explosionRadius);
         bool playerDamaged = false;
         foreach (var hit in hits) {
@@ -160,7 +138,6 @@ public class RocketRider : EnemyBase
             }
         }
 
-        // Dự phòng nếu quét Circle hụt do Player di chuyển quá nhanh
         if (!playerDamaged && player != null) {
             if (Vector2.Distance(impactPos, player.position) <= explosionRadius) {
                 PlayerController.Instance.TakeDamage();
@@ -176,7 +153,8 @@ public class RocketRider : EnemyBase
             currentPhaseIndex++;
             transform.position = new Vector3(transform.position.x, phaseHeights[currentPhaseIndex], transform.position.z);
         } else {
-            Explode();
+            dashSpeed += 1f; 
+            dashSpeed = Mathf.Min(dashSpeed, 20f); 
         }
     }
 
@@ -188,7 +166,6 @@ public class RocketRider : EnemyBase
     }
 
     private void OnDrawGizmos() {
-        // Gizmos dùng dirX để hiển thị chính xác vùng quét nổ
         Vector2 headPos = (Vector2)transform.position + new Vector2(dirX * headOffset, 0);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(headPos, 0.7f);

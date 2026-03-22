@@ -3,21 +3,25 @@ using System.Collections;
 using _Game.Scripts.Core;
 
 public class EnemyBase : Entity {
-    public float moveSpeed = 3f;
-    private int comboCount = 0;  
-    private float lastHitTime = 0f;  
-    public float comboWindow = 0.5f; 
-    public Transform player;
-    protected float attackTimer = 0f;
-    protected bool isAirborne = false;
-    protected Rigidbody2D rb;
-    protected bool isStunned = false; 
-    public Vector3 originalScale;
+    [Header("Data Settings")]
+    public EnemyData data;
     public WeaponTBScript CurrentWeaponTbScript; 
-    protected bool isPerformingAction = false;
-    protected Animator anim;
-    private Coroutine stunCoroutine;
     [SerializeField] public GameObject visualAxe;
+    protected Animator anim;
+    protected Vector3 originalScale;
+    protected Transform player;
+    protected Rigidbody2D rb;
+    
+    protected int comboCount = 0;  
+    protected float lastHitTime = 0f;  
+    protected float comboWindow = 0.5f; 
+    protected float attackTimer = 0f;
+    
+    protected bool isAirborne = false;
+    protected bool isStunned = false; 
+    protected bool isPerformingAction = false;
+    protected Coroutine stunCoroutine;
+    
     protected virtual void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -25,11 +29,10 @@ public class EnemyBase : Entity {
     protected virtual void OnEnable() {
         comboCount = 0;
         attackTimer = 0; 
-        if (rb) rb.velocity = Vector2.zero;
-        Health = 5;
-        isPerformingAction = false;
+        lastHitTime = 0f;  
         isStunned = false; 
-        
+        isPerformingAction = false;
+        if (rb) rb.velocity = Vector2.zero;
         
         if (anim != null) {
             anim.ResetTrigger("throw");
@@ -45,12 +48,23 @@ public class EnemyBase : Entity {
         }
         if (visualAxe != null) {
             visualAxe.SetActive(true);
-        
-            // THÊM DÒNG NÀY: Ép trực tiếp Component Renderer bật lên
             SpriteRenderer sr = visualAxe.GetComponent<SpriteRenderer>();
             if (sr != null) {
                 sr.enabled = true; 
             }
+        }
+        if (data != null) {
+            int wave = SpawnManager.Instance != null ? SpawnManager.Instance.currentWaveIndex : 1;
+            // HP = Máu gốc + (Máu gốc * Tỉ lệ tăng * (Số wave - 1))
+            float scaleFactor = 1f + (data.healthMultiplierPerWave * (wave - 1));
+        
+            Health = Mathf.RoundToInt(data.baseHealth * scaleFactor);
+            moveSpeed = data.baseMoveSpeed * (1f + (data.speedMultiplierPerWave * (wave - 1)));
+        
+            Debug.Log($"<color=yellow>{gameObject.name} Spawned at Wave {wave} | HP: {Health} | Speed: {moveSpeed}</color>");
+        } else {
+            Health = 5;
+            moveSpeed = 3f;
         }
     }
 
@@ -98,7 +112,7 @@ public class EnemyBase : Entity {
                 break;
             case 1: // Đòn hất tung
                 isAirborne = true;
-                rb.velocity = Vector2.zero; // Reset vận tốc trước khi hất
+                rb.velocity = Vector2.zero; 
                 rb.AddForce(new Vector2(pushDir * 0.5f, 7f), ForceMode2D.Impulse);
                 break;
             case 2: // Đòn đập xuống
@@ -166,18 +180,12 @@ protected virtual void Update() {
     }
     
     private void CheckAndDropWeapon() {
-        // 1. Kiểm tra an toàn trước khi chạy logic
         if (CurrentWeaponTbScript == null || CurrentWeaponTbScript.projectilePrefab == null ) return;
 
-        // 2. TÍNH TOÁN VỊ TRÍ SPAWN THEO HƯỚNG
-        // Kiểm tra xem quái đang đứng bên phải hay bên trái Player
         float direction = transform.position.x > player.position.x ? 1f : -1f;
     
-        // Vị trí spawn = Vị trí Player + (1.5f hoặc -1.5f tùy hướng)
         float offsetX = direction * 1.2f;
         Vector3 spawnPosition = new Vector3(player.position.x + offsetX, player.position.y + 3f, 0);
-
-        // 3. LẤY VŨ KHÍ TỪ POOL
         Debug.Log($"Quái đang ở bên {(direction > 0 ? "Phải" : "Trái")}. Spawn vũ khí tại X: {spawnPosition.x}");
     
         GameObject dropObj = GlobalPoolManager.Instance.Get(CurrentWeaponTbScript.projectilePrefab, spawnPosition);
@@ -188,14 +196,11 @@ protected virtual void Update() {
             DroppedWeapon droppedWeaponComp = dropObj.GetComponent<DroppedWeapon>();
             if (droppedWeaponComp != null) {
                 droppedWeaponComp.Init(CurrentWeaponTbScript, player);
-            
-                // Chạy Coroutine đổi Tag trên chính cái vũ khí (để tránh bị hủy khi quái biến mất)
                 droppedWeaponComp.StartCoroutine(EnableWeaponTag(dropObj));
 
                 Rigidbody2D weaponRb = dropObj.GetComponent<Rigidbody2D>();
                 if (weaponRb != null) {
-                    // Cho vũ khí nảy lên một chút cho đẹp
-                    weaponRb.velocity = new Vector2(0, 5f); 
+                    weaponRb.velocity = new Vector2(0, 3f); 
                 }
             }
         }
@@ -210,15 +215,11 @@ protected virtual void Update() {
 
     IEnumerator StunRoutine(float duration) {
         isStunned = true; 
-
-
         yield return new WaitForSeconds(duration);
-    
         isStunned = false;
-        stunCoroutine = null; // Reset khi chạy xong
+        stunCoroutine = null; 
     }
 
-// Trong hàm GetHit, thay vì Start trực tiếp, hãy dùng hàm quản lý này:
     private void ApplyStun(float duration) {
         if (stunCoroutine != null) StopCoroutine(stunCoroutine);
         stunCoroutine = StartCoroutine(StunRoutine(duration));

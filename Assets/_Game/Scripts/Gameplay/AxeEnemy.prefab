@@ -49,13 +49,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d364c90516567db41bb0d2ceb6d4e120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1.5
-  comboWindow: 0.5
-  player: {fileID: 0}
-  originalScale: {x: 0, y: 0, z: 0}
+  data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: 73d43e5bd8a079e44be65ddfd8216e7d, type: 2}
-  visualAxe: {fileID: 8434553896180955631}
-  throwDistance: 10
+  visualAxe: {fileID: 3314233954150932537, guid: d0cee1403e57ef04d9ca6a7b4266a704, type: 3}
+  throwDistance: 7
   flySpeed: 3
 --- !u!61 &6289470525403755959
 BoxCollider2D:

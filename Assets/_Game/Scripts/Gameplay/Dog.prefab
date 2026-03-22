@@ -172,11 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a12cf2f3776b02442af8353b356e8d10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  comboWindow: 0.5
-  player: {fileID: 0}
-  originalScale: {x: 4, y: 4, z: 4}
-  CurrentWeaponTbScript: {fileID: 0}
+  data: {fileID: 11400000, guid: 3e06ab9bd87a6fe489cadf85304d4bae, type: 2}
   visualAxe: {fileID: 0}
   jumpForceX: 2.6
   jumpForceY: 7.35

@@ -257,10 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1083bdd43abeea4caef662d4df58e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  comboWindow: 0.5
-  player: {fileID: 0}
-  originalScale: {x: 0, y: 0, z: 0}
+  data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: c45cb0e037dd2c340ac39c9dceabccd4, type: 2}
   visualAxe: {fileID: 176173905455505152}
   rightBoundary: 5

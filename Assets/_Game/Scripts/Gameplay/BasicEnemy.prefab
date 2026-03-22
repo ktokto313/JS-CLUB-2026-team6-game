@@ -75,12 +75,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c070a8098ddfef94d85b82b4d24e2dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  comboWindow: 0.5
-  player: {fileID: 0}
-  originalScale: {x: 0, y: 0, z: 0}
-  CurrentWeaponTbScript: {fileID: 0}
-  weaponItemPrefab: {fileID: 0}
+  data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
+  visualAxe: {fileID: 0}
 --- !u!212 &1373397946880363727
 SpriteRenderer:
   m_ObjectHideFlags: 0

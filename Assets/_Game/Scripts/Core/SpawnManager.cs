@@ -10,6 +10,8 @@ public class SpawnManager : MonoBehaviour {
     [SerializeField] private float timeBetweenWaves = 5f;
     [SerializeField] private Transform[] spawnPoints;
 
+    [HideInInspector] public int currentWaveIndex = 1; 
+
     private void Awake() { Instance = this; }
 
     private void Start() { 
@@ -17,20 +19,24 @@ public class SpawnManager : MonoBehaviour {
     }
 
     private IEnumerator MasterWaveRoutine() {
+        int waveCounter = 1; 
+        
         foreach (WaveData wave in waves) {
-            Debug.Log($"<color=cyan><b>START WAVE: {wave.waveName}</b></color>");
+            currentWaveIndex = waveCounter; 
             
-            // Chạy từng bước (Step) trong Wave
+            Debug.Log($"<color=cyan><b>START WAVE {currentWaveIndex}: {wave.waveName}</b></color>");
+            
             foreach (var step in wave.spawnSteps) {
                 if (step.delayAfterLastStep > 0)
                     yield return new WaitForSeconds(step.delayAfterLastStep);
 
-                // Kích hoạt Coroutine spawn quái cho bước này (chạy song song để không chặn bước sau)
                 StartCoroutine(ExecuteSpawnStep(step));
             }
 
-            // Đợi wave kết thúc (tùy logic bạn muốn đợi thời gian cố định hay đợi quái chết hết)
-            yield return new WaitForSeconds(timeBetweenWaves);
+            float waveDuration = GetLongestStepDuration(wave);
+            yield return new WaitForSeconds(waveDuration + timeBetweenWaves);
+            
+            waveCounter++; 
         }
     }
 
@@ -45,7 +51,6 @@ public class SpawnManager : MonoBehaviour {
     private void SpawnEnemy(EnemySpawnStep step) {
         if (spawnPoints.Length == 0 || step.enemyPrefab == null) return;
 
-        // Chọn vị trí
         Vector3 spawnPos;
         if (step.useRandomPoint) {
             spawnPos = spawnPoints[Random.Range(0, spawnPoints.Length)].position;
@@ -55,5 +60,15 @@ public class SpawnManager : MonoBehaviour {
         }
 
         GlobalPoolManager.Instance.Get(step.enemyPrefab, spawnPos);
+    }
+
+    // Hàm tính thời gian để MasterWaveRoutine biết khi nào Wave thực sự xong
+    private float GetLongestStepDuration(WaveData wave) {
+        float max = 0;
+        foreach (var step in wave.spawnSteps) {
+            float d = step.delayAfterLastStep + (step.count * step.interval);
+            if (d > max) max = d;
+        }
+        return max;
     }
 }

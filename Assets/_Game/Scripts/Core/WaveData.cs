@@ -10,11 +10,11 @@ public class EnemySpawnStep {
     [Header("--- Timing ---")]
     public float delayAfterLastStep = 0f; 
     public int count = 1;
-    public float interval = 0.5f; // Khoảng cách giữa các con trong CÙNG 1 đợt
+    public float interval = 0.5f; 
 
     [Header("--- Position ---")]
     public bool useRandomPoint = true;
-    public int specificPointIndex = 0; // Nếu tắt random, nó sẽ ra ở Spawn Point số này
+    public int specificPointIndex = 0; 
 }
 
 [CreateAssetMenu(fileName = "New Wave", menuName = "Combat/Wave Data")]
