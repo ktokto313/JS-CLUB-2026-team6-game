@@ -131,7 +131,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.005610347, y: 0.15502115}
+  m_Offset: {x: -0.005610347, y: 0.14289056}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -142,7 +142,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.14510462, y: 0.31275555}
+  m_Size: {x: 0.14510462, y: 0.28849438}
   m_EdgeRadius: 0
 --- !u!114 &2957850230083247015
 MonoBehaviour:
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider: {fileID: 8584449624399972687}
-  duckHeightRatio: 0.8
+  duckHeightRatio: 0.69
   spinSizeRatio: 0.72
   spinDuration: 0.4
 --- !u!114 &4029415490958023433
@@ -224,12 +224,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseDamage: 1
-  baseBoxSize: {x: 1.02, y: 3.07}
-  punchOffset: {x: 0.79, y: 1.52}
+  baseBoxSize: {x: 1.02, y: 2.85}
+  punchOffset: {x: 0.81, y: 1.43}
   airSpinBoxSize: {x: 3, y: 3}
   airSpinOffset: {x: 0, y: 1.5}
-  smashBoxSize: {x: 1.5, y: 1.5}
-  smashOffset: {x: 1.2, y: 0.75}
+  smashBoxSize: {x: 1.24, y: 0.89}
+  smashOffset: {x: 1.2, y: 0.43}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -275,8 +275,8 @@ Transform:
   m_GameObject: {fileID: 6467640713610120558}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.001, y: 0.005, z: 0}
-  m_LocalScale: {x: 0.44527274, y: 0.5017252, z: 1}
+  m_LocalPosition: {x: 0.002, y: 0.005, z: 0}
+  m_LocalScale: {x: 0.39914247, y: 0.45877752, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6971031991163159732}
