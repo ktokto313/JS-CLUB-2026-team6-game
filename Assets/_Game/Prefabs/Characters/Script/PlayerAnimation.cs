@@ -5,7 +5,7 @@ using System.Collections;
 public class PlayerAnimation : MonoBehaviour
 {
     [SerializeField] private Animator anim;
-
+    [SerializeField] private PlayerAttack playerAttack;
     private void Start()
     {
         if (PlayerController.Instance != null)
@@ -24,7 +24,7 @@ public class PlayerAnimation : MonoBehaviour
             PlayerController.Instance.OnPerformAirSpin += PlayAirSpin;
 
             // 3. NHÓM ATTACK (Phím A/D)
-            PlayerController.Instance.OnPerformAttack += PlayAttack;
+            playerAttack.OnComboAttackStep += PlayAttack;
             PlayerController.Instance.OnPerformUppercut += PlayUppercut;
             PlayerController.Instance.OnPerformAirAttack += PlayAirAttack; 
         }
@@ -60,7 +60,7 @@ public class PlayerAnimation : MonoBehaviour
             PlayerController.Instance.OnPerformAirSpin -= PlayAirSpin;
 
             // 3. NHÓM ATTACK
-            PlayerController.Instance.OnPerformAttack -= PlayAttack;
+            playerAttack.OnComboAttackStep -= PlayAttack;
             PlayerController.Instance.OnPerformUppercut -= PlayUppercut;
             PlayerController.Instance.OnPerformAirAttack -= PlayAirAttack; 
         }

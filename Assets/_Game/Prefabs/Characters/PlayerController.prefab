@@ -80,9 +80,9 @@ GameObject:
   - component: {fileID: 5793345459179436425}
   - component: {fileID: 4029415490958023433}
   - component: {fileID: 5553352419273494973}
-  - component: {fileID: 2507411066537511960}
-  - component: {fileID: 3605191927407111450}
-  - component: {fileID: 3914307805774744107}
+  - component: {fileID: 6427810105332819487}
+  - component: {fileID: 7270574841443775512}
+  - component: {fileID: 7615675806158742652}
   m_Layer: 7
   m_Name: PlayerController
   m_TagString: Player
@@ -226,10 +226,6 @@ MonoBehaviour:
     m_Bits: 8
   groundCheckRadius: 0.2
   groundCheck: {fileID: 2266856191104021108}
-  comboTimeout: 0.49
-  currentWeapon: {fileID: 0}
-  weaponHasBeenUsedMelee: 0
-  handSocket: {fileID: 0}
 --- !u!114 &5793345459179436425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,12 +259,17 @@ MonoBehaviour:
   punchOffset: {x: 0.81, y: 1.43}
   airSpinBoxSize: {x: 3, y: 3}
   airSpinOffset: {x: 0, y: 1.5}
-  smashBoxSize: {x: 1.24, y: 0.89}
-  smashOffset: {x: 1.2, y: 0.43}
+  smashBoxSize: {x: 1.54, y: 0.89}
+  smashOffset: {x: 0.78, y: 0.43}
+  comboTimeout: 0.8
+  currentWeapon: {fileID: 0}
+  weaponHasBeenUsedMelee: 0
+  handSocket: {fileID: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
   showHitboxTime: 0.1
+  dropForce: {x: 4, y: 6}
 --- !u!114 &5553352419273494973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,7 +283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 8
---- !u!114 &2507411066537511960
+--- !u!114 &6427810105332819487
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -308,11 +309,11 @@ MonoBehaviour:
   - {x: 0.06694196, y: -0.0013566324, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: 34284
+  m_InstanceId: 29174
   m_LocalBounds:
     m_Center: {x: -0.005610347, y: 0.14289056, z: 0}
     m_Extent: {x: 0.07255231, y: 0.14424719, z: 0}
---- !u!108 &3605191927407111450
+--- !u!108 &7270574841443775512
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -374,7 +375,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &3914307805774744107
+--- !u!114 &7615675806158742652
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -517,6 +518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 4499989749593172168}
+  playerAttack: {fileID: 4029415490958023433}
   sr: {fileID: 8824820897144908186}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   blinkDuration: 0.15

@@ -68,24 +68,33 @@ public class JumpingHugger : EnemyBase {
         if (anim) anim.SetTrigger("jump"); 
     }
 
-    void TryCatchPlayer() {
+   void TryCatchPlayer() 
+    {
         Collider2D hit = Physics2D.OverlapCircle(transform.position, hugRadius, LayerMask.GetMask("Player"));
-        if (hit) {
-            StartCoroutine(HugRoutine());
+        if (hit) 
+        {
+            PlayerController pc = hit.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.OnGetHuggedByDog(1.0f); 
+                
+                StartCoroutine(HugRoutine(pc));
+            }
         }
     }
 
-    IEnumerator HugRoutine() {
+    IEnumerator HugRoutine(PlayerController pc) 
+    {
         isHugging = true; canHug = false;
         rb.velocity = Vector2.zero;
         rb.isKinematic = true; 
         GetComponent<Collider2D>().enabled = false;
         
-        // Khi ôm cũng coi như không còn "đang nhảy" tự do
-       
         if (anim) anim.SetTrigger("hug");
         if (anim) anim.SetBool("inAir", false);
-        yield return new WaitForSeconds(2f);
+        
+        yield return new WaitForSeconds(1.0f); 
+        
         if (anim) anim.SetBool("inAir", true);
         Detach();
     }

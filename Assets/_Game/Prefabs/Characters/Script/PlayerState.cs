@@ -6,6 +6,7 @@
         DUCKING,
         AIRBORNE,
         SMASHING,
-        DEATH
+        DEATH,
+        STUNNED
     }
 }

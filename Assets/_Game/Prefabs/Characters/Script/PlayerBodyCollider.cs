@@ -93,7 +93,7 @@ public class PlayerBodyCollider : MonoBehaviour
     }
     
     // Hàm phụ để khớp với Action<int> của OnPerformAttack
-    private void SetColliderStandingWithCombo(int comboStep)
+    private void SetColliderStandingWithCombo()
     {
         // Ta không quan tâm comboStep là mấy, chỉ cần biết nó đang đứng đánh
         SetColliderStanding();

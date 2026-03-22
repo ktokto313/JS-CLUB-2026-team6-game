@@ -1,52 +1,45 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using _Game.Prefabs.Characters.Script;
-using _Game.Scripts.Core;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.XR;
+using _Game.Scripts.Core;
+using _Game.Prefabs.Characters.Script;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
+    [Header("References")]
     [SerializeField] private PlayerMovement movement;
-
     [SerializeField] private PlayerHealth health;
 
-    // Check Ground
+    [Header("Check Ground")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private Transform groundCheck;
 
-    // Nhom S
+    // --- EVENTS ---
     public event Action OnPerformLowAttack;
     public event Action OnPerformSmash;
-
-    // Nhom W
     public event Action OnPerformJumpAttack;
     public event Action OnPerformRisingAttack;
     public event Action OnPerformAirSpin;
-
-    // Nhom A D
-    public event Action<int> OnPerformAttack; 
+    public event Action OnPerformAttack; 
     public event Action OnPerformUppercut;
     public event Action OnPerformAirAttack;
 
-    // Weapon Action
-    public event Action<bool> OnWeaponEquipped;
+    private PlayerState _state = PlayerState.STANDING;
+    public PlayerState state 
+    { 
+        get => _state; 
+        private set 
+        {
+            if (_state == PlayerState.DEATH && value != PlayerState.DEATH) return;
+            _state = value;
+        }
+    }
 
-
-    public PlayerState state { get; private set; } = PlayerState.STANDING;
-
-    [Header("Combo Settings")] [SerializeField]
-    private float comboTimeout = 0.8f;
-
-    private int comboStep = 0;
-    private float lastAttackTime = 0f;
-
-    [Header("Air Action Flags")] private bool hasUsedAirSpin = false;
+    [Header("Air Action Flags")] 
+    private bool hasUsedAirSpin = false;
     private bool hasDefeatedAirAttack = false;
 
     private void Awake()
@@ -56,11 +49,10 @@ public class PlayerController : MonoBehaviour
             Destroy(this.gameObject);
             return;
         }
-
         Instance = this;
     }
 
-    protected void Start()
+    private void OnEnable()
     {
         if (GameInput.Instance != null)
         {
@@ -71,21 +63,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleAttackLeft()
-    {
-        if (state == PlayerState.DEATH) return;
-        movement.SetFacing(Facing.LEFT);
-        HandleAttack();
-    }
-
-    private void HandleAttackRight()
-    {
-        if (state == PlayerState.DEATH) return;
-        movement.SetFacing(Facing.RIGHT);
-        HandleAttack();
-    }
-
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (GameInput.Instance != null)
         {
@@ -96,34 +74,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        UpdatePhysicsGrounded();
-    }
+    private void FixedUpdate() => UpdatePhysicsGrounded();
 
     private void UpdatePhysicsGrounded()
     {
         if (state == PlayerState.DEATH) return;
 
-        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
 
         if (isGrounded)
         {
             if (state == PlayerState.AIRBORNE || state == PlayerState.SMASHING)
             {
                 state = PlayerState.STANDING;
-
                 ResetAirActions();
             }
         }
-        else
+        else if (state == PlayerState.STANDING || state == PlayerState.DUCKING)
         {
-            if (state == PlayerState.STANDING || state == PlayerState.DUCKING)
-            {
-                state = PlayerState.AIRBORNE;
-
-                ResetAirActions();
-            }
+            state = PlayerState.AIRBORNE;
+            ResetAirActions();
         }
     }
 
@@ -133,67 +103,73 @@ public class PlayerController : MonoBehaviour
         hasDefeatedAirAttack = false;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
-    }
-
     public void TakeDamage(int damage = 1)
     {
         if (state == PlayerState.DEATH) return;
 
-        if (health != null)
+        if (health != null && health.TakeHit(damage))
         {
-            bool tookDamage = health.TakeHit(damage);
-
-            if (tookDamage)
+            if (health.IsDead)
             {
-                if (health.IsDead)
-                {
-                    state = PlayerState.DEATH;
-                    EventManager.current?.onPlayerDead();
-                }
-                else
-                {
-                    EventManager.current?.onPlayerHit(transform.position);
-                }
+                state = PlayerState.DEATH;
+                EventManager.current?.onPlayerDead();
+            }
+            else
+            {
+                EventManager.current?.onPlayerHit(transform.position);
             }
         }
     }
 
-    // Xu ly Action:
+    // Giao tiếp với con chó (JumpingHugger)
+    public void OnGetHuggedByDog(float stunDuration)
+    {
+        if (state == PlayerState.DEATH) return; 
+
+        state = PlayerState.STUNNED;
+        if (TryGetComponent(out Rigidbody2D rb)) rb.velocity = Vector2.zero;
+
+        // Ra lệnh cho PlayerAttack vứt vũ khí
+        if (TryGetComponent(out PlayerAttack attackScript))
+        {
+            attackScript.DropWeapon();
+        }
+
+        StartCoroutine(StunRoutine(stunDuration));
+    }
+
+    private IEnumerator StunRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (state != PlayerState.DEATH) state = PlayerState.STANDING;
+    }
+
+    // --- XỬ LÝ ACTION TỪ INPUT ---
+    private void HandleAttackLeft()
+    {
+        if (state == PlayerState.DEATH || state == PlayerState.STUNNED) return;
+        movement.SetFacing(Facing.LEFT);
+        HandleAttack();
+    }
+
+    private void HandleAttackRight()
+    {
+        if (state == PlayerState.DEATH || state == PlayerState.STUNNED) return;
+        movement.SetFacing(Facing.RIGHT);
+        HandleAttack();
+    }
+
     private void HandleAttack()
     {
-        if (state == PlayerState.DEATH) return;
-
         switch (state)
         {
             case PlayerState.STANDING:
-                if (Time.time - lastAttackTime > comboTimeout)
-                {
-                    comboStep = 0;
-                }
-
-                comboStep++;
-                if (comboStep > 4) comboStep = 1;
-
-                lastAttackTime = Time.time;
-
-                OnPerformAttack?.Invoke(comboStep);
+                OnPerformAttack?.Invoke(); // Chỉ phát lệnh, PlayerAttack sẽ tự đếm combo
                 break;
-
             case PlayerState.DUCKING:
                 state = PlayerState.STANDING;
                 OnPerformUppercut?.Invoke();
                 break;
-
-            case PlayerState.SMASHING:
-                break;
-
             case PlayerState.AIRBORNE:
                 if (!hasDefeatedAirAttack)
                 {
@@ -206,7 +182,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (state == PlayerState.DEATH) return;
+        if (state == PlayerState.DEATH || state == PlayerState.SMASHING || state == PlayerState.STUNNED) return;
 
         switch (state)
         {
@@ -214,45 +190,31 @@ public class PlayerController : MonoBehaviour
                 state = PlayerState.AIRBORNE;
                 OnPerformJumpAttack?.Invoke();
                 break;
-
             case PlayerState.DUCKING:
                 state = PlayerState.AIRBORNE; 
                 OnPerformRisingAttack?.Invoke();
                 break;
-
-
-            case PlayerState.SMASHING:
-                break;
-
             case PlayerState.AIRBORNE:
                 if (!hasUsedAirSpin)
                 {
                     hasUsedAirSpin = true; 
                     OnPerformAirSpin?.Invoke();
                 }
-
                 break;
         }
     }
 
     private void HandleDuck()
     {
-        if (state == PlayerState.DEATH) return;
+        if (state == PlayerState.DEATH || state == PlayerState.SMASHING || state == PlayerState.STUNNED) return;
 
         switch (state)
         {
             case PlayerState.STANDING:
+            case PlayerState.DUCKING: 
                 state = PlayerState.DUCKING;
                 OnPerformLowAttack?.Invoke();
                 break;
-
-            case PlayerState.DUCKING:
-                OnPerformLowAttack?.Invoke();
-                break;
-
-            case PlayerState.SMASHING:
-                break;
-
             case PlayerState.AIRBORNE:
                 state = PlayerState.SMASHING;
                 OnPerformSmash?.Invoke();
@@ -260,98 +222,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    [Header("Weapon System")] 
-    public WeaponTBScript currentWeapon;
-    public bool weaponHasBeenUsedMelee = false;
-    [SerializeField] private Transform handSocket;
-    private GameObject currentWeaponObject;
-
-    public void EquipWeapon(WeaponTBScript newWeapon, GameObject weaponObject = null)
+    private void OnDrawGizmos()
     {
-        // 1. Trả vũ khí trên tay về Pool trước khi nhận cái mới
-        if (currentWeaponObject != null)
+        if (groundCheck != null)
         {
-            currentWeaponObject.transform.SetParent(null);
-            
-            var rbObj = currentWeaponObject.GetComponent<Rigidbody2D>();
-            if (rbObj != null) rbObj.simulated = true;
-            
-            var colObj = currentWeaponObject.GetComponent<Collider2D>();
-            if (colObj != null) colObj.enabled = true;
-
-            var flyObj = currentWeaponObject.GetComponent<FlyObject>();
-            if (flyObj != null) flyObj.enabled = true;
-
-            if (GlobalPoolManager.Instance != null)
-                GlobalPoolManager.Instance.Return(currentWeaponObject);
-            else
-                Destroy(currentWeaponObject);
-                
-            currentWeaponObject = null;
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
-
-        if (newWeapon == null) 
-        {
-            currentWeapon = null;
-            weaponHasBeenUsedMelee = false;
-            OnWeaponEquipped?.Invoke(false);
-            return;
-        }
-
-        currentWeapon = newWeapon;
-        weaponHasBeenUsedMelee = false;
-        
-        // 2. Gắn Vũ Khí Thật vào tay
-        if (weaponObject != null && handSocket != null)
-        {
-            currentWeaponObject = weaponObject;
-            currentWeaponObject.transform.SetParent(handSocket);
-            currentWeaponObject.transform.localPosition = Vector3.zero;
-            currentWeaponObject.transform.localRotation = Quaternion.identity;
-            
-            // Tắt vật lý để nó nằm im trên tay
-            var rb = currentWeaponObject.GetComponent<Rigidbody2D>();
-            if (rb != null) rb.simulated = false; 
-            
-            var col = currentWeaponObject.GetComponent<Collider2D>();
-            if (col != null) col.enabled = false;
-            
-            var fly = currentWeaponObject.GetComponent<FlyObject>();
-            if (fly != null) fly.enabled = false;
-        }
-        else if (newWeapon != null)
-        {
-            // 3. Fallback: Sinh ra vũ khí thật nếu Equip thẳng từ Code (ví dụ đầu game)
-            if (handSocket != null && newWeapon.projectilePrefab != null)
-            {
-                if (GlobalPoolManager.Instance != null)
-                {
-                    currentWeaponObject = GlobalPoolManager.Instance.Get(newWeapon.projectilePrefab, handSocket.position);
-                }
-                else
-                {
-                    currentWeaponObject = Instantiate(newWeapon.projectilePrefab, handSocket.position, Quaternion.identity);
-                }
-
-                currentWeaponObject.transform.SetParent(handSocket);
-                currentWeaponObject.transform.localPosition = Vector3.zero;
-                currentWeaponObject.transform.localRotation = Quaternion.identity;
-
-                var rb = currentWeaponObject.GetComponent<Rigidbody2D>();
-                if (rb != null) rb.simulated = false; 
-                var col = currentWeaponObject.GetComponent<Collider2D>();
-                if (col != null) col.enabled = false;
-                var fly = currentWeaponObject.GetComponent<FlyObject>();
-                if (fly != null) fly.enabled = false;
-            }
-            else
-            {
-                Debug.LogWarning("Không thể khởi tạo vũ khí! Thiếu Hand Socket hoặc Prefab rỗng.");
-            }
-        }
-        
-        OnWeaponEquipped?.Invoke(true);
-            
-        Debug.Log("Player đã trang bị: " + newWeapon.weaponName);
     }
 }
