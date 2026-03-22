@@ -71,11 +71,13 @@ public class PlayerAnimation : MonoBehaviour
     {
         anim.SetBool("IsDead", true);
     }
-    
+    private int lowKickStep = 1;
+
     // 1. NHÓM DUCK (Phím S)
     private void PlayLowAttack()
     {
-        anim.SetTrigger("LowAttack");
+        anim.SetTrigger("LowAttack" + lowKickStep);
+        lowKickStep = lowKickStep == 1 ? 2 : 1;
     }
 
     private void PlaySmash()

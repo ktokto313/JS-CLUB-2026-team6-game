@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider: {fileID: 8584449624399972687}
-  duckHeightRatio: 0.7
+  duckHeightRatio: 0.8
   spinSizeRatio: 0.72
   spinDuration: 0.4
 --- !u!114 &4029415490958023433
