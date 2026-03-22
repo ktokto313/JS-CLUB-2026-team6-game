@@ -10,7 +10,7 @@ public class PlayerAnimation : MonoBehaviour
         if (PlayerController.Instance != null)
         {
             // 0. HIT EFFECT VÀ DEATH
-            EventManager.current.onHitAction += PlayHitBlink;
+            EventManager.current.onPlayerHitAction += PlayHitBlink;
             EventManager.current.onPlayerDeadAction += PlayDeath;
 
             // 1. NHÓM DUCK (Phím S)
