@@ -10,17 +10,36 @@ public class FlyObject : MonoBehaviour
     private bool hasPassedPlayer = false;
     private bool isPlayerOwned = false; 
     private bool isReturning = false;
+    [Header("Visual Ring Settings")]
+    private LineRenderer lineRenderer;
+    [SerializeField] private float ringRadius = 0.1f;
+    [SerializeField] private int segments = 6; 
+    [SerializeField] private float dashSize = 0.2f; 
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        SetupLineRenderer();
     }
-    
-    private void OnEnable()
+    private void SetupLineRenderer()
     {
-        isReturning = false; 
+        lineRenderer = gameObject.GetComponent<LineRenderer>();
+        if (lineRenderer == null) lineRenderer = gameObject.AddComponent<LineRenderer>();
+        
+        lineRenderer.useWorldSpace = false; 
+        lineRenderer.startWidth = 0.05f;
+        lineRenderer.endWidth = 0.05f;
+        lineRenderer.positionCount = segments + 1;
+        
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+    }
+private void OnEnable()
+    {
+        isReturning = false;
         hasPassedPlayer = false;
         isPlayerOwned = false;
         gameObject.tag = "FlyObject";
+        UpdateRingVisual(); 
         CancelInvoke();
     }
 
@@ -58,12 +77,7 @@ public class FlyObject : MonoBehaviour
     {
         CancelInvoke();
         transform.SetParent(null); 
-    
-        if (rb != null) {
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0;
-        }
-
+        if (rb != null) { rb.velocity = Vector2.zero; rb.angularVelocity = 0; }
         GlobalPoolManager.Instance.Return(gameObject);
     }
     
@@ -76,6 +90,7 @@ public class FlyObject : MonoBehaviour
         {
             hasPassedPlayer = true;
             gameObject.tag = "DroppedWeapon"; 
+            UpdateRingVisual(); 
         }
     }
     
@@ -84,8 +99,8 @@ public class FlyObject : MonoBehaviour
         CancelInvoke(); 
         isPlayerOwned = true;
         gameObject.tag = "FlyObject";
+        UpdateRingVisual(); 
         rb.velocity = newDir * (_weaponTbScriptData.flySpeed * 1.5f); 
-        
         Invoke("ReturnToPool", _weaponTbScriptData.lifeTime);
     }
 
@@ -138,5 +153,41 @@ public class FlyObject : MonoBehaviour
             _weaponTbScriptData.currentPrefab = _specificPrefab;
         }
         return _weaponTbScriptData;
+    }
+    
+    private void UpdateRingVisual()
+    {
+        if (lineRenderer == null) return;
+
+        Color ringColor;
+        if (gameObject.CompareTag("FlyObject"))
+        {
+            ringColor = new Color(1f, 0f, 0f, 0.4f);
+        }
+        else 
+        {
+            ringColor = new Color(0f, 1f, 0f, 0.8f);
+        }
+
+        lineRenderer.startColor = ringColor;
+        lineRenderer.endColor = ringColor;
+
+        DrawDashedCircle();
+    }
+
+    private void DrawDashedCircle()
+    {
+        float deltaTheta = (2f * Mathf.PI) / segments;
+        float theta = 0f;
+
+        for (int i = 0; i < segments + 1; i++)
+        {
+            float x = ringRadius * Mathf.Cos(theta);
+            float y = ringRadius * Mathf.Sin(theta);
+            
+            lineRenderer.SetPosition(i, new Vector3(x, y, 0));
+            theta += deltaTheta;
+        }
+        lineRenderer.textureMode = LineTextureMode.RepeatPerSegment;
     }
 }

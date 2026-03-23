@@ -60,6 +60,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161fa032a9cf7424295dc6fc591ad184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ringRadius: 0.1
+  segments: 12
+  dashSize: 0.1
 --- !u!212 &-2062912676781404984
 SpriteRenderer:
   m_ObjectHideFlags: 0

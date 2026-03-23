@@ -120,36 +120,31 @@ public class PlayerAttack : MonoBehaviour
     }
 
     // --- LOGIC NÉM VŨ KHÍ (CÁCH A) ---
-    private void ThrowEquippedWeapon(float direction)
+private void ThrowEquippedWeapon(float direction)
     {   
-        if (currentWeapon == null) 
+        if (currentWeapon == null) return;
+        
+        if (currentWeapon.currentPrefab == null)
         {
-            Debug.LogError("<color=red>Không thể ném: currentWeapon đang NULL.</color>");
-            return;
-        }
-        if (currentWeapon.projectilePrefab == null)
-        {
-            Debug.LogError($"<color=red>Không thể ném: {currentWeapon.name} chưa gắn Projectile Prefab!</color>");
+            Debug.LogError($"<color=red>Lỗi: {currentWeapon.name} không có prefab để ném!</color>");
             return;
         }
 
-        // 1. SINH RA ĐẠN MỚI ĐỂ NÉM
-        Vector3 spawnPos = transform.position + new Vector3(direction * 0.5f, punchOffset.y, 0f);
-        GameObject go = GlobalPoolManager.Instance.Get(currentWeapon.projectilePrefab, spawnPos);
+        Vector3 spawnPos = transform.position + new Vector3(direction * 1.2f, punchOffset.y, 0f);
+        GameObject go = GlobalPoolManager.Instance.Get(currentWeapon.currentPrefab, spawnPos);
         
         if (go.TryGetComponent(out FlyObject fly)) 
         {
+            if (go.TryGetComponent(out Rigidbody2D rb)) rb.velocity = Vector2.zero;
+
             fly.Launch(currentWeapon, new Vector2(direction, 0.1f), currentWeapon.flySpeed, transform, true);
         }
         
-        // 2. XÓA VẬT THẾ THÂN TRÊN TAY & Báo Animator về tay không
         EquipWeapon(null);
     }
 
-    // --- LOGIC BẮT VŨ KHÍ VÀO TAY (CÁCH A) ---
     public void EquipWeapon(WeaponTBScript newWeapon, GameObject weaponObject = null)
     {
-        // 1. Dọn dẹp tay: Gỡ vật thể cũ, bật lại vật lý và trả về Pool
         if (currentWeaponObject != null)
         {
             currentWeaponObject.transform.SetParent(null);
@@ -163,30 +158,24 @@ public class PlayerAttack : MonoBehaviour
             currentWeaponObject = null;
         }
 
-        // 2. Nếu lệnh là TAY KHÔNG
         if (newWeapon == null) 
         {
             currentWeapon = null;
-            OnWeaponEquipped?.Invoke(false); // BÁO ANIMATOR
+            OnWeaponEquipped?.Invoke(false);
             return;
         }
 
-        // 3. Nếu lệnh là CÓ VŨ KHÍ
         currentWeapon = newWeapon;
         
-        // Xác định Object sẽ gắn vào tay (Từ dưới đất nhặt lên HOẶC sinh mới)
-        if (weaponObject != null && handSocket != null)
+        if (weaponObject != null)
         {
             currentWeaponObject = weaponObject;
         }
-        else if (newWeapon.projectilePrefab != null && handSocket != null)
+        else if (currentWeapon.currentPrefab != null)
         {
-            currentWeaponObject = (GlobalPoolManager.Instance != null) 
-                ? GlobalPoolManager.Instance.Get(newWeapon.projectilePrefab, handSocket.position) 
-                : Instantiate(newWeapon.projectilePrefab, handSocket.position, Quaternion.identity);
+            currentWeaponObject = GlobalPoolManager.Instance.Get(currentWeapon.currentPrefab, handSocket.position);
         }
 
-        // Gắn Object lên tay và Tắt vật lý (Visual Cheat)
         if (currentWeaponObject != null && handSocket != null)
         {
             currentWeaponObject.transform.SetParent(handSocket);
@@ -196,7 +185,6 @@ public class PlayerAttack : MonoBehaviour
             SetWeaponPhysics(currentWeaponObject, false); 
         }
         
-        // BÁO ANIMATOR
         OnWeaponEquipped?.Invoke(true);
     }
 

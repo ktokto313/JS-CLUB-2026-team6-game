@@ -3,6 +3,8 @@ using System.Collections;
 using _Game.Scripts.Core;
 
 public class EnemyBase : Entity {
+    [SerializeField] protected HealthBar healthBar;
+    protected int maxHealth;
     [Header("Current Instance Weapon Data")]
     protected Sprite selectedVisual;      
     protected GameObject selectedPrefab;
@@ -57,28 +59,29 @@ public class EnemyBase : Entity {
                 if (visualAxe != null) {
                     visualAxe.SetActive(true);
                     SpriteRenderer sr = visualAxe.GetComponent<SpriteRenderer>();
-                    
-                    if (sr != null) {
-                        sr.sprite = selectedVisual; 
+                    if (sr != null)
+                    {
+                        sr.sprite = selectedVisual;
                         sr.enabled = true;
-                        Debug.Log($"<color=cyan>DA GAN ANH: {selectedVisual.name} VAO {visualAxe.name}</color>");
-                    } else {
-                        Debug.Log("KHÔNG TÌM THẤY SpriteRenderer trên object visualAxe!");
                     }
                 } 
             }
         } 
-        
         if (data != null) {
             int wave = SpawnManager.Instance != null ? SpawnManager.Instance.currentWaveIndex : 1;
             float scaleFactor = 1f + (data.healthMultiplierPerWave * (wave - 1));
-            Health = Mathf.RoundToInt(data.baseHealth * scaleFactor);
+            maxHealth = Mathf.RoundToInt(data.baseHealth * scaleFactor);
+            Health = maxHealth;
             moveSpeed = data.baseMoveSpeed * (1f + (data.speedMultiplierPerWave * (wave - 1)));
         
             Debug.Log($"<color=yellow>{gameObject.name} Spawned at Wave {wave} | HP: {Health} | Speed: {moveSpeed}</color>");
         } else {
             Health = 5;
             moveSpeed = 3f;
+        }
+        if (healthBar != null) {
+            healthBar.gameObject.SetActive(true);
+            healthBar.UpdateHealth(Health, maxHealth);
         }
     }
 
@@ -94,6 +97,9 @@ public class EnemyBase : Entity {
     
     public virtual void GetHit(int damage, int hitType) {
         Health -= damage;
+        if (healthBar != null) {
+            healthBar.UpdateHealth(Health, maxHealth);
+        }
         isPerformingAction = false;
         if (anim != null) {
             anim.SetTrigger("gethit");
@@ -102,6 +108,7 @@ public class EnemyBase : Entity {
         }
 
         if (Health <= 0) {
+            if (healthBar != null) healthBar.gameObject.SetActive(false);
             if (anim != null) anim.SetTrigger("death");
             CheckAndDropWeapon();
             onDeath(); 

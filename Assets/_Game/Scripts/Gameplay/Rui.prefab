@@ -75,6 +75,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161fa032a9cf7424295dc6fc591ad184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ringRadius: 0.1
+  segments: 12
+  dashSize: 0.1
 --- !u!114 &4607723101647154117
 MonoBehaviour:
   m_ObjectHideFlags: 0
