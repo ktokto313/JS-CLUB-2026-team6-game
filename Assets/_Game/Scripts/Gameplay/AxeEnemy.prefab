@@ -53,7 +53,7 @@ MonoBehaviour:
   CurrentWeaponTbScript: {fileID: 11400000, guid: 73d43e5bd8a079e44be65ddfd8216e7d, type: 2}
   visualAxe: {fileID: 3314233954150932537, guid: d0cee1403e57ef04d9ca6a7b4266a704, type: 3}
   throwDistance: 7
-  flySpeed: 3
+  flySpeed: 3.65
 --- !u!61 &6289470525403755959
 BoxCollider2D:
   m_ObjectHideFlags: 0

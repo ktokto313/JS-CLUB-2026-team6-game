@@ -51,7 +51,7 @@ public class DroppedWeapon : MonoBehaviour
     {
         // Lưu data ra biến tạm trước khi Return để tránh bị null khi gán cho Player
         WeaponTBScript tempData = _weaponTbScriptData;
-        GlobalPoolManager.Instance.Return(gameObject);
+        // GlobalPoolManager.Instance.Return(gameObject);
         return tempData;
     }
 

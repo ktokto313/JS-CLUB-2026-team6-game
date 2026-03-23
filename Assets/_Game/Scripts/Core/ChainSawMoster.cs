@@ -108,7 +108,6 @@ public class ChargerEnemy : EnemyBase {
         if (hit != null) {
             hasHitPlayerInThisDash = true;
             PlayerController.Instance.TakeDamage();
-            EventManager.current.onPlayerHit(checkPos);
         }
     }
     public override void GetHit(int damage, int hitType) {
