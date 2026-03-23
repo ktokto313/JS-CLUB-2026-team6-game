@@ -68,7 +68,7 @@ namespace _Game.Scripts.Core
 
         private void HandleDead()
         {
-            sfxSource.volume = oneShotSfxVolume * 0.1f;
+            sfxSource.volume = oneShotSfxVolume * 0.005f;
             PlayOneShot(deadClip);
             sfxSource.volume = oneShotSfxVolume;
         }
@@ -107,9 +107,7 @@ namespace _Game.Scripts.Core
         private void PlayOneShot(AudioClip clip)
         {
             if (!clip|| !sfxSource) return;
-            musicSource.volume = musicVolume * 0.5f;
             sfxSource.PlayOneShot(clip, oneShotSfxVolume);
-            musicSource.volume = musicVolume;
         }
 
         private void PlayMusic()
