@@ -141,7 +141,6 @@ public class RocketRider : EnemyBase
         if (!playerDamaged && player != null) {
             if (Vector2.Distance(impactPos, player.position) <= explosionRadius) {
                 PlayerController.Instance.TakeDamage();
-                EventManager.current.onPlayerHit(impactPos);
             }
         }
 

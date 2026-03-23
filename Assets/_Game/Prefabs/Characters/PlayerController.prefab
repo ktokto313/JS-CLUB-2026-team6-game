@@ -63,6 +63,37 @@ Transform:
   - {fileID: 4436683838961322879}
   m_Father: {fileID: 6971031991163159732}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3684954097516225225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3530465847355774251}
+  m_Layer: 7
+  m_Name: HandSocket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3530465847355774251
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3684954097516225225}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.144, y: 0.221, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4436683838961322879}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4142161456922311038
 GameObject:
   m_ObjectHideFlags: 0
@@ -80,9 +111,9 @@ GameObject:
   - component: {fileID: 5793345459179436425}
   - component: {fileID: 4029415490958023433}
   - component: {fileID: 5553352419273494973}
-  - component: {fileID: 6427810105332819487}
-  - component: {fileID: 7270574841443775512}
-  - component: {fileID: 7615675806158742652}
+  - component: {fileID: 8218617798664087174}
+  - component: {fileID: 4184106200024782132}
+  - component: {fileID: 3159558358179472701}
   m_Layer: 7
   m_Name: PlayerController
   m_TagString: Player
@@ -204,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5124d8f981078f42bb403f7407d4b61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpAttackForce: 18.3
+  jumpAttackForce: 20.1
   rb: {fileID: 718575305729760486}
   airSpinUpwardForce: 12
 --- !u!114 &4579215552543128142
@@ -263,8 +294,9 @@ MonoBehaviour:
   smashOffset: {x: 0.78, y: 0.43}
   comboTimeout: 0.8
   currentWeapon: {fileID: 0}
-  weaponHasBeenUsedMelee: 0
-  handSocket: {fileID: 0}
+  handSocket: {fileID: 3530465847355774251}
+  throwDelay: 0.05
+  recoverDelay: 0.1
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -283,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 8
---- !u!114 &6427810105332819487
+--- !u!114 &8218617798664087174
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -309,11 +341,11 @@ MonoBehaviour:
   - {x: 0.06694196, y: -0.0013566324, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: 29174
+  m_InstanceId: 28846
   m_LocalBounds:
     m_Center: {x: -0.005610347, y: 0.14289056, z: 0}
     m_Extent: {x: 0.07255231, y: 0.14424719, z: 0}
---- !u!108 &7270574841443775512
+--- !u!108 &4184106200024782132
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -375,7 +407,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &7615675806158742652
+--- !u!114 &3159558358179472701
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -429,7 +461,8 @@ Transform:
   m_LocalPosition: {x: 0.004, y: -0.139, z: 0}
   m_LocalScale: {x: 0.39914247, y: 0.45877752, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3530465847355774251}
   m_Father: {fileID: 7303596078562292797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &4499989749593172168

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: 
   baseHealth: 5
-  baseMoveSpeed: 3
+  baseMoveSpeed: 0.5
   baseDamage: 1
   healthMultiplierPerWave: 0.2
   speedMultiplierPerWave: 0.05

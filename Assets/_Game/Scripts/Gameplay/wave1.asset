@@ -15,7 +15,7 @@ MonoBehaviour:
   waveName: wave1
   spawnSteps:
   - label: "2 b\xEAn"
-    enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
+    enemyPrefab: {fileID: 2083373894443671076, guid: 1fa0c4967cf48664f84c814baceec6e0, type: 3}
     delayAfterLastStep: 0
     count: 2
     interval: 1.5

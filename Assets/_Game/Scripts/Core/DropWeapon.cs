@@ -51,7 +51,7 @@ public void Init(WeaponTBScript data, Transform player, GameObject specificPrefa
             _weaponTbScriptData.currentPrefab = _specificPrefab;
         }
         WeaponTBScript tempData = _weaponTbScriptData;
-        GlobalPoolManager.Instance.Return(gameObject);
+        // GlobalPoolManager.Instance.Return(gameObject);
         return tempData;
     }
 
