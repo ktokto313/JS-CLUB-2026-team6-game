@@ -29,6 +29,7 @@ namespace _Game.Scripts.Core
         {
             
             musicSource.volume = musicVolume;
+            musicSource.loop = true;
             sfxSource.volume = musicVolume;
             PlayMusic();
             
