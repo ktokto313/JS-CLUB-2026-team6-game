@@ -78,7 +78,19 @@ public class PlayerAnimation : MonoBehaviour
     // --- HÀM DUY NHẤT ĐIỀU KHIỂN DÁNG CẦM VŨ KHÍ ---
     private void SetArmedState(bool isArmed)
     {
-        if (anim != null) anim.SetBool("IsArmed", isArmed);
+        if (anim != null)
+        {
+            anim.ResetTrigger("LowAttack1");
+            anim.ResetTrigger("LowAttack2");
+            anim.ResetTrigger("Attack1");
+            anim.ResetTrigger("Attack2");
+            anim.ResetTrigger("Attack3");
+            anim.ResetTrigger("Attack4");
+            anim.ResetTrigger("JumpAttack");
+            anim.ResetTrigger("AirAttack");
+            
+            anim.SetBool("IsArmed", isArmed);
+        }
     }
 
     // --- CÁC HÀM XỬ LÝ VISUAL VÀ ANIMATION TRIGGER GIỮ NGUYÊN ---

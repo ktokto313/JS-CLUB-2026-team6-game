@@ -88,7 +88,7 @@ Transform:
   m_GameObject: {fileID: 3684954097516225225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.144, y: 0.221, z: 0}
+  m_LocalPosition: {x: -0.151, y: 0.219, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -111,9 +111,9 @@ GameObject:
   - component: {fileID: 5793345459179436425}
   - component: {fileID: 4029415490958023433}
   - component: {fileID: 5553352419273494973}
-  - component: {fileID: 8218617798664087174}
-  - component: {fileID: 4184106200024782132}
-  - component: {fileID: 3159558358179472701}
+  - component: {fileID: 49281828833000714}
+  - component: {fileID: 5768265771115729550}
+  - component: {fileID: 4151954095921733332}
   m_Layer: 7
   m_Name: PlayerController
   m_TagString: Player
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 8
---- !u!114 &8218617798664087174
+--- !u!114 &49281828833000714
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,11 +341,11 @@ MonoBehaviour:
   - {x: 0.06694196, y: -0.0013566324, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: 28846
+  m_InstanceId: 28870
   m_LocalBounds:
     m_Center: {x: -0.005610347, y: 0.14289056, z: 0}
     m_Extent: {x: 0.07255231, y: 0.14424719, z: 0}
---- !u!108 &4184106200024782132
+--- !u!108 &5768265771115729550
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -407,7 +407,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &3159558358179472701
+--- !u!114 &4151954095921733332
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
