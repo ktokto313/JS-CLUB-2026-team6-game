@@ -1696,8 +1696,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41268a368a07ff6468eb18ae32d144c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSlider: {fileID: 5854220865053731799}
-  sfxSlider: {fileID: 7588487234044605515}
+  musicSlider: {fileID: 8532223768300387014}
+  sfxSlider: {fileID: 7239295156687451839}
+  musicSource: {fileID: 0}
+  sfxSource: {fileID: 0}
 --- !u!1 &9057714915111761802
 GameObject:
   m_ObjectHideFlags: 0
