@@ -24,8 +24,6 @@ public class JumpingHugger : EnemyBase {
         rb.isKinematic = false; 
         rb.gravityScale = 0.5f; 
         GetComponent<Collider2D>().enabled = true;
-        
-        // Reset trạng thái animation khi spawn/respawn
         if (anim) anim.SetBool("inAir", false);
         
         nextJumpTime = Time.time + landRestTime;
@@ -103,9 +101,6 @@ public class JumpingHugger : EnemyBase {
         isHugging = false;
         rb.isKinematic = false;
         GetComponent<Collider2D>().enabled = true;
-        
-        // Văng ra sau khi ôm xong (tạm thời coi như inAir lại để rơi xuống)
-        
         rb.velocity = new Vector2(-currentDir * 4f, 6f);
         
         StartCoroutine(Cooldown());
@@ -119,34 +114,21 @@ public class JumpingHugger : EnemyBase {
 
     public override void GetHit(int damage, int hitType) {
         if (isHugging) Detach(); 
-
-        // RESET MỌI TRIGGER KHI BỊ TRÚNG ĐÒN
-        ResetAllAnimationTriggers();
-        
+        anim.ResetTrigger("jump");
+        anim.ResetTrigger("hug");
+        anim.ResetTrigger("land");
         base.GetHit(damage, hitType);
         
         nextJumpTime = Time.time + landRestTime; 
     }
 
-    private void ResetAllAnimationTriggers() {
-        if (anim == null) return;
-        
-        // Reset thủ công các trigger quan trọng
-        anim.ResetTrigger("jump");
-        anim.ResetTrigger("hug");
-        anim.ResetTrigger("land");
-        // Bạn có thể dùng foreach qua anim.parameters nếu có quá nhiều trigger, 
-        // nhưng liệt kê thế này sẽ an toàn và hiệu năng tốt hơn.
-    }
-
     protected override void OnCollisionEnter2D(Collision2D col) {
         if (col.gameObject.CompareTag("Ground")) {
-            // SET INAIR FALSE KHI CHẠM ĐẤT
             if (anim) {
                 anim.SetBool("inAir", false);
                 anim.SetTrigger("land");
             }
-
+            transform.rotation = Quaternion.identity;
             isGrounded = true;
             rb.velocity = new Vector2(0, rb.velocity.y);
             nextJumpTime = Time.time + landRestTime;

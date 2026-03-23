@@ -25,6 +25,7 @@ public class EnemyBase : Entity {
     protected virtual void Awake() {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        originalScale = transform.localScale;
     }
     protected virtual void OnEnable() {
         comboCount = 0;
@@ -33,7 +34,8 @@ public class EnemyBase : Entity {
         isStunned = false; 
         isPerformingAction = false;
         if (rb) rb.velocity = Vector2.zero;
-        
+        StopAllCoroutines(); 
+        stunCoroutine = null;
         if (anim != null) {
             anim.ResetTrigger("throw");
             anim.ResetTrigger("death");
@@ -55,9 +57,7 @@ public class EnemyBase : Entity {
         }
         if (data != null) {
             int wave = SpawnManager.Instance != null ? SpawnManager.Instance.currentWaveIndex : 1;
-            // HP = Máu gốc + (Máu gốc * Tỉ lệ tăng * (Số wave - 1))
             float scaleFactor = 1f + (data.healthMultiplierPerWave * (wave - 1));
-        
             Health = Mathf.RoundToInt(data.baseHealth * scaleFactor);
             moveSpeed = data.baseMoveSpeed * (1f + (data.speedMultiplierPerWave * (wave - 1)));
         
@@ -69,7 +69,6 @@ public class EnemyBase : Entity {
     }
 
     protected virtual void Start() {
-        originalScale = transform.localScale;
         if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
 
         OnDeathAction += () => {
@@ -100,11 +99,13 @@ public class EnemyBase : Entity {
         if (Time.time - lastHitTime > comboWindow) comboCount = 0;
         comboCount++; 
         lastHitTime = Time.time;
-
+        float fallDir = (player != null && transform.position.x < player.position.x) ? 1f : -1f;
+        
         switch (hitType) {
             case 0: // Đòn ngang
                 if (isAirborne) {
                     rb.velocity = new Vector2(pushDir * 6f, rb.velocity.y);
+                    transform.rotation = Quaternion.Euler(0, 0, fallDir * 69f);
                 } else {
                     if (comboCount > 1) rb.AddForce(new Vector2(pushDir * 3f, 1f), ForceMode2D.Impulse);
                     ApplyStun(1f);
@@ -126,6 +127,7 @@ public class EnemyBase : Entity {
             case 3: // Fly object
                 rb.velocity = Vector2.zero;isAirborne = true;
                 rb.AddForce(new Vector2(pushDir * 5f, 2f), ForceMode2D.Impulse);
+                transform.rotation = Quaternion.Euler(0, 0, fallDir * 69f);
                 ApplyStun(1.2f);
                 break;
         }
@@ -216,8 +218,13 @@ protected virtual void Update() {
     IEnumerator StunRoutine(float duration) {
         isStunned = true; 
         yield return new WaitForSeconds(duration);
+        ExitStun();
+    }
+
+    private void ExitStun() {
         isStunned = false;
-        stunCoroutine = null; 
+        stunCoroutine = null;
+        if(rb) rb.velocity = new Vector2(0, rb.velocity.y); 
     }
 
     private void ApplyStun(float duration) {
@@ -235,6 +242,8 @@ protected virtual void Update() {
     protected virtual void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("Ground")) { 
             isAirborne = false;
+            transform.rotation = Quaternion.identity;
+            ApplyStun(1f);
         }
     }
 }
