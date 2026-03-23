@@ -16,7 +16,6 @@ namespace _Game.Scripts.Core
         public event Action onPlayerAttackAction;
         public event Action<int> onPlayerHealthUpdateAction;
         public event Action<int> onPointUpdateAction;
-
         public event Action<float> onMusicVolumeSliderUpdateAction;
         public event Action<float> onSFXVolumeSliderUpdateAction;
 
