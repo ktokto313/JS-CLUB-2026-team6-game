@@ -1,15 +1,18 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class WeaponSkin {
+    public string skinName;
+    public Sprite visualSprite; 
+    public GameObject projectilePrefab;
+}
 
 public enum WeaponType { Melee, Ranged, Spear }
 
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Combat/Weapon")]
 public class WeaponTBScript : ScriptableObject
 {
-    [Header("UI & Identity")]
-    public string weaponName;
-    public Sprite icon; // Dùng cho UI kho đồ
-    public Sprite worldSprite; // Dùng cho DroppedWeapon hiện trên mặt đất
-
     [Header("Combat Stats")]
     public WeaponType type;
     public int damage = 10;
@@ -18,7 +21,13 @@ public class WeaponTBScript : ScriptableObject
 
     [Header("Projectile Settings (If Ranged)")]
     public float flySpeed = 15f;
-    public float lifeTime = 5f; // Thời gian tự hủy nếu không trúng mục tiêu
-    public GameObject projectilePrefab; // Prefab dùng cho FlyObject
+    public float lifeTime = 5f; 
+    
+    [Header("Weapon Skins List")]
+    public List<WeaponSkin> weaponSkins; 
+
+    [Header("Current Active Skin (Internal)")]
+    [HideInInspector] public Sprite currentVisual;
+    [HideInInspector] public GameObject currentPrefab;
 
 }

@@ -3,6 +3,9 @@ using System.Collections;
 using _Game.Scripts.Core;
 
 public class EnemyBase : Entity {
+    [Header("Current Instance Weapon Data")]
+    protected Sprite selectedVisual;      
+    protected GameObject selectedPrefab;
     [Header("Data Settings")]
     public EnemyData data;
     public WeaponTBScript CurrentWeaponTbScript; 
@@ -37,24 +40,35 @@ public class EnemyBase : Entity {
         StopAllCoroutines(); 
         stunCoroutine = null;
         if (anim != null) {
-            anim.ResetTrigger("throw");
             anim.ResetTrigger("death");
             anim.ResetTrigger("gethit");
-            anim.ResetTrigger("dash");
-            anim.ResetTrigger("predash");
             anim.SetBool("canAttack", false);
             anim.SetBool("isWalking", false);
-        
             anim.Rebind();
             anim.Update(0f);
         }
-        if (visualAxe != null) {
-            visualAxe.SetActive(true);
-            SpriteRenderer sr = visualAxe.GetComponent<SpriteRenderer>();
-            if (sr != null) {
-                sr.enabled = true; 
+        if (CurrentWeaponTbScript != null) {
+            var skins = CurrentWeaponTbScript.weaponSkins;
+            
+            if (skins != null && skins.Count > 0) {
+                int randomIndex = Random.Range(0, skins.Count);
+                selectedVisual = skins[randomIndex].visualSprite;
+                selectedPrefab = skins[randomIndex].projectilePrefab;
+                if (visualAxe != null) {
+                    visualAxe.SetActive(true);
+                    SpriteRenderer sr = visualAxe.GetComponent<SpriteRenderer>();
+                    
+                    if (sr != null) {
+                        sr.sprite = selectedVisual; 
+                        sr.enabled = true;
+                        Debug.Log($"<color=cyan>DA GAN ANH: {selectedVisual.name} VAO {visualAxe.name}</color>");
+                    } else {
+                        Debug.Log("KHÔNG TÌM THẤY SpriteRenderer trên object visualAxe!");
+                    }
+                } 
             }
-        }
+        } 
+        
         if (data != null) {
             int wave = SpawnManager.Instance != null ? SpawnManager.Instance.currentWaveIndex : 1;
             float scaleFactor = 1f + (data.healthMultiplierPerWave * (wave - 1));
@@ -118,6 +132,7 @@ public class EnemyBase : Entity {
                 break;
             case 2: // Đòn đập xuống
                 if (isAirborne) {
+                    transform.rotation = Quaternion.Euler(0, 0, fallDir * -90f);
                     rb.velocity = new Vector2(pushDir * 3f, -5f);
                     ApplyStun(2.5f);
                 } else {
@@ -182,28 +197,16 @@ protected virtual void Update() {
     }
     
     private void CheckAndDropWeapon() {
-        if (CurrentWeaponTbScript == null || CurrentWeaponTbScript.projectilePrefab == null ) return;
+        if (selectedPrefab == null) return; 
 
         float direction = transform.position.x > player.position.x ? 1f : -1f;
+        Vector3 spawnPosition = new Vector3(player.position.x + (direction * 1.2f), player.position.y + 3f, 0);
     
-        float offsetX = direction * 1.2f;
-        Vector3 spawnPosition = new Vector3(player.position.x + offsetX, player.position.y + 3f, 0);
-        Debug.Log($"Quái đang ở bên {(direction > 0 ? "Phải" : "Trái")}. Spawn vũ khí tại X: {spawnPosition.x}");
+        GameObject dropObj = GlobalPoolManager.Instance.Get(selectedPrefab, spawnPosition);
     
-        GameObject dropObj = GlobalPoolManager.Instance.Get(CurrentWeaponTbScript.projectilePrefab, spawnPosition);
-
         if (dropObj != null) {
-            dropObj.tag = "Untagged"; 
-
-            DroppedWeapon droppedWeaponComp = dropObj.GetComponent<DroppedWeapon>();
-            if (droppedWeaponComp != null) {
-                droppedWeaponComp.Init(CurrentWeaponTbScript, player);
-                droppedWeaponComp.StartCoroutine(EnableWeaponTag(dropObj));
-
-                Rigidbody2D weaponRb = dropObj.GetComponent<Rigidbody2D>();
-                if (weaponRb != null) {
-                    weaponRb.velocity = new Vector2(0, 3f); 
-                }
+            if (dropObj.TryGetComponent(out DroppedWeapon droppedWeaponComp)) {
+                droppedWeaponComp.Init(CurrentWeaponTbScript, player, selectedPrefab);
             }
         }
     }

@@ -3,8 +3,10 @@ using System.Collections;
 
 public class JumpingHugger : EnemyBase {
     [Header("Movement Settings")]
-    public float jumpForceX = 5f;
-    public float jumpForceY = 12f;
+    public float minJumpForceX = 2f;
+    public float maxJumpForceX = 4f;
+    public float minJumpForceY = 5f;
+    public float maxJumpForceY = 10f;
     public float landRestTime = 1.2f;
     [SerializeField] private float leftBoundary = -10f;
     [SerializeField] private float rightBoundary = 10f;
@@ -56,11 +58,12 @@ public class JumpingHugger : EnemyBase {
     void Jump() {
         isGrounded = false;
         DetermineNextJumpDirection();
-
-        // SET INAIR TRUE KHI RỜI ĐẤT
+        
         if (anim) anim.SetBool("inAir", true);
-
-        Vector2 force = new Vector2(currentDir * jumpForceX, jumpForceY);
+        float randomX = Random.Range(minJumpForceX, maxJumpForceX);
+        float randomY = Random.Range(minJumpForceY, maxJumpForceY);
+        
+        Vector2 force = new Vector2(currentDir * randomX, randomY);
         rb.AddForce(force, ForceMode2D.Impulse);
 
         if (anim) anim.SetTrigger("jump"); 

@@ -242,11 +242,11 @@ public class PlayerAttack : MonoBehaviour
         weaponHasBeenUsedMelee = false;
         
         if (weaponObject != null) currentWeaponObject = weaponObject;
-        else if (newWeapon.projectilePrefab != null && handSocket != null)
+        else if (newWeapon.currentPrefab != null && handSocket != null)
         {
             currentWeaponObject = (GlobalPoolManager.Instance != null) 
-                ? GlobalPoolManager.Instance.Get(newWeapon.projectilePrefab, handSocket.position) 
-                : Instantiate(newWeapon.projectilePrefab, handSocket.position, Quaternion.identity);
+                ? GlobalPoolManager.Instance.Get(newWeapon.currentPrefab, handSocket.position) 
+                : Instantiate(newWeapon.currentPrefab, handSocket.position, Quaternion.identity);
         }
 
         if (currentWeaponObject != null && handSocket != null)
@@ -287,13 +287,16 @@ public class PlayerAttack : MonoBehaviour
 
     private void ThrowEquippedWeapon(float direction)
     {
-        if (currentWeapon != null && currentWeapon.projectilePrefab != null)
+        if (currentWeapon != null && currentWeapon.currentPrefab != null)
         {
-            Vector3 spawnPos = transform.position + new Vector3(direction * 0.5f, punchOffset.y, 0f);
-            GameObject go = GlobalPoolManager.Instance.Get(currentWeapon.projectilePrefab, spawnPos);
-            
+            Vector3 spawnPos = transform.position + new Vector3(direction * 1.2f, punchOffset.y, 0f);
+        
+            GameObject go = GlobalPoolManager.Instance.Get(currentWeapon.currentPrefab, spawnPos);
+        
             if (go.TryGetComponent(out FlyObject fly)) 
             {
+                if (go.TryGetComponent(out Rigidbody2D rb)) rb.velocity = Vector2.zero;
+
                 fly.Launch(currentWeapon, new Vector2(direction, 0), currentWeapon.flySpeed, transform, true);
             }
             EquipWeapon(null);

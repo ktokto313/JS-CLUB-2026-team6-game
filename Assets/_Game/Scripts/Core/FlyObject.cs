@@ -4,6 +4,7 @@ using UnityEngine;
 public class FlyObject : MonoBehaviour
 {
     private WeaponTBScript _weaponTbScriptData;
+    private GameObject _specificPrefab;
     private Transform playerTransform; 
     private Rigidbody2D rb;
     private bool hasPassedPlayer = false;
@@ -16,7 +17,7 @@ public class FlyObject : MonoBehaviour
     
     private void OnEnable()
     {
-        isReturning = false; // Reset cờ
+        isReturning = false; 
         hasPassedPlayer = false;
         isPlayerOwned = false;
         gameObject.tag = "FlyObject";
@@ -28,24 +29,23 @@ public class FlyObject : MonoBehaviour
         _weaponTbScriptData = data;
         playerTransform = player;
         isPlayerOwned = fromPlayer; 
+        _specificPrefab = data.currentPrefab; 
 
         if (rb == null) rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0;
 
-        // DÙNG FLYSPEED TỪ SCRIPTABLE OBJECT (nếu có), nếu không thì dùng speed truyền vào
-        float finalSpeed = (_weaponTbScriptData.flySpeed > 0) ? _weaponTbScriptData.flySpeed : speedOverride;
+        float finalSpeed = (data.flySpeed > 0) ? data.flySpeed : speedOverride;
         rb.velocity = direction * finalSpeed;
 
         gameObject.tag = "FlyObject"; 
-
-        // DÙNG LIFETIME ĐỂ TỰ HỦY THAY VÌ BIÊN
-        float lifeTime = (_weaponTbScriptData.lifeTime > 0) ? _weaponTbScriptData.lifeTime : 5f; 
+        float lifeTime = (data.lifeTime > 0) ? data.lifeTime : 5f; 
         Invoke("ReturnToPool", lifeTime);
     }
 
     void Update()
     {
-        // Hiệu ứng xoay rìu
         transform.Rotate(0, 0, 1000 * Time.deltaTime);
         
         if (!isPlayerOwned && !hasPassedPlayer && playerTransform != null)
@@ -57,8 +57,6 @@ public class FlyObject : MonoBehaviour
     private void ReturnToPool()
     {
         CancelInvoke();
-    
-        // Tách cha ngay tại đây, ĐỪNG đợi đến khi vào Pool mới tách
         transform.SetParent(null); 
     
         if (rb != null) {
@@ -72,7 +70,6 @@ public class FlyObject : MonoBehaviour
 
     private void CheckIfPassedPlayer()
     {
-        // Logic đổi tag khi bay qua vị trí Player để tránh gây sát thương liên tục
         float moveDir = rb.velocity.x;
         if ((moveDir > 0 && transform.position.x > playerTransform.position.x) || 
             (moveDir < 0 && transform.position.x < playerTransform.position.x))
@@ -84,11 +81,9 @@ public class FlyObject : MonoBehaviour
     
     public void Reflect(Vector2 newDir)
     {
-        CancelInvoke(); // Reset thời gian sống khi bị phản đòn
+        CancelInvoke(); 
         isPlayerOwned = true;
         gameObject.tag = "FlyObject";
-        
-        // Có thể lấy tốc độ phản đòn từ data nếu muốn
         rb.velocity = newDir * (_weaponTbScriptData.flySpeed * 1.5f); 
         
         Invoke("ReturnToPool", _weaponTbScriptData.lifeTime);
@@ -98,12 +93,12 @@ public class FlyObject : MonoBehaviour
     {
         if (!isPlayerOwned) 
         {
-            // Khi bay trúng Player
             if (collision.CompareTag("Player") && !hasPassedPlayer)
             {
-                // Kiểm tra playerTransform tránh lỗi khi Player bị Destroy/Null
                 if (playerTransform != null && EventManager.current != null) {
-                    EventManager.current.onHit(playerTransform.position);
+                    //EventManager.current.onHit(playerTransform.position);
+                    PlayerController.Instance.TakeDamage();
+                    Debug.Log("FlyObject va trúng Player");
                 }
                 ReturnToPool();
             }
@@ -121,23 +116,27 @@ public class FlyObject : MonoBehaviour
 
     private void HandleEnemyHit(Collider2D collision)
     {
-        // Kiểm tra dữ liệu vũ khí có tồn tại không trước khi làm việc
         if (_weaponTbScriptData == null) return; 
 
         EnemyBase enemy = collision.GetComponentInParent<EnemyBase>();
         if (enemy != null)
         {
             enemy.GetHit(_weaponTbScriptData.damage, 3);
-        
-            // Kiểm tra EventManager cũng có thể null nếu chưa khởi tạo
             if (EventManager.current != null) {
                 Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position) / 2;
-                EventManager.current.onHit(impactPosition);
+                //EventManager.current.onHit(impactPosition);
             }
         
             ReturnToPool();
         }
     }
 
-    public WeaponTBScript GetWeaponData() => _weaponTbScriptData;
+    public WeaponTBScript GetWeaponData() 
+    {
+        if (_weaponTbScriptData != null)
+        {
+            _weaponTbScriptData.currentPrefab = _specificPrefab;
+        }
+        return _weaponTbScriptData;
+    }
 }

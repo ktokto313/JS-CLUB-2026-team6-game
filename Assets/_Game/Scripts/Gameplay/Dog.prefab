@@ -173,9 +173,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 3e06ab9bd87a6fe489cadf85304d4bae, type: 2}
+  CurrentWeaponTbScript: {fileID: 0}
   visualAxe: {fileID: 0}
-  jumpForceX: 2.6
-  jumpForceY: 7.35
+  minJumpForceX: 2
+  maxJumpForceX: 4
+  minJumpForceY: 5
+  maxJumpForceY: 10
   landRestTime: 0.8
   leftBoundary: -3
   rightBoundary: 3

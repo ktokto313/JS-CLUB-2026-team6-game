@@ -21,17 +21,18 @@ public class AxeMoster : EnemyBase {
 
     protected override void OnEnable()
     {
+        anim.ResetTrigger("throw");
         hasThrown = false; 
         base.OnEnable();
     }
     public void ExecuteThrow() {
-        if (CurrentWeaponTbScript == null || CurrentWeaponTbScript.projectilePrefab == null) return;
+        if (selectedPrefab == null) return;
 
         float dir = Mathf.Sign(transform.localScale.x);
         Vector3 spawnPos = transform.position + new Vector3(dir * 0.5f, 1.3f, 0f);
-        
-        GameObject go = GlobalPoolManager.Instance.Get(CurrentWeaponTbScript.projectilePrefab, spawnPos);
-        
+    
+        GameObject go = GlobalPoolManager.Instance.Get(selectedPrefab, spawnPos);
+    
         if (go.TryGetComponent(out FlyObject fly)) {
             fly.Launch(CurrentWeaponTbScript, new Vector2(dir, 0), flySpeed, player, false);
         }

@@ -18,25 +18,17 @@ public class GlobalPoolManager : MonoBehaviour
         GameObject obj;
         if (pools[key].Count > 0) {
             obj = pools[key].Dequeue();
-        
-            // 1. Reset Transform cha
             obj.transform.SetParent(null);
             obj.transform.position = pos;
             obj.transform.rotation = prefab.transform.rotation;
             obj.transform.localScale = prefab.transform.localScale;
-
-            // 2. RESET SÂU TẤT CẢ OBJECT CON (Giải quyết lỗi cái rìu nằm ngang)
             ResetAllChildrenTransform(obj.transform, prefab.transform);
-
-            // 3. Reset Animator
             Animator anim = obj.GetComponent<Animator>();
             if (anim != null) {
                 anim.enabled = true; 
                 anim.Rebind();       
                 anim.Update(0f);     
             }
-
-            // 4. Reset vật lý
             Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
             if (rb != null) {
                 rb.velocity = Vector2.zero;
@@ -53,23 +45,17 @@ public class GlobalPoolManager : MonoBehaviour
         return obj;
     }
 
-    // Hàm bổ trợ để ép các con về trạng thái của Prefab
     private void ResetAllChildrenTransform(Transform target, Transform source)
     {
-        // Chạy qua tất cả con theo phân cấp
         for (int i = 0; i < target.childCount; i++)
         {
             if (i < source.childCount)
             {
                 Transform targetChild = target.GetChild(i);
                 Transform sourceChild = source.GetChild(i);
-
-                // Ép các thông số Transform về như Prefab gốc
                 targetChild.localPosition = sourceChild.localPosition;
                 targetChild.localRotation = sourceChild.localRotation;
                 targetChild.localScale = sourceChild.localScale;
-
-                // Đệ quy nếu có các cấp con sâu hơn
                 if (targetChild.childCount > 0)
                 {
                     ResetAllChildrenTransform(targetChild, sourceChild);

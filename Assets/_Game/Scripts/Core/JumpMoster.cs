@@ -63,11 +63,9 @@ public class JumpMoster : EnemyBase
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Chỉ gây sát thương khi đang cưỡi giáo nhảy
         if (isRiding && collision.CompareTag("Player"))
         {
             Debug.Log("Player bị giáo đâm!");
-            // Logic trừ máu player...
         }
     }
 }
