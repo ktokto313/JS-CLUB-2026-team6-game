@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b0be40f54e9463dad0cde9f84e13cc7, type: 3}
+  m_Name: Spear3
+  m_EditorClassIdentifier: 
+  type: 0
+  damage: 1
+  attackRange: 1.5
+  attackSpeed: 0.5
+  flySpeed: 15
+  lifeTime: 5
+  weaponSkins:
+  - skinName: 
+    visualSprite: {fileID: 21300000, guid: f06f90de9151ec84795ad42d3fd219f1, type: 3}
+    projectilePrefab: {fileID: 765654240579587380, guid: 291a55299e32a3a4ab4bff32555fef1b, type: 3}
+  currentVisual: {fileID: 0}
+  currentPrefab: {fileID: 0}

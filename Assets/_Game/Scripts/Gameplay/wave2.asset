@@ -22,7 +22,7 @@ MonoBehaviour:
     useRandomPoint: 0
     specificPointIndex: 0
   - label: 
-    enemyPrefab: {fileID: 0}
+    enemyPrefab: {fileID: 1717771465425058998, guid: e666f5aefaf70224aac4be64805fca5b, type: 3}
     delayAfterLastStep: 3
     count: 1
     interval: 0

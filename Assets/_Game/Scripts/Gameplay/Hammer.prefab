@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 6311640798956854237}
   - component: {fileID: 8891519185465137512}
   - component: {fileID: 6254430458052138645}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hammer
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -120,7 +120,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.02135063, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -131,7 +131,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 0.27398908, y: 0.64}
   m_EdgeRadius: 0
 --- !u!50 &6311640798956854237
 Rigidbody2D:
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &8891519185465137512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBar: {fileID: 0}
   data: {fileID: 11400000, guid: ab4abfbac23f4134c9768ded692563bb, type: 2}
-  CurrentWeaponTbScript: {fileID: 0}
+  CurrentWeaponTbScript: {fileID: 11400000, guid: 04e6e30989e0bd0449a1060b26d2b812, type: 2}
   visualAxe: {fileID: 0}
 --- !u!95 &6254430458052138645
 Animator:
