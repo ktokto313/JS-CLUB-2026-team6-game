@@ -137,7 +137,7 @@ private void ThrowEquippedWeapon(float direction)
         {
             if (go.TryGetComponent(out Rigidbody2D rb)) rb.velocity = Vector2.zero;
 
-            fly.Launch(currentWeapon, new Vector2(direction, 0.1f), currentWeapon.flySpeed, transform, true);
+            fly.Launch(currentWeapon,currentWeapon.currentPrefab, new Vector2(direction, 0.1f), currentWeapon.flySpeed, transform, true);
         }
         
         EquipWeapon(null);
@@ -217,9 +217,6 @@ private void ThrowEquippedWeapon(float direction)
     {
         foreach (Collider2D obj in hitObjects)
         {   
-            // Bắt bệnh Hitbox
-            Debug.Log($"<color=yellow>Hitbox chạm vào: {obj.gameObject.name} (Tag: {obj.gameObject.tag})</color>");
-
             EnemyBase enemy = obj.GetComponentInParent<EnemyBase>();
             if (enemy != null)
             {
@@ -227,52 +224,36 @@ private void ThrowEquippedWeapon(float direction)
                 continue; 
             }
 
-            // Tìm vũ khí
+            // TÌM SCRIPT DROPPED WEAPON
             DroppedWeapon drop = obj.GetComponentInParent<DroppedWeapon>();
-            FlyObject fly = obj.GetComponentInParent<FlyObject>();
-
-            if (drop != null || fly != null)
+            
+            // LUẬT CHƠI: Chỉ nhặt khi script tồn tại VÀ object đã chính thức mang Tag "DroppedWeapon"
+            if (drop != null && drop.gameObject.CompareTag("DroppedWeapon"))
             {
-                HandleDroppedWeapon(drop, fly);
+                HandleDroppedWeapon(drop);
             }
         }
     }
 
-    private void HandleDroppedWeapon(DroppedWeapon drop, FlyObject fly)
+    private void HandleDroppedWeapon(DroppedWeapon drop)
     {
-        WeaponTBScript caught = null;
-        GameObject weaponObject = null;
+        if (drop == null) return;
 
-        // 1. Dò xem thằng FlyObject có cầm Data không (Ưu tiên đồ đang bay/quái ném)
-        if (fly != null && fly.GetWeaponData() != null)
-        {
-            caught = fly.GetWeaponData();
-            weaponObject = fly.gameObject;
-        }
-        // 2. Nếu không có, dò tiếp xem thằng DroppedWeapon có cầm Data không (Đồ rớt dưới đất)
-        else if (drop != null && drop.GetWeaponData() != null)
-        {
-            caught = drop.GetWeaponData();
-            weaponObject = drop.gameObject;
-        }
-        // 3. Fallback để lấy tên object log lỗi nếu cả 2 đều vô dụng
-        else 
-        {
-            weaponObject = (drop != null) ? drop.gameObject : (fly != null ? fly.gameObject : null);
-        }
+        // Lấy Data từ DroppedWeapon
+        WeaponTBScript caught = drop.GetWeaponData();
+        GameObject weaponObject = drop.gameObject;
 
-        // KẾT LUẬN
         if (caught != null) 
         {
             EquipWeapon(caught, weaponObject);
-            Debug.Log($"<color=cyan>ĐÃ BẮT ĐƯỢC VŨ KHÍ: {caught.name}!</color>");
+            Debug.Log($"<color=cyan>ĐÃ VỚT ĐƯỢC VŨ KHÍ: {caught.name}!</color>");
         }
         else
         {
-            Debug.LogError($"<color=red>LỖI: Đấm trúng [{weaponObject?.name}], nhưng cả script FlyObject và DroppedWeapon trên đó đều bị rỗng Data!</color>");
+            Debug.LogError($"<color=red>LỖI: Đã đấm trúng [{weaponObject.name}] (Tag DroppedWeapon), nhưng Data bên trong bị NULL!</color>");
         }
     }
-
+    
     private void HandleEnemyHit(EnemyBase enemy, int finalDamage, int hitType)
     {
         Vector3 impactPosition = (gameObject.transform.position + enemy.transform.position) / 2;

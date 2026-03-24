@@ -43,12 +43,48 @@ private void OnEnable()
         CancelInvoke();
     }
 
-    public void Launch(WeaponTBScript data, Vector2 direction, float speedOverride, Transform player, bool fromPlayer)
-    {
+    // public void Launch(WeaponTBScript data, Vector2 direction, float speedOverride, Transform player, bool fromPlayer)
+    // {   
+    //     if (data.currentPrefab == null && data.weaponSkins != null && data.weaponSkins.Count > 0)
+    //     {
+    //         _specificPrefab = data.weaponSkins[0].projectilePrefab;
+    //     }
+    //     else
+    //     {
+    //         _specificPrefab = data.currentPrefab;
+    //     }
+    //     _weaponTbScriptData = data;
+    //     playerTransform = player;
+    //     isPlayerOwned = fromPlayer; 
+
+    //     if (rb == null) rb = GetComponent<Rigidbody2D>();
+    //     rb.gravityScale = 0;
+    //     rb.velocity = Vector2.zero;
+    //     rb.angularVelocity = 0;
+
+    //     float finalSpeed = (data.flySpeed > 0) ? data.flySpeed : speedOverride;
+    //     rb.velocity = direction * finalSpeed;
+
+    //     gameObject.tag = "FlyObject"; 
+    //     float lifeTime = (data.lifeTime > 0) ? data.lifeTime : 5f; 
+    //     Invoke("ReturnToPool", lifeTime);
+
+    //      if (TryGetComponent(out DroppedWeapon drop))
+    //     {
+    //         drop.SetDataOnly(data, _specificPrefab);
+    //     }
+
+    // }
+
+    // Thêm tham số GameObject spawnedPrefab vào vị trí thứ 2
+    public void Launch(WeaponTBScript data, GameObject spawnedPrefab, Vector2 direction, float speedOverride, Transform player, bool fromPlayer)
+    { 
         _weaponTbScriptData = data;
+        
+        _specificPrefab = spawnedPrefab; 
+        
         playerTransform = player;
         isPlayerOwned = fromPlayer; 
-        _specificPrefab = data.currentPrefab; 
 
         if (rb == null) rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
@@ -61,6 +97,11 @@ private void OnEnable()
         gameObject.tag = "FlyObject"; 
         float lifeTime = (data.lifeTime > 0) ? data.lifeTime : 5f; 
         Invoke("ReturnToPool", lifeTime);
+
+        if (TryGetComponent(out DroppedWeapon drop))
+        {
+            drop.SetDataOnly(data, _specificPrefab);
+        }
     }
 
     void Update()
@@ -155,7 +196,7 @@ private void OnEnable()
         return _weaponTbScriptData;
     }
     
-    private void UpdateRingVisual()
+    public void UpdateRingVisual()
     {
         if (lineRenderer == null) return;
 

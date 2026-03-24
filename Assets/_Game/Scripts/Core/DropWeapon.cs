@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class DroppedWeapon : MonoBehaviour
 {
@@ -43,16 +44,58 @@ public void Init(WeaponTBScript data, Transform player, GameObject specificPrefa
         {
             transform.rotation = Quaternion.identity;
         }
+        gameObject.tag = "DroppedWeapon";
+        
+        if (TryGetComponent(out FlyObject fly)) 
+        {
+            fly.UpdateRingVisual();
+        }
     }
+    
+    // private IEnumerator EnableWeaponTagRoutine() 
+    // {
+    //     // Tạm thời để tag rỗng (hoặc Untagged) để Player không đấm trúng lúc nó đang rơi
+    //     gameObject.tag = ""; 
+        
+    //     yield return new WaitForSeconds(0.8f); 
+        
+    //     // Sau 0.8s, chính thức biến thành đồ rớt dưới đất
+    //     if (TryGetComponent(out FlyObject fly)) 
+    //     {
+    //         fly.UpdateRingVisual();
+    //     }
+    //     gameObject.tag = "DroppedWeapon";
+    // }
+
+    // Hàm này được FlyObject gọi để "mớm" Data sang khi quái vật ném vũ khí
+    public void SetDataOnly(WeaponTBScript data, GameObject specificPrefab)
+    {
+        _weaponTbScriptData = data;
+        _specificPrefab = specificPrefab;
+    }
+
+    // public WeaponTBScript GetWeaponData()
+    // {
+    //     if (_weaponTbScriptData != null) {
+    //         _weaponTbScriptData.currentPrefab = _specificPrefab;
+    //     }
+    //     WeaponTBScript tempData = _weaponTbScriptData;
+    //     // GlobalPoolManager.Instance.Return(gameObject);
+    //     return tempData;
+    // }
 
     public WeaponTBScript GetWeaponData()
     {
-        if (_weaponTbScriptData != null) {
-            _weaponTbScriptData.currentPrefab = _specificPrefab;
+        if (_weaponTbScriptData != null) 
+        {
+            WeaponTBScript clonedData = Instantiate(_weaponTbScriptData);
+            
+            clonedData.currentPrefab = _specificPrefab;
+            
+            return clonedData;
         }
-        WeaponTBScript tempData = _weaponTbScriptData;
-        // GlobalPoolManager.Instance.Return(gameObject);
-        return tempData;
+        
+        return null;
     }
 
     public void Reflect(Vector2 launchDirection, float speed)
@@ -68,7 +111,7 @@ public void Init(WeaponTBScript data, Transform player, GameObject specificPrefa
         if (fly == null) fly = gameObject.AddComponent<FlyObject>();
         else fly.enabled = true;
         
-        fly.Launch(_weaponTbScriptData, direction, speed, playerTransform, true);
+        fly.Launch(_weaponTbScriptData, _specificPrefab, direction, speed, playerTransform, true);
     }
 
     private void Update()

@@ -34,7 +34,7 @@ public class AxeMoster : EnemyBase {
         GameObject go = GlobalPoolManager.Instance.Get(selectedPrefab, spawnPos);
     
         if (go.TryGetComponent(out FlyObject fly)) {
-            fly.Launch(CurrentWeaponTbScript, new Vector2(dir, 0), flySpeed, player, false);
+            fly.Launch(CurrentWeaponTbScript, selectedPrefab, new Vector2(dir, 0), flySpeed, player, false);
         }
     }
 
