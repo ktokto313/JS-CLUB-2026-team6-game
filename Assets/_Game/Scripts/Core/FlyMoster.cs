@@ -92,6 +92,7 @@ public class RocketRider : EnemyBase
             }
         }
 
+        EventManager.current.onDead();
         GlobalPoolManager.Instance.Return(gameObject);
     }
 

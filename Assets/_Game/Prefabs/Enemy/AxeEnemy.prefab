@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9047212432927499307}
   - component: {fileID: 5527056160160591949}
   - component: {fileID: 7444330145117913446}
+  - component: {fileID: -4176531130353399892}
   m_Layer: 6
   m_Name: AxeEnemy
   m_TagString: Enemy
@@ -49,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d364c90516567db41bb0d2ceb6d4e120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthBar: {fileID: 0}
   data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: 73d43e5bd8a079e44be65ddfd8216e7d, type: 2}
   visualAxe: {fileID: 8434553896180955631}
@@ -199,6 +201,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-4176531130353399892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083373894443671076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 0
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 00000000
+  m_ShapePath:
+  - {x: -0.07, y: -0.23999977, z: 0}
+  - {x: -0.13, y: 0.19, z: 0}
+  - {x: 0.05, y: 0.22, z: 0}
+  - {x: 0.06, y: -0.23999977, z: 0}
+  m_ShapePathHash: 503082078
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 39362
+  m_LocalBounds:
+    m_Center: {x: -0.034999996, y: -0.009999886, z: 0}
+    m_Extent: {x: 0.095, y: 0.22999988, z: 0}
 --- !u!1 &8434553896180955631
 GameObject:
   m_ObjectHideFlags: 0
