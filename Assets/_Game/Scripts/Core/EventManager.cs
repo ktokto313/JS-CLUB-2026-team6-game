@@ -23,6 +23,7 @@ namespace _Game.Scripts.Core
         public void Awake()
         {
             current = this;
+            onPointUpdate(0);
         }
 
         public void onHit(Vector3 hitPosition)
