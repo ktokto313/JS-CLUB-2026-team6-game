@@ -159,7 +159,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!95 &4730680178204618279
 Animator:
   serializedVersion: 5
@@ -199,3 +199,4 @@ MonoBehaviour:
   visualAxe: {fileID: 0}
   swingRadius: 7
   swingSpeed: 1
+  sideLimit: 0.4
