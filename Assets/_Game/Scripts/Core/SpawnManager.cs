@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Game.Scripts.Core;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour {
@@ -38,6 +39,7 @@ public class SpawnManager : MonoBehaviour {
             
             waveCounter++; 
         }
+        EventManager.current.onWin();
     }
 
     private IEnumerator ExecuteSpawnStep(EnemySpawnStep step) {

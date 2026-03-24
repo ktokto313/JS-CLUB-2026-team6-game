@@ -14,6 +14,7 @@ namespace _Game.Scripts.Core
         public event Action onDeadAction;
         public event Action onPlayerDeadAction;
         public event Action onPlayerAttackAction;
+        public event Action onWinAction;
         public event Action<int> onPlayerHealthUpdateAction;
         public event Action<int> onPointUpdateAction;
         public event Action<float> onMusicVolumeSliderUpdateAction;
@@ -47,6 +48,11 @@ namespace _Game.Scripts.Core
         public void onPlayerAttack()
         {
             onPlayerAttackAction?.Invoke();
+        }
+
+        public void onWin()
+        {
+            onWinAction?.Invoke();
         }
 
         public void onPlayerHealthUpdate(int newHealth)
