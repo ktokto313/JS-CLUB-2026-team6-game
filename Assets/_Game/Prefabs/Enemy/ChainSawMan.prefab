@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: -6526005043092598824}
   - component: {fileID: 7560277563204110257}
   - component: {fileID: 3326374925118293500}
+  - component: {fileID: 2053677400717932433}
   m_Layer: 6
   m_Name: ChainSawMan
   m_TagString: Enemy
@@ -257,6 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1083bdd43abeea4caef662d4df58e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthBar: {fileID: 0}
   data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: c45cb0e037dd2c340ac39c9dceabccd4, type: 2}
   visualAxe: {fileID: 176173905455505152}
@@ -287,3 +289,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2053677400717932433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4960510062423644082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 0
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 00000000
+  m_ShapePath:
+  - {x: -0.08, y: -0.24, z: 0}
+  - {x: -0.06, y: 0.19, z: 0}
+  - {x: 0.04, y: 0.19, z: 0}
+  - {x: 0.23, y: -0.24, z: 0}
+  m_ShapePathHash: -781772239
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 39308
+  m_LocalBounds:
+    m_Center: {x: 0.075, y: -0.024999991, z: 0}
+    m_Extent: {x: 0.155, y: 0.215, z: 0}
