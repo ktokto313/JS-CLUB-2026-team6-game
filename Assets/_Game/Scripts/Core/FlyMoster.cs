@@ -4,171 +4,114 @@ using System.Collections;
 
 public class RocketRider : EnemyBase 
 {
-    [Header("Rocket Movement")]
+    [Header("Settings")]
     [SerializeField] private float dashSpeed = 12f; 
-    [SerializeField] private float mapLimitLeft = -15f;
-    [SerializeField] private float mapLimitRight = 15f;
-    [SerializeField] private float[] phaseHeights = { 5f, 3f, 1f };
-
-    [Header("Rocket Explosion")]
-    [SerializeField] private GameObject explosionEffect;
     [SerializeField] private float explosionRadius = 3f; 
     [SerializeField] private float headOffset = 0.8f; 
+    [SerializeField] private float[] phaseHeights = { 5f, 3f, 1f };
+    [SerializeField] private GameObject explosionEffect;
+    [SerializeField] private float rotationSpeed = 5f;
 
     private int currentPhaseIndex = 0;
     private int dirX = 1;
-    private bool isExploded = false;
+    private bool isExploding = false;
 
     protected override void OnEnable() {
         base.OnEnable(); 
-        isExploded = false;
+        isExploding = false;
         currentPhaseIndex = 0;
-        isStunned = false;
-        isAirborne = false;
-        
-        if (rb != null) {
-            rb.gravityScale = 0;
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0f;
+        if (rb) { 
+            rb.gravityScale = 0; 
+            rb.velocity = Vector2.zero; 
+            rb.angularVelocity = 0;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
-
-        transform.rotation = Quaternion.identity;
-
-        if (phaseHeights != null && phaseHeights.Length > 0) {
-            transform.position = new Vector3(transform.position.x, phaseHeights[0], transform.position.z);
-        }
-        if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
-        if (player != null) {
-            dirX = (transform.position.x > player.position.x) ? -1 : 1;
-        } else {
-            dirX = (transform.position.x > 0) ? -1 : 1; 
-        }
+        if (player == null && GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
+        dirX = (player != null && transform.position.x > player.position.x) ? -1 : 1;
         UpdateFacing();
+        if (phaseHeights.Length > 0) transform.position = new Vector3(transform.position.x, phaseHeights[0], transform.position.z);
     }
 
     private void Update() {
-        if (isExploded) return;
-
-        if (isStunned || isAirborne) {
-            if (rb.gravityScale == 0) rb.gravityScale = 2f;
-            RotateTowardsVelocity();
-            CheckCollisionWithPlayer(); 
-            return;
+        if (isExploding) {
+            if (rb != null && rb.velocity.sqrMagnitude > 0.2f) {
+                float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+                Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+            return; 
         }
-
-        HandleFlight();
+        rb.velocity = new Vector2(dirX * dashSpeed, 0);
         CheckBoundaries();
-        CheckCollisionWithPlayer(); 
-    }
-
-    private void CheckCollisionWithPlayer() {
-        if (isExploded || player == null) return;
         Vector2 headPos = (Vector2)transform.position + new Vector2(dirX * headOffset, 0);
-        Collider2D hit = Physics2D.OverlapCircle(headPos, 0.7f);
-        if (hit != null && hit.CompareTag("Player")) {
-            Explode();
-        }
-    }
-
-    private void HandleFlight() {
-        if (rb != null) {
-            rb.velocity = new Vector2(dirX * dashSpeed, 0);
-        }
-    }
-
-    private void CheckBoundaries() {
-        bool hitRight = (dirX == 1 && transform.position.x >= mapLimitRight);
-        bool hitLeft = (dirX == -1 && transform.position.x <= mapLimitLeft);
-
-        if (hitRight || hitLeft) {
-            dirX *= -1; 
-            UpdateFacing(); 
-            MoveToNextPhase();
-        }
-    }
-
-    private void UpdateFacing() {
-        float sX = Mathf.Abs(originalScale.x);
-        transform.localScale = new Vector3(dirX * sX, originalScale.y, originalScale.z);
-        if (!isStunned && !isAirborne) {
-            transform.rotation = Quaternion.identity;
+        if (Physics2D.OverlapCircle(headPos, 0.7f, LayerMask.GetMask("Player"))) {
+            StartCoroutine(ExplosionSequence());
         }
     }
 
     public override void GetHit(int damage, int hitType) {
-        if (isExploded) return;
-        Health = 0;
-        isStunned = true; 
-        rb.gravityScale = 2f;
+        if (isExploding) return;
         
-        float pushDir = transform.position.x < player.position.x ? -1f : 1f;
-        rb.velocity = Vector2.zero;
-        rb.AddForce(new Vector2(pushDir * 5f, 5f), ForceMode2D.Impulse);
-        if (anim) anim.SetTrigger("gethit");
-    }
-
-    protected override void OnCollisionEnter2D(Collision2D collision) {
-        if (isExploded) return;
-        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player")) {
-            Explode();
-        }
-    }
-
-    private void Explode() {
-        if (isExploded) return;
-        isExploded = true;
-        Vector3 impactPos = transform.position;
-
+        isExploding = true; 
+        
         if (rb != null) {
-            rb.velocity = Vector2.zero;
-            rb.gravityScale = 0;
+            rb.gravityScale = 2f; 
+            rb.velocity = Vector2.zero; 
+            rb.constraints = RigidbodyConstraints2D.None; 
+            float pushDir = (player != null && transform.position.x < player.position.x) ? -1f : 1f;
+            rb.AddForce(new Vector2(pushDir * 5f, 5f), ForceMode2D.Impulse); 
         }
 
-        if (explosionEffect != null) {
-            Instantiate(explosionEffect, impactPos, Quaternion.identity);
+        StartCoroutine(ExplosionSequence());
+    }
+
+    private IEnumerator ExplosionSequence() {
+        if (!isExploding) {
+            rb.velocity = Vector2.zero; 
+            isExploding = true;
+            rb.gravityScale = 2f;
         }
-        Collider2D[] hits = Physics2D.OverlapCircleAll(impactPos, explosionRadius);
-        bool playerDamaged = false;
-        foreach (var hit in hits) {
-            if (hit.CompareTag("Player")) {
+
+        if (anim) anim.SetTrigger("boom");
+        
+        yield return new WaitForSeconds(1.5f);
+
+        if (explosionEffect) Instantiate(explosionEffect, transform.position, Quaternion.identity);
+
+        Collider2D[] objectsInRange = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+        foreach (Collider2D col in objectsInRange) {
+            if (col.CompareTag("Player")) {
                 PlayerController.Instance.TakeDamage();
-                EventManager.current.onPlayerHit(impactPos);
-                playerDamaged = true;
-                break;
+                EventManager.current.onPlayerHit(transform.position);
+            }
+            else if (col.CompareTag("Enemy")) {
+                EnemyBase otherEnemy = col.GetComponentInParent<EnemyBase>();
+                if (otherEnemy != null && otherEnemy != this) {
+                    otherEnemy.GetHit(3, 3); 
+                }
             }
         }
 
-        if (!playerDamaged && player != null) {
-            if (Vector2.Distance(impactPos, player.position) <= explosionRadius) {
-                PlayerController.Instance.TakeDamage();
+        GlobalPoolManager.Instance.Return(gameObject);
+    }
+
+    private void CheckBoundaries() {
+        if ((dirX == 1 && transform.position.x >= 15f) || (dirX == -1 && transform.position.x <= -15f)) {
+            dirX *= -1;
+            UpdateFacing();
+            if (currentPhaseIndex < phaseHeights.Length - 1) {
+                currentPhaseIndex++;
+                transform.position = new Vector3(transform.position.x, phaseHeights[currentPhaseIndex], transform.position.z);
             }
         }
-
-        OnDeathAction?.Invoke();
     }
 
-    private void MoveToNextPhase() {
-        if (currentPhaseIndex < phaseHeights.Length - 1) {
-            currentPhaseIndex++;
-            transform.position = new Vector3(transform.position.x, phaseHeights[currentPhaseIndex], transform.position.z);
-        } else {
-            dashSpeed += 1f; 
-            dashSpeed = Mathf.Min(dashSpeed, 20f); 
-        }
+    private void UpdateFacing() {
+        transform.localScale = new Vector3(dirX * Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+        transform.rotation = Quaternion.identity;
     }
 
-    private void RotateTowardsVelocity() {
-        if (rb != null && rb.velocity.sqrMagnitude > 0.1f) {
-            float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
-    }
-
-    private void OnDrawGizmos() {
-        Vector2 headPos = (Vector2)transform.position + new Vector2(dirX * headOffset, 0);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(headPos, 0.7f);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
+    private void OnCollisionEnter2D(Collision2D col) {
+        if (!isExploding && col.gameObject.CompareTag("Ground")) StartCoroutine(ExplosionSequence());
     }
 }

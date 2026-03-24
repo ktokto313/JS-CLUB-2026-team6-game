@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d407edb680e4de5bbaa10989e339230, type: 3}
-  m_Name: basicdata
+  m_Name: Hammer
   m_EditorClassIdentifier: 
   enemyName: 
-  baseHealth: 5
-  baseMoveSpeed: 2
-  baseDamage: 1
+  baseHealth: 10
+  baseMoveSpeed: 4
+  baseDamage: 2
   healthMultiplierPerWave: 0.2
   speedMultiplierPerWave: 0.05
