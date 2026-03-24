@@ -7,12 +7,12 @@ namespace _Game.Scripts.Core
     {
         public static StatisticController current { get; private set; }
         
-        private Time time;
-        private int score = 0;
-        private int hit = 0;
-        private int attack = 0;
-        private int bestCombo = 0;
-        private int currentCombo = 0;
+        public Time time { get; private set; }
+        public int score { get; private set; } = 0;
+        public int hit { get; private set; } = 0;
+        public int attack { get; private set; } = 0;
+        public int bestCombo { get; private set; } = 0;
+        public int currentCombo { get; private set; } = 0;
 
         private void Start()
         {
@@ -27,6 +27,7 @@ namespace _Game.Scripts.Core
         private void Reset() 
         {
             score = 0;
+            hit = 0;
             attack = 0;
             bestCombo = 0;
             currentCombo = 0;

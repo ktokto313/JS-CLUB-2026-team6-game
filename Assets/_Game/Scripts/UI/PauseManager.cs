@@ -6,6 +6,8 @@ public class PauseManager : MonoBehaviour
     public GameObject pauseMenuPanel;
     public GameObject winPanel;
     public GameObject losePanel;
+    [SerializeField] private GameObject statCard;
+    
     void Start()
     {
         
@@ -19,7 +21,8 @@ public class PauseManager : MonoBehaviour
     {
         if (losePanel != null)
         {
-            losePanel.SetActive(true); 
+            losePanel.SetActive(true);
+            statCard.SetActive(true);
             Time.timeScale = 0f;    
         }
     }
@@ -27,6 +30,7 @@ public class PauseManager : MonoBehaviour
     public void PauseGame()
          {
              pauseMenuPanel.SetActive(true);
+             statCard.SetActive(true);
              Time.timeScale = 0f; 
          }
      
@@ -34,6 +38,7 @@ public class PauseManager : MonoBehaviour
          {
      
              pauseMenuPanel.SetActive(false);
+             statCard.SetActive(false);
              Time.timeScale = 1f; 
          }
          
