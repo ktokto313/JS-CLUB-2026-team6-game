@@ -1185,6 +1185,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 228.6
       objectReference: {fileID: 0}
+    - target: {fileID: 3532527562780420110, guid: 011737cebabdedb409b4a2481c655518, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3569561464876307542, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -1195,16 +1199,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3741283783354373448, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_Color.b
-      value: 0.35455313
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3741283783354373448, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_Color.g
-      value: 0.35455313
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3741283783354373448, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_Color.r
-      value: 0.3735848
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3741283783354373448, guid: 011737cebabdedb409b4a2481c655518, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 4924026178642391842, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.71
@@ -1247,7 +1255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6321133835781259459, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7602479185730126211, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1271,7 +1279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8421822794740213763, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8421822794740213763, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_Intensity
@@ -1291,6 +1299,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8421822794740213763, guid: 011737cebabdedb409b4a2481c655518, type: 3}
       propertyPath: m_LightVolumeIntensityEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8713895519721755222, guid: 011737cebabdedb409b4a2481c655518, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
