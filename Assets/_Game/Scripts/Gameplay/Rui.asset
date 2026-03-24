@@ -12,13 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0be40f54e9463dad0cde9f84e13cc7, type: 3}
   m_Name: Rui
   m_EditorClassIdentifier: 
-  weaponName: 
-  icon: {fileID: 21300000, guid: b2c06b5aa7d68624a9bdbe6d64cae2a2, type: 3}
-  worldSprite: {fileID: 21300000, guid: 9afb2ed79935d6b41b0729f04e27b17a, type: 3}
   type: 0
   damage: 1
   attackRange: 1
   attackSpeed: 0.8
   flySpeed: 2
   lifeTime: 15
-  projectilePrefab: {fileID: 3314233954150932537, guid: d0cee1403e57ef04d9ca6a7b4266a704, type: 3}
+  weaponSkins:
+  - skinName: 
+    visualSprite: {fileID: 21300000, guid: c522144e3f354db46bcd2bf23587e1c9, type: 3}
+    projectilePrefab: {fileID: 3314233954150932537, guid: d0cee1403e57ef04d9ca6a7b4266a704, type: 3}
+  - skinName: 
+    visualSprite: {fileID: 21300000, guid: b9b5211e8ec1c5b4884a4e358b14fe74, type: 3}
+    projectilePrefab: {fileID: 1244486902506698770, guid: d6e2de8cce697544d9099b5e66b9b748, type: 3}
+  - skinName: 
+    visualSprite: {fileID: 21300000, guid: d99e0e13aa4e4ad4d9482299516909fa, type: 3}
+    projectilePrefab: {fileID: 726387601297622484, guid: a42c5e0c757987c4baa5c035e73c1fb1, type: 3}
+  currentVisual: {fileID: 21300000, guid: d99e0e13aa4e4ad4d9482299516909fa, type: 3}
+  currentPrefab: {fileID: 726387601297622484, guid: a42c5e0c757987c4baa5c035e73c1fb1, type: 3}
