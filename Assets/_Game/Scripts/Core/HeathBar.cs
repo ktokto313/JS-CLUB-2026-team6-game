@@ -5,17 +5,24 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
     [SerializeField] private Image fillImage;
-    [SerializeField] private Color healthColor = Color.green;
 
-    public void UpdateHealth(int currentHealth, int maxHealth)
+    public void UpdateHealth(float currentHealth, float maxHealth)
     {
+        if (slider == null) return;
+        
         slider.maxValue = maxHealth;
         slider.value = currentHealth;
-        if (fillImage != null) fillImage.color = healthColor;
+        if (fillImage != null) fillImage.color = Color.green;
     }
 
     void LateUpdate()
     {
         transform.rotation = Quaternion.identity;
+        Vector3 parentScale = transform.parent.localScale;
+        transform.localScale = new Vector3(
+            Mathf.Sign(parentScale.x) * Mathf.Abs(transform.localScale.x), 
+            transform.localScale.y, 
+            transform.localScale.z
+        );
     }
 }
