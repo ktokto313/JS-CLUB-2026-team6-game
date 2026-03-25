@@ -25,7 +25,6 @@ public class MainMenu : MonoBehaviour
         if (sfxSlider != null)
         {
             if (sfxSource != null) sfxSlider.value = sfxSource.volume;
-            
             sfxSlider.onValueChanged.AddListener(OnSFXSliderChanged);
         }
     }
