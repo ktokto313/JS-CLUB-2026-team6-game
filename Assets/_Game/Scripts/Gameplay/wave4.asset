@@ -18,7 +18,14 @@ MonoBehaviour:
     enemyPrefab: {fileID: 3463495847834036775, guid: 7f4ad67a4cc40364fa95bfd91e0fea78, type: 3}
     delayAfterLastStep: 0
     count: 2
-    interval: 4
+    interval: 3
+    useRandomPoint: 1
+    specificPointIndex: 0
+  - label: 
+    enemyPrefab: {fileID: 2892016389069182638, guid: be3c67ea5a4b5f0488afe01cface573c, type: 3}
+    delayAfterLastStep: 3
+    count: 1
+    interval: 3
     useRandomPoint: 1
     specificPointIndex: 0
   - label: 
@@ -29,9 +36,9 @@ MonoBehaviour:
     useRandomPoint: 1
     specificPointIndex: 0
   - label: 
-    enemyPrefab: {fileID: 1717771465425058998, guid: e666f5aefaf70224aac4be64805fca5b, type: 3}
+    enemyPrefab: {fileID: 2892016389069182638, guid: be3c67ea5a4b5f0488afe01cface573c, type: 3}
     delayAfterLastStep: 6
-    count: 2
+    count: 1
     interval: 3
     useRandomPoint: 1
     specificPointIndex: 0

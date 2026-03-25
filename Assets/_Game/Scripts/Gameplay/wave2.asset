@@ -15,30 +15,23 @@ MonoBehaviour:
   waveName: wave2
   spawnSteps:
   - label: 
-    enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
+    enemyPrefab: {fileID: 2892016389069182638, guid: be3c67ea5a4b5f0488afe01cface573c, type: 3}
     delayAfterLastStep: 0
+    count: 1
+    interval: 0
+    useRandomPoint: 1
+    specificPointIndex: 0
+  - label: 
+    enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
+    delayAfterLastStep: 2
     count: 3
     interval: 0.5
-    useRandomPoint: 0
+    useRandomPoint: 1
     specificPointIndex: 0
   - label: 
     enemyPrefab: {fileID: 1717771465425058998, guid: e666f5aefaf70224aac4be64805fca5b, type: 3}
     delayAfterLastStep: 3
-    count: 1
-    interval: 0
-    useRandomPoint: 0
-    specificPointIndex: 0
-  - label: 
-    enemyPrefab: {fileID: 2083373894443671076, guid: 1fa0c4967cf48664f84c814baceec6e0, type: 3}
-    delayAfterLastStep: 8
     count: 2
     interval: 0
-    useRandomPoint: 1
-    specificPointIndex: 0
-  - label: 
-    enemyPrefab: {fileID: 4960510062423644082, guid: 279ed95dfa0cd2d4f92cdb64975bd1d3, type: 3}
-    delayAfterLastStep: 0
-    count: 1
-    interval: 0
-    useRandomPoint: 1
+    useRandomPoint: 0
     specificPointIndex: 0
