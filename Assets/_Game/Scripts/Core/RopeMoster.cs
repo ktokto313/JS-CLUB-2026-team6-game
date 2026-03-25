@@ -6,14 +6,19 @@ public class SwingingEnemy : EnemyBase {
     [SerializeField] private float swingRadius = 7f; 
     [SerializeField] private float swingSpeed = 2f;   
     [SerializeField] private float sideLimit = 0.4f;
+    [SerializeField] private SpriteRenderer ropeVisual;
     private Vector2 anchorPoint;  
     private float angle;       
     private bool isSwinging = true;
     private float swingDirection = 1f;
-
+    private bool hasHitPlayerInThisSwing = false;
+    [SerializeField] private float damageRadius = 0.6f;
+    [SerializeField] private float damageOffset = 0f;
     protected override void OnEnable() {
         base.OnEnable();
         isSwinging = true;
+        hasHitPlayerInThisSwing = false;
+        if (ropeVisual != null) ropeVisual.enabled = true;
         if (anim != null) {
             anim.SetBool("fall", false);
         }
@@ -30,6 +35,9 @@ public class SwingingEnemy : EnemyBase {
     protected override void Update() {
         if (isSwinging) {
             UpdateSwingingMovement();
+            if (!hasHitPlayerInThisSwing) {
+                CheckDamage();
+            }
         } else {
             base.Update();
         }
@@ -41,10 +49,12 @@ public class SwingingEnemy : EnemyBase {
         if (angle > -sideLimit) {
             angle = -sideLimit;
             swingDirection = -1f;
+            hasHitPlayerInThisSwing = false;
         }
         if (angle < -Mathf.PI + sideLimit) {
             angle = -Mathf.PI + sideLimit;
             swingDirection = 1f;
+            hasHitPlayerInThisSwing = false;
         }
         float x = anchorPoint.x + Mathf.Cos(angle) * swingRadius;
         float y = anchorPoint.y + Mathf.Sin(angle) * swingRadius;
@@ -66,16 +76,26 @@ public class SwingingEnemy : EnemyBase {
     private void FallDown() {
         isSwinging = false;
         isAirborne = true;
+        hasHitPlayerInThisSwing = false;
+        if (ropeVisual != null) ropeVisual.enabled = false;
         if (rb) {
             rb.gravityScale = 1.5f; 
             rb.velocity = new Vector2(swingDirection * 3f, 2f); 
         }
     }
-    protected override void OnCollisionEnter2D(Collision2D collision) {
-        if (isSwinging && collision.gameObject.CompareTag("Player")) {
+    private void CheckDamage() {
+        float facingDir = transform.localScale.x > 0 ? 1 : -1;
+        Vector2 checkPos = (Vector2)transform.position + new Vector2(facingDir * damageOffset, 0);
+        
+        Collider2D hit = Physics2D.OverlapCircle(checkPos, damageRadius, LayerMask.GetMask("Player"));
+        
+        if (hit != null) {
+            hasHitPlayerInThisSwing = true;
             PlayerController.Instance.TakeDamage();
+            Debug.Log("<color=red>Rope Enemy hit Player!</color>");
         }
-
+    }
+    protected override void OnCollisionEnter2D(Collision2D collision) {
         if (!isSwinging && collision.gameObject.CompareTag("Ground")) {
             if (anim != null) anim.SetBool("fall", false);
             base.OnCollisionEnter2D(collision);

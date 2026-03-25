@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
-    [SerializeField] private Image fillImage;
 
     public void UpdateHealth(float currentHealth, float maxHealth)
     {
@@ -12,7 +11,6 @@ public class HealthBar : MonoBehaviour
         
         slider.maxValue = maxHealth;
         slider.value = currentHealth;
-        if (fillImage != null) fillImage.color = Color.green;
     }
 
     void LateUpdate()
