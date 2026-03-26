@@ -25,13 +25,13 @@ MonoBehaviour:
     enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
     delayAfterLastStep: 2
     count: 3
-    interval: 0.5
+    interval: 3.5
     useRandomPoint: 1
     specificPointIndex: 0
   - label: 
     enemyPrefab: {fileID: 1717771465425058998, guid: e666f5aefaf70224aac4be64805fca5b, type: 3}
-    delayAfterLastStep: 3
+    delayAfterLastStep: 4
     count: 2
-    interval: 0
-    useRandomPoint: 0
+    interval: 5
+    useRandomPoint: 1
     specificPointIndex: 0

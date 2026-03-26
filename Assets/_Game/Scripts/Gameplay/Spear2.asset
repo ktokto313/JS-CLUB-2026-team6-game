@@ -16,11 +16,11 @@ MonoBehaviour:
   damage: 1
   attackRange: 1.5
   attackSpeed: 0.5
-  flySpeed: 15
-  lifeTime: 5
+  flySpeed: 6
+  lifeTime: 6
   weaponSkins:
   - skinName: 
     visualSprite: {fileID: 21300000, guid: 7e572e708ad3a104db51fb90229d5790, type: 3}
-    projectilePrefab: {fileID: 3184238405019630139, guid: 8f0309ab6e588eb43bd17938b1c4f2e2, type: 3}
+    projectilePrefab: {fileID: 8633742762667071930, guid: 8f0309ab6e588eb43bd17938b1c4f2e2, type: 3}
   currentVisual: {fileID: 0}
   currentPrefab: {fileID: 0}

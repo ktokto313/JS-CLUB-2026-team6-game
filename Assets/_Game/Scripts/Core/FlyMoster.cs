@@ -35,7 +35,15 @@ public class RocketRider : EnemyBase
     private void Update() {
         if (isExploding) {
             if (rb != null && rb.velocity.sqrMagnitude > 0.2f) {
+                // Tính góc bay thực tế
                 float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+
+                if (dirX == -1) {
+                    // CỐT LÕI: Khi Scale.x âm, trục tọa độ bị đảo ngược.
+                    // Để nhìn sang trái và chúi đầu xuống đúng hướng, ta phải bù trừ góc như sau:
+                    angle = Mathf.Atan2(-rb.velocity.y, -rb.velocity.x) * Mathf.Rad2Deg;
+                }
+
                 Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
@@ -51,9 +59,7 @@ public class RocketRider : EnemyBase
 
     public override void GetHit(int damage, int hitType) {
         if (isExploding) return;
-        
         isExploding = true; 
-        
         if (rb != null) {
             rb.gravityScale = 2f; 
             rb.velocity = Vector2.zero; 
@@ -61,7 +67,6 @@ public class RocketRider : EnemyBase
             float pushDir = (player != null && transform.position.x < player.position.x) ? -1f : 1f;
             rb.AddForce(new Vector2(pushDir * 5f, 5f), ForceMode2D.Impulse); 
         }
-
         StartCoroutine(ExplosionSequence());
     }
 
@@ -70,14 +75,11 @@ public class RocketRider : EnemyBase
             rb.velocity = Vector2.zero; 
             isExploding = true;
             rb.gravityScale = 2f;
+            rb.constraints = RigidbodyConstraints2D.None;
         }
-
         if (anim) anim.SetTrigger("boom");
-        
         yield return new WaitForSeconds(1.5f);
-
         if (explosionEffect) Instantiate(explosionEffect, transform.position, Quaternion.identity);
-
         Collider2D[] objectsInRange = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (Collider2D col in objectsInRange) {
             if (col.CompareTag("Player")) {
@@ -86,12 +88,9 @@ public class RocketRider : EnemyBase
             }
             else if (col.CompareTag("Enemy")) {
                 EnemyBase otherEnemy = col.GetComponentInParent<EnemyBase>();
-                if (otherEnemy != null && otherEnemy != this) {
-                    otherEnemy.GetHit(3, 3); 
-                }
+                if (otherEnemy != null && otherEnemy != this) otherEnemy.GetHit(3, 3);
             }
         }
-
         EventManager.current.onDead();
         GlobalPoolManager.Instance.Return(gameObject);
     }
