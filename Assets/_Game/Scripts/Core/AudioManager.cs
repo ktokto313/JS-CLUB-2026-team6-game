@@ -69,9 +69,7 @@ namespace _Game.Scripts.Core
 
         private void HandleDead()
         {
-            sfxSource.volume = oneShotSfxVolume * 0.005f;
             PlayOneShot(deadClip);
-            sfxSource.volume = oneShotSfxVolume;
         }
 
         private void HandlePlayerDead()
@@ -97,12 +95,14 @@ namespace _Game.Scripts.Core
         private void HandleMusicVolumeSliderUpdate(float volume)
         {
             musicVolume = volume;
+            musicSource.volume = musicVolume;
         }
 
         private void HandleSFXVolumeSliderUpdate(float volume)
         {
             oneShotSfxVolume = volume;
             positionalSfxVolume = volume;
+            sfxSource.volume = oneShotSfxVolume;
         }
 
         private void PlayOneShot(AudioClip clip)
