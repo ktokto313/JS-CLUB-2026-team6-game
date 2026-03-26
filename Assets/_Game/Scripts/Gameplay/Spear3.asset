@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0be40f54e9463dad0cde9f84e13cc7, type: 3}
   m_Name: Spear3
   m_EditorClassIdentifier: 
-  type: 0
+  type: 2
   damage: 1
   attackRange: 1.5
   attackSpeed: 0.5

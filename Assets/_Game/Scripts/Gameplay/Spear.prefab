@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7177472321211360502}
   m_Layer: 0
   m_Name: Spear
-  m_TagString: DroppedWeapon
+  m_TagString: FlyObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

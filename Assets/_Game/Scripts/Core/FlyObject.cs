@@ -102,12 +102,34 @@ private void OnEnable()
         {
             drop.SetDataOnly(data, _specificPrefab);
         }
+        if (data.type == WeaponType.Spear)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+        else
+        {
+            transform.rotation = Quaternion.identity;
+        }
     }
 
     void Update()
     {
-        transform.Rotate(0, 0, 1000 * Time.deltaTime);
-        
+        if (_weaponTbScriptData != null)
+        {
+            if (_weaponTbScriptData.type == WeaponType.Melee)
+            {
+                transform.Rotate(0, 0, 1000 * Time.deltaTime);
+            }
+            else if (_weaponTbScriptData.type == WeaponType.Spear)
+            {
+                if (rb.velocity != Vector2.zero)
+                {
+                    float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
+            }
+        }
         if (!isPlayerOwned && !hasPassedPlayer && playerTransform != null)
         {
             CheckIfPassedPlayer();
