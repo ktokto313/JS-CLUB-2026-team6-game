@@ -39,6 +39,7 @@ private void OnEnable()
         hasPassedPlayer = false;
         isPlayerOwned = false;
         gameObject.tag = "FlyObject";
+        transform.rotation = Quaternion.identity;
         UpdateRingVisual(); 
         CancelInvoke();
     }
@@ -80,9 +81,7 @@ private void OnEnable()
     public void Launch(WeaponTBScript data, GameObject spawnedPrefab, Vector2 direction, float speedOverride, Transform player, bool fromPlayer)
     { 
         _weaponTbScriptData = data;
-        
         _specificPrefab = spawnedPrefab; 
-        
         playerTransform = player;
         isPlayerOwned = fromPlayer; 
 
@@ -94,6 +93,16 @@ private void OnEnable()
         float finalSpeed = (data.flySpeed > 0) ? data.flySpeed : speedOverride;
         rb.velocity = direction * finalSpeed;
 
+        if (data.type == WeaponType.Spear)
+        {
+            float targetAngle = (direction.x > 0) ? 0f : 180f;
+            transform.rotation = Quaternion.Euler(0, 0, targetAngle);
+        }
+        else
+        {
+            transform.rotation = Quaternion.identity;
+        }
+
         gameObject.tag = "FlyObject"; 
         float lifeTime = (data.lifeTime > 0) ? data.lifeTime : 5f; 
         Invoke("ReturnToPool", lifeTime);
@@ -101,15 +110,6 @@ private void OnEnable()
         if (TryGetComponent(out DroppedWeapon drop))
         {
             drop.SetDataOnly(data, _specificPrefab);
-        }
-        if (data.type == WeaponType.Spear)
-        {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
-        else
-        {
-            transform.rotation = Quaternion.identity;
         }
     }
 
@@ -123,13 +123,12 @@ private void OnEnable()
             }
             else if (_weaponTbScriptData.type == WeaponType.Spear)
             {
-                if (rb.velocity != Vector2.zero)
-                {
-                    float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
-                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                {float targetZ = (rb.velocity.x >= 0) ? 0f : 180f;
+                    transform.eulerAngles = new Vector3(0, 0, targetZ);
                 }
             }
         }
+
         if (!isPlayerOwned && !hasPassedPlayer && playerTransform != null)
         {
             CheckIfPassedPlayer();

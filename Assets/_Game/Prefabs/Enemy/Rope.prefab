@@ -142,8 +142,8 @@ Transform:
   m_GameObject: {fileID: 1542302285885431700}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.233, y: 0.772, z: 0}
-  m_LocalScale: {x: 0.71801865, y: 1.926016, z: 0}
+  m_LocalPosition: {x: 0.18376, y: 0.98372, z: 0}
+  m_LocalScale: {x: 0.51285917, y: 2.8081892, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7117091966753618509}
@@ -480,9 +480,6 @@ MonoBehaviour:
   ropeVisual: {fileID: 8141630833386428015}
   damageRadius: 0.6
   damageOffset: 0
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &5922559367534079932
 GameObject:
   m_ObjectHideFlags: 0

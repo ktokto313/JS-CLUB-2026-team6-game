@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1083bdd43abeea4caef662d4df58e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 3101277336792954868}
   data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: c45cb0e037dd2c340ac39c9dceabccd4, type: 2}
   visualAxe: {fileID: 176173905455505152}
@@ -515,7 +515,7 @@ MonoBehaviour:
   - {x: 0.23, y: -0.24, z: 0}
   m_ShapePathHash: -781772239
   m_Mesh: {fileID: 0}
-  m_InstanceId: 37368
+  m_InstanceId: 49790
   m_LocalBounds:
     m_Center: {x: 0.075, y: -0.024999991, z: 0}
     m_Extent: {x: 0.155, y: 0.215, z: 0}
@@ -635,4 +635,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 2175518663779349444}
-  fillImage: {fileID: 0}

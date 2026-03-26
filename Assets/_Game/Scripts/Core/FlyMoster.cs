@@ -8,7 +8,7 @@ public class RocketRider : EnemyBase
     [SerializeField] private float dashSpeed = 12f; 
     [SerializeField] private float explosionRadius = 3f; 
     [SerializeField] private float headOffset = 0.8f; 
-    [SerializeField] private float[] phaseHeights = { 5f, 3f, 1f };
+    [SerializeField] private float[] phaseHeights = { 5f, 1f, -2f };
     [SerializeField] private GameObject explosionEffect;
     [SerializeField] private float rotationSpeed = 5f;
 

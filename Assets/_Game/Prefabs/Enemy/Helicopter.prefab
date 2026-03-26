@@ -182,9 +182,9 @@ MonoBehaviour:
   explosionRadius: 1.99
   headOffset: 1.34
   phaseHeights:
-  - 5
-  - 3
+  - 4
   - 1
+  - -2
   explosionEffect: {fileID: 0}
   rotationSpeed: 5
 --- !u!95 &1805681426048441280
@@ -234,7 +234,7 @@ MonoBehaviour:
   - {x: 0.1, y: -0.16, z: 0}
   m_ShapePathHash: 1971713139
   m_Mesh: {fileID: 0}
-  m_InstanceId: 38284
+  m_InstanceId: 71236
   m_LocalBounds:
     m_Center: {x: -0.010000005, y: 0.010000005, z: 0}
     m_Extent: {x: 0.19999999, y: 0.17, z: 0}
@@ -354,7 +354,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 7552739933052665521}
-  fillImage: {fileID: 0}
 --- !u!1 &6691070007917834063
 GameObject:
   m_ObjectHideFlags: 0

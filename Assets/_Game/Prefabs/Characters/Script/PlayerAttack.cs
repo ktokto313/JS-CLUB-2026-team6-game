@@ -120,26 +120,28 @@ public class PlayerAttack : MonoBehaviour
     }
 
     // --- LOGIC NÉM VŨ KHÍ (CÁCH A) ---
-private void ThrowEquippedWeapon(float direction)
+    private void ThrowEquippedWeapon(float direction)
     {   
         if (currentWeapon == null) return;
-        
-        if (currentWeapon.currentPrefab == null)
-        {
-            Debug.LogError($"<color=red>Lỗi: {currentWeapon.name} không có prefab để ném!</color>");
-            return;
-        }
-
+    
         Vector3 spawnPos = transform.position + new Vector3(direction * 1.2f, punchOffset.y, 0f);
+    
         GameObject go = GlobalPoolManager.Instance.Get(currentWeapon.currentPrefab, spawnPos);
-        
+    
+        go.transform.SetParent(null); 
+        go.transform.rotation = Quaternion.identity; 
+
         if (go.TryGetComponent(out FlyObject fly)) 
         {
-            if (go.TryGetComponent(out Rigidbody2D rb)) rb.velocity = Vector2.zero;
-
-            fly.Launch(currentWeapon,currentWeapon.currentPrefab, new Vector2(direction, 0.1f), currentWeapon.flySpeed, transform, true);
+            if (go.TryGetComponent(out Rigidbody2D rb)) 
+            {
+                rb.velocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+                rb.rotation = 0f; 
+            }
+            fly.Launch(currentWeapon, currentWeapon.currentPrefab, new Vector2(direction, 0.1f), currentWeapon.flySpeed, transform, true);
         }
-        
+    
         EquipWeapon(null);
     }
 
