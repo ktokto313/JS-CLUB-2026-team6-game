@@ -510,6 +510,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 1260180870690059391, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935564329677486033, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3316100590910935640, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_Type
       value: 0
@@ -517,7 +525,11 @@ PrefabInstance:
     - target: {fileID: 3316100590910935640, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 6584606a788eb544abd6808bcd6dd2c9, type: 3}
+      objectReference: {fileID: 21300000, guid: daa10612881375c41a90d817b18d6cea, type: 3}
+    - target: {fileID: 3316100590910935640, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3353214614730819098, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -553,6 +565,10 @@ PrefabInstance:
     - target: {fileID: 4657032540445005517, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4657032540445005517, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.0115033
       objectReference: {fileID: 0}
     - target: {fileID: 4657032540445005517, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -776,11 +792,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4735347879590280256, guid: 7bdbc63abd0882447914d5f685ca497e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -214
+      value: 371
       objectReference: {fileID: 0}
     - target: {fileID: 4735347879590280256, guid: 7bdbc63abd0882447914d5f685ca497e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 120
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 4735347879590280256, guid: 7bdbc63abd0882447914d5f685ca497e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -797,6 +813,10 @@ PrefabInstance:
     - target: {fileID: 8531800374336055255, guid: 7bdbc63abd0882447914d5f685ca497e, type: 3}
       propertyPath: m_Name
       value: QuitButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8531800374336055255, guid: 7bdbc63abd0882447914d5f685ca497e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
