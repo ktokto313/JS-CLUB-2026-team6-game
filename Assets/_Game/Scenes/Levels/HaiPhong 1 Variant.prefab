@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &157911942152475965
 Transform:
   m_ObjectHideFlags: 0
@@ -108,13 +108,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4560283378732260148}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.06897471, w: 0.99761844}
-  m_LocalPosition: {x: -1.99, y: 6.44, z: 10}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.99, y: 7.6, z: 0}
   m_LocalScale: {x: 0.089996, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8313175584207805791}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -7.91}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &144133209496438508
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -9852,7 +9852,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2469568251417053335, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2779850637908788599, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9876,7 +9876,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3219179864832487960, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3727380118635885125, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_Color.b
@@ -10020,23 +10020,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5120647709915395025, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.7730588
+      value: 1.58
       objectReference: {fileID: 0}
     - target: {fileID: 5120647709915395025, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.9963574
+      value: 1.58
       objectReference: {fileID: 0}
     - target: {fileID: 5120647709915395025, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.7904
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5120647709915395025, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.7567
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5120647709915395025, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_LocalPosition.z
       value: 24.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 5120647709915395025, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6648675102316798632, guid: c711b6c047527f24c9e98d4e13296d75, type: 3}
       propertyPath: m_IsActive

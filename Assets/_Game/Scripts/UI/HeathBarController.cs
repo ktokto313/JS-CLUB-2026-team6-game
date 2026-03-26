@@ -8,13 +8,13 @@ using UnityEngine.UI;
 public class HeathBarController : MonoBehaviour
 {
     [SerializeField] private Slider healthSlider;
-    [SerializeField] private TMP_Text textBox;
+    // [SerializeField] private TMP_Text textBox;
     
     // Start is called before the first frame update
     void Start()
     {
         EventManager.current.onPlayerHealthUpdateAction += SetHealth;
-        EventManager.current.onPointUpdateAction += SetPoint;
+        // EventManager.current.onPointUpdateAction += SetPoint;
     }
 
     // Update is called once per frame
@@ -36,8 +36,8 @@ public class HeathBarController : MonoBehaviour
         
     }
 
-    public void SetPoint(int point)
-    {
-        textBox.text = point.ToString();
-    }
+    // public void SetPoint(int point)
+    // {
+    //     textBox.text = point.ToString();
+    // }
 }
