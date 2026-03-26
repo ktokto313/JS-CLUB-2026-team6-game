@@ -33,6 +33,7 @@ public class SpawnManager : MonoBehaviour {
 
     private IEnumerator CampaignRoutine() {
         foreach (WaveData wave in waves) {
+            BackgroundController.Instance.OnNextWave();
             Debug.Log($"<color=cyan><b>START WAVE {currentWaveIndex}</b></color>");
             foreach (var step in wave.spawnSteps) {
                 if (step.delayAfterLastStep > 0) yield return new WaitForSeconds(step.delayAfterLastStep);
