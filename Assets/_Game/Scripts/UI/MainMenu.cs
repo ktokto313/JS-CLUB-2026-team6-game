@@ -74,4 +74,16 @@ public class MainMenu : MonoBehaviour
             EventManager.current.onSFXVolumeSliderUpdate(value);
         }
     }
+    
+    public void QuitGame()
+    {
+        Debug.Log("Game đang thoát...");
+
+        #if UNITY_EDITOR
+            
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
 }
