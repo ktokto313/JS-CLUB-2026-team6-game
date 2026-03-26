@@ -12,7 +12,7 @@ namespace _Game.Scripts.Core
         [SerializeField] private TMP_Text currentComboText;
         [SerializeField] private TMP_Text timeText;
 
-        private void Start()
+        private void OnEnable()
         {
             StatisticController stats = StatisticController.current;
 
