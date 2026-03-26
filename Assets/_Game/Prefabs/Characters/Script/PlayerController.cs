@@ -84,9 +84,13 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            if (state == PlayerState.AIRBORNE || state == PlayerState.SMASHING)
+            if (state == PlayerState.AIRBORNE)
             {
                 state = PlayerState.STANDING;
+                ResetAirActions();
+            } else if (state == PlayerState.SMASHING)
+            {
+                state = PlayerState.DUCKING;
                 ResetAirActions();
             }
         }
@@ -112,7 +116,7 @@ public class PlayerController : MonoBehaviour
             if (health.IsDead)
             {
                 state = PlayerState.DEATH;
-                EventManager.current?.onPlayerDead();
+                StartCoroutine(HandleDeathRoutine(1.3f));
             }
             else
             {
@@ -120,8 +124,33 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    
+    private IEnumerator HandleDeathRoutine(float delayTime)
+    {
+        if (TryGetComponent(out PlayerAttack attackScript))
+        {
+            attackScript.DropWeapon();
+        }
 
-    // Giao tiếp với con chó (JumpingHugger)
+        if (PlayerController.Instance != null) 
+        {
+            PlayerController.Instance.enabled = false; 
+        }
+
+        if (TryGetComponent(out Rigidbody2D rb))
+        {
+            rb.gravityScale = 0f; 
+
+            rb.velocity = Vector2.zero; 
+
+            rb.simulated = false; 
+        }
+        
+        yield return new WaitForSeconds(delayTime);
+
+        EventManager.current?.onPlayerDead();
+    }
+
     public void OnGetHuggedByDog(float stunDuration)
     {
         if (state == PlayerState.DEATH) return; 
@@ -129,7 +158,6 @@ public class PlayerController : MonoBehaviour
         state = PlayerState.STUNNED;
         if (TryGetComponent(out Rigidbody2D rb)) rb.velocity = Vector2.zero;
 
-        // Ra lệnh cho PlayerAttack vứt vũ khí
         if (TryGetComponent(out PlayerAttack attackScript))
         {
             attackScript.DropWeapon();
@@ -144,7 +172,6 @@ public class PlayerController : MonoBehaviour
         if (state != PlayerState.DEATH) state = PlayerState.STANDING;
     }
 
-    // --- XỬ LÝ ACTION TỪ INPUT ---
     private void HandleAttackLeft()
     {
         if (state == PlayerState.DEATH || state == PlayerState.STUNNED) return;
@@ -164,7 +191,7 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case PlayerState.STANDING:
-                OnPerformAttack?.Invoke(); // Chỉ phát lệnh, PlayerAttack sẽ tự đếm combo
+                OnPerformAttack?.Invoke(); 
                 break;
             case PlayerState.DUCKING:
                 state = PlayerState.STANDING;
