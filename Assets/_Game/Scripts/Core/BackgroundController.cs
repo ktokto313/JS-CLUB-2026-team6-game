@@ -65,7 +65,7 @@ public class BackgroundController : MonoBehaviour
 
             Vector3 currentStart = currentTr.position;
             Vector3 nextStart = nextTr.position;
-            Vector3 delta = new Vector3(27f, 0f, 0f);
+            Vector3 delta = new Vector3(30f, 0f, 0f);
 
             float duration = 1f;
             float elapsed = 0f;
