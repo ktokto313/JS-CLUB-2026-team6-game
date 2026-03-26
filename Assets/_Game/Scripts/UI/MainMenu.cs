@@ -18,7 +18,6 @@ public class MainMenu : MonoBehaviour
         {
             
             if (musicSource != null) musicSlider.value = musicSource.volume;
-            
             musicSlider.onValueChanged.AddListener(OnMusicSliderChanged);
         }
 
