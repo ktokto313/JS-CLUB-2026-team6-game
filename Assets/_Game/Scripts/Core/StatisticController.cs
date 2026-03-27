@@ -7,12 +7,11 @@ namespace _Game.Scripts.Core
     {
         public static StatisticController current { get; private set; }
         
-        public Time time { get; private set; }
-        public int score { get; private set; } = 0;
-        public int hit { get; private set; } = 0;
-        public int attack { get; private set; } = 0;
-        public int bestCombo { get; private set; } = 0;
-        public int currentCombo { get; private set; } = 0;
+        public int score { get; private set; }
+        public int hit { get; private set; }
+        public int attack { get; private set; }
+        public int bestCombo { get; private set; }
+        public int currentCombo { get; private set; }
 
         private void Awake()
         {
@@ -21,7 +20,6 @@ namespace _Game.Scripts.Core
             EventManager.current.onPlayerAttackAction += onPlayerAttack;
             EventManager.current.onHitAction += onHit;
             EventManager.current.onPlayerHitAction += resetCombo;
-            EventManager.current.onPlayerDeadAction += Reset;
         }
 
         private void Reset() 
