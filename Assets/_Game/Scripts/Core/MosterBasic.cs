@@ -3,7 +3,11 @@ using System.Collections;
 using _Game.Scripts.Core;
 
 public class EnemyBase : Entity {
+    [SerializeField] private WorldChatUI chatUI;
     [SerializeField] protected HealthBar healthBar;
+    [SerializeField] private string[] spawnDialogues = {};
+    [SerializeField] private string[] hitDialogues = {};
+    [SerializeField] private string[] deathDialogues = {};
     protected int maxHealth;
     [Header("Current Instance Weapon Data")]
     protected Sprite selectedVisual;      
@@ -32,7 +36,13 @@ public class EnemyBase : Entity {
         anim = GetComponent<Animator>();
         originalScale = transform.localScale;
     }
-    protected virtual void OnEnable() {
+    protected virtual void OnEnable()
+    {
+        if (chatUI != null) chatUI.gameObject.SetActive(false); 
+        if (Random.value < 0.5f && chatUI != null) {
+            chatUI.ShowChat(spawnDialogues); 
+        }
+        else Debug.Log("Khong tim thay khung chat!");
         comboCount = 0;
         attackTimer = 0; 
         lastHitTime = 0f;  
@@ -89,6 +99,7 @@ public class EnemyBase : Entity {
         if (GameManager.Instance != null) player = GameManager.Instance.PlayerTransform;
 
         OnDeathAction += () => {
+            
             GlobalPoolManager.Instance.Return(gameObject);
 
         };
@@ -97,6 +108,9 @@ public class EnemyBase : Entity {
     
     public virtual void GetHit(int damage, int hitType) {
         Health -= damage;
+        if (Random.value < 0.36f) {
+            chatUI.ShowChat(hitDialogues, 0.5f); 
+        }
         if (healthBar != null) {
             healthBar.UpdateHealth(Health, maxHealth);
         }
@@ -108,6 +122,9 @@ public class EnemyBase : Entity {
         }
 
         if (Health <= 0) {
+            if (Random.value < 0.5f) {
+                chatUI.ShowChat(deathDialogues, 0.5f); 
+            }
             if (healthBar != null) healthBar.gameObject.SetActive(false);
             if (anim != null) anim.SetTrigger("death");
             CheckAndDropWeapon();
