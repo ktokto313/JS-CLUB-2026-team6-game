@@ -1121,7 +1121,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &727363425
+--- !u!43 &652634616
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1985,9 +1985,25 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -20
       objectReference: {fileID: 0}
+    - target: {fileID: 7269031822255432830, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2244269847851500104, guid: add546e9be6ec7548bdadafee25ae201, type: 3}
+    - target: {fileID: 7269031822255432830, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleSFX
+      objectReference: {fileID: 0}
     - target: {fileID: 7889636712057991109, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260162288813674928, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2244269847851500104, guid: add546e9be6ec7548bdadafee25ae201, type: 3}
+    - target: {fileID: 8260162288813674928, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleMusic
       objectReference: {fileID: 0}
     - target: {fileID: 8437222450925194256, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2544,11 +2560,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f695b98d16abc44ca966a1ec98507a0, type: 3}
---- !u!82 &1257997247 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 3800396405020500216, guid: 3e35a67e20afd0a48b5be375bc8a1e0d, type: 3}
-  m_PrefabInstance: {fileID: 91693969}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1355579213 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8264223492730770932, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
@@ -2560,11 +2571,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!82 &1434938827 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8661313347849341856, guid: 3e35a67e20afd0a48b5be375bc8a1e0d, type: 3}
-  m_PrefabInstance: {fileID: 91693969}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1454709883
 GameObject:
   m_ObjectHideFlags: 0
@@ -2906,8 +2912,8 @@ MonoBehaviour:
   - {x: 0.02, y: 0.28, z: 0}
   - {x: 0.04, y: -0.0013566324, z: 0}
   m_ShapePathHash: -1144176179
-  m_Mesh: {fileID: 727363425}
-  m_InstanceId: 73060
+  m_Mesh: {fileID: 652634616}
+  m_InstanceId: 32842
   m_LocalBounds:
     m_Center: {x: 0, y: 0.13932168, z: 0}
     m_Extent: {x: 0.04, y: 0.14067832, z: 0}
@@ -3366,8 +3372,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSlider: {fileID: 1355579213}
   sfxSlider: {fileID: 269973169}
-  musicSource: {fileID: 1434938827}
-  sfxSource: {fileID: 1257997247}
 --- !u!1 &2449072038361024662
 GameObject:
   m_ObjectHideFlags: 0
