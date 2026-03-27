@@ -530,8 +530,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 9b4b560d019f18640b260242ae6e80b3, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -588,6 +588,14 @@ PrefabInstance:
       propertyPath: targetImage
       value: 
       objectReference: {fileID: 1945673847}
+    - target: {fileID: 2244269847851500104, guid: add546e9be6ec7548bdadafee25ae201, type: 3}
+      propertyPath: lockedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9b4b560d019f18640b260242ae6e80b3, type: 3}
+    - target: {fileID: 2244269847851500104, guid: add546e9be6ec7548bdadafee25ae201, type: 3}
+      propertyPath: endlessButton
+      value: 
+      objectReference: {fileID: 1945673845}
     - target: {fileID: 2244269847851500104, guid: add546e9be6ec7548bdadafee25ae201, type: 3}
       propertyPath: unlockedSprite
       value: 

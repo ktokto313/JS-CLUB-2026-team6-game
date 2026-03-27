@@ -44,7 +44,6 @@ public class MainMenu : MonoBehaviour
             EventManager.current.onMusicVolumeSliderUpdate(musicVolume);
             EventManager.current.onSFXVolumeSliderUpdate(sfxVolume);
         }
-
         
         UpdateEndlessUI();
     }

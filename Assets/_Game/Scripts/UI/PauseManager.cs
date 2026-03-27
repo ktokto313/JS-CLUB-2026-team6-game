@@ -7,9 +7,7 @@ public class PauseManager : MonoBehaviour
     public GameObject winPanel;
     public GameObject losePanel;
     [SerializeField] private GameObject statCard;
-    
     [SerializeField] private GameObject[] extraUIs; 
-
     private const string EndlessUnlockedKey = "EndlessUnlocked";
 
     void Start()
@@ -50,11 +48,9 @@ public class PauseManager : MonoBehaviour
         {
             winPanel.SetActive(true);
             if (statCard != null) statCard.SetActive(true);
-
             
             PlayerPrefs.SetInt(EndlessUnlockedKey, 1);
             PlayerPrefs.Save(); 
-
             Time.timeScale = 0f;
         }
     }
@@ -102,11 +98,7 @@ public class PauseManager : MonoBehaviour
     public void GoToMainMenu()
     {
         Time.timeScale = 1f; 
-
-        
         SpawnManager.IsEndlessMode = false; 
-        
-        
         SceneManager.LoadScene("Menu"); 
     }
 

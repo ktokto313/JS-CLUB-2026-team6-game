@@ -116,10 +116,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41268a368a07ff6468eb18ae32d144c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  endlessButton: {fileID: 0}
+  lockedSprite: {fileID: 0}
+  unlockedSprite: {fileID: 0}
+  endlessText: {fileID: 0}
   musicSlider: {fileID: 7342366142746584786}
   sfxSlider: {fileID: 4788235645661549740}
-  musicSource: {fileID: 0}
-  sfxSource: {fileID: 0}
 --- !u!1001 &1681312029079778086
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -300,10 +302,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5606218530652556336, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5821167917044861639, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2244269847851500104}
+    - target: {fileID: 6132649267547167104, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6135594371403294602, guid: 1b932c6ef5c29b74194518c93ef1be6e, type: 3}
       propertyPath: m_Value
       value: 1
