@@ -5,26 +5,34 @@ using _Game.Scripts.Core;
 
 public class MainMenu : MonoBehaviour
 {
+    private const string MusicVolumeKey = "MusicVolume";
+    private const string SFXVolumeKey = "SFXVolume";
+    private const float DefaultVolume = 1.0f;
 
     public Slider musicSlider; 
     public Slider sfxSlider;   
-    public AudioSource musicSource; 
-    public AudioSource sfxSource;
 
     void Start()
     {
+        float musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, DefaultVolume);
+        float sfxVolume = PlayerPrefs.GetFloat(SFXVolumeKey, DefaultVolume);
     
         if (musicSlider != null)
         {
-            
-            if (musicSource != null) musicSlider.value = musicSource.volume;
+            musicSlider.value = musicVolume;
             musicSlider.onValueChanged.AddListener(OnMusicSliderChanged);
         }
 
         if (sfxSlider != null)
         {
-            if (sfxSource != null) sfxSlider.value = sfxSource.volume;
+            sfxSlider.value = sfxVolume;
             sfxSlider.onValueChanged.AddListener(OnSFXSliderChanged);
+        }
+
+        if (EventManager.current != null)
+        {
+            EventManager.current.onMusicVolumeSliderUpdate(musicVolume);
+            EventManager.current.onSFXVolumeSliderUpdate(sfxVolume);
         }
     }
 
@@ -34,6 +42,7 @@ public class MainMenu : MonoBehaviour
     }
 
     public void RestartGame() {
+        SaveVolumePreferences();
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -49,12 +58,6 @@ public class MainMenu : MonoBehaviour
     
     public void OnMusicSliderChanged(float value)
     {
-       
-        if (musicSource != null) 
-        {
-            musicSource.volume = value;
-        }
-        
         if (EventManager.current != null)
         {
             EventManager.current.onMusicVolumeSliderUpdate(value);
@@ -63,12 +66,6 @@ public class MainMenu : MonoBehaviour
 
     public void OnSFXSliderChanged(float value)
     {
-        
-        if (sfxSource != null) 
-        {
-            sfxSource.volume = value;
-        }
-
         if (EventManager.current != null)
         {
             EventManager.current.onSFXVolumeSliderUpdate(value);
@@ -77,6 +74,7 @@ public class MainMenu : MonoBehaviour
     
     public void QuitGame()
     {
+        SaveVolumePreferences();
         Debug.Log("Game đang thoát...");
 
         #if UNITY_EDITOR
@@ -85,5 +83,20 @@ public class MainMenu : MonoBehaviour
         #else
             Application.Quit();
         #endif
+    }
+
+    private void SaveVolumePreferences()
+    {
+        if (musicSlider != null)
+        {
+            PlayerPrefs.SetFloat(MusicVolumeKey, musicSlider.value);
+        }
+
+        if (sfxSlider != null)
+        {
+            PlayerPrefs.SetFloat(SFXVolumeKey, sfxSlider.value);
+        }
+
+        PlayerPrefs.Save();
     }
 }
