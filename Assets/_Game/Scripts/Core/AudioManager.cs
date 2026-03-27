@@ -22,11 +22,16 @@ namespace _Game.Scripts.Core
 
         [Header("SFX Volume")]
         [SerializeField, Range(0f, 1f)] private float musicVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float positionalSfxVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float oneShotSfxVolume = 1f;
+        [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
+        
+        private const string MusicVolumeKey = "MusicVolume";
+        private const string SFXVolumeKey = "SFXVolume";
+        private const float DefaultVolume = 1.0f;
 
         private void Start()
         {
+            musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, DefaultVolume);
+            sfxVolume = PlayerPrefs.GetFloat(SFXVolumeKey, DefaultVolume);
             
             musicSource.volume = musicVolume;
             musicSource.loop = true;
@@ -46,17 +51,6 @@ namespace _Game.Scripts.Core
             EventManager.current.onSFXVolumeSliderUpdateAction += HandleSFXVolumeSliderUpdate;
         }
 
-        public void ChangeMusicVolume(float volume)
-        {
-            musicVolume = volume;
-        }
-
-        public void ChangeSfxVolume(float volume)
-        {
-            oneShotSfxVolume = volume;
-            positionalSfxVolume = volume;
-        }
-        
         private void HandleHit(Vector3 hitPosition)
         {
             PlayAtPoint(hitClip, hitPosition);
@@ -100,15 +94,14 @@ namespace _Game.Scripts.Core
 
         private void HandleSFXVolumeSliderUpdate(float volume)
         {
-            oneShotSfxVolume = volume;
-            positionalSfxVolume = volume;
-            sfxSource.volume = oneShotSfxVolume;
+            sfxVolume = volume;
+            sfxSource.volume = sfxVolume;
         }
 
         private void PlayOneShot(AudioClip clip)
         {
             if (!clip|| !sfxSource) return;
-            sfxSource.PlayOneShot(clip, oneShotSfxVolume);
+            sfxSource.PlayOneShot(clip, sfxVolume);
         }
 
         private void PlayMusic()
@@ -121,7 +114,7 @@ namespace _Game.Scripts.Core
         private void PlayAtPoint(AudioClip clip, Vector3 position)
         {
             if (!clip) return;
-            AudioSource.PlayClipAtPoint(clip, position, positionalSfxVolume);
+            AudioSource.PlayClipAtPoint(clip, position, sfxVolume);
         }
     }
 }
