@@ -33,7 +33,8 @@ public class GameInput : MonoBehaviour
     private float lastRightTime = -100f;
 
     private void Update()
-    {
+    {   
+        if (Time.timeScale == 0f) return;
         // 1. Record input presses
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             lastUpTime = Time.time;

@@ -88,6 +88,8 @@ public class PlayerAnimation : MonoBehaviour
             anim.ResetTrigger("Attack4");
             anim.ResetTrigger("JumpAttack");
             anim.ResetTrigger("AirAttack");
+            anim.ResetTrigger("Uppercut");
+            
             
             anim.SetBool("IsArmed", isArmed);
         }

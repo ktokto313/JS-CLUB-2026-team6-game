@@ -113,6 +113,11 @@ public class PlayerController : MonoBehaviour
 
         if (health != null && health.TakeHit(damage))
         {
+            if (TryGetComponent(out PlayerMovement movementScript) && !movementScript.CanHit())
+            {
+                return;
+            }
+            
             if (health.IsDead)
             {
                 state = PlayerState.DEATH;
