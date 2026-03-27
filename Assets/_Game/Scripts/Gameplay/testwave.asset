@@ -15,7 +15,7 @@ MonoBehaviour:
   waveName: 
   spawnSteps:
   - label: 
-    enemyPrefab: {fileID: 3463495847834036775, guid: 7f4ad67a4cc40364fa95bfd91e0fea78, type: 3}
+    enemyPrefab: {fileID: 3867769967252293139, guid: 988513a16ff923f4391ee7f24164a157, type: 3}
     delayAfterLastStep: 0
     count: 9
     interval: 3.85

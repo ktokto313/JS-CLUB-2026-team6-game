@@ -35,12 +35,9 @@ public class RocketRider : EnemyBase
     private void Update() {
         if (isExploding) {
             if (rb != null && rb.velocity.sqrMagnitude > 0.2f) {
-                // Tính góc bay thực tế
                 float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
 
                 if (dirX == -1) {
-                    // CỐT LÕI: Khi Scale.x âm, trục tọa độ bị đảo ngược.
-                    // Để nhìn sang trái và chúi đầu xuống đúng hướng, ta phải bù trừ góc như sau:
                     angle = Mathf.Atan2(-rb.velocity.y, -rb.velocity.x) * Mathf.Rad2Deg;
                 }
 
