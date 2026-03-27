@@ -110,13 +110,14 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage = 1)
     {
         if (state == PlayerState.DEATH) return;
-
+    
+        if (TryGetComponent(out PlayerMovement movementScript) && !movementScript.CanHit())
+        {
+            return;
+        }
+        
         if (health != null && health.TakeHit(damage))
         {
-            if (TryGetComponent(out PlayerMovement movementScript) && !movementScript.CanHit())
-            {
-                return;
-            }
             
             if (health.IsDead)
             {
@@ -144,7 +145,7 @@ public class PlayerController : MonoBehaviour
 
         if (TryGetComponent(out Rigidbody2D rb))
         {
-            rb.gravityScale = 0f; 
+            rb.gravityScale = 10f; 
 
             rb.velocity = Vector2.zero; 
 

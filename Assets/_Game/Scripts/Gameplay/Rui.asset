@@ -16,7 +16,7 @@ MonoBehaviour:
   damage: 1
   attackRange: 1
   attackSpeed: 0.8
-  flySpeed: 2
+  flySpeed: 4.04
   lifeTime: 15
   weaponSkins:
   - skinName: 
