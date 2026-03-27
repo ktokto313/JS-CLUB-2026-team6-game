@@ -111,9 +111,9 @@ GameObject:
   - component: {fileID: 5793345459179436425}
   - component: {fileID: 4029415490958023433}
   - component: {fileID: 5553352419273494973}
-  - component: {fileID: 5103146113431033637}
-  - component: {fileID: 7960839731245162862}
-  - component: {fileID: 8109031525689958910}
+  - component: {fileID: 2804065643413916319}
+  - component: {fileID: 2251992877168026518}
+  - component: {fileID: 7963796312906362224}
   m_Layer: 7
   m_Name: PlayerController
   m_TagString: Player
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5124d8f981078f42bb403f7407d4b61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpAttackForce: 20.1
+  jumpAttackForce: 23
   rb: {fileID: 718575305729760486}
   airSpinUpwardForce: 12
 --- !u!114 &4579215552543128142
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 8
---- !u!114 &5103146113431033637
+--- !u!114 &2804065643413916319
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -335,17 +335,17 @@ MonoBehaviour:
   m_SelfShadows: 1
   m_ApplyToSortingLayers: 00000000
   m_ShapePath:
-  - {x: -0.078162655, y: -0.0013566324, z: 0}
-  - {x: -0.078162655, y: 0.28713775, z: 0}
-  - {x: 0.06694196, y: 0.28713775, z: 0}
-  - {x: 0.06694196, y: -0.0013566324, z: 0}
-  m_ShapePathHash: 0
+  - {x: -0.04, y: -0.0013566324, z: 0}
+  - {x: -0.04, y: 0.27, z: 0}
+  - {x: 0.02, y: 0.28, z: 0}
+  - {x: 0.04, y: -0.0013566324, z: 0}
+  m_ShapePathHash: -1144176179
   m_Mesh: {fileID: 0}
-  m_InstanceId: 28896
+  m_InstanceId: 49904
   m_LocalBounds:
-    m_Center: {x: -0.005610347, y: 0.14289056, z: 0}
-    m_Extent: {x: 0.07255231, y: 0.14424719, z: 0}
---- !u!108 &7960839731245162862
+    m_Center: {x: 0, y: 0.13932168, z: 0}
+    m_Extent: {x: 0.04, y: 0.14067832, z: 0}
+--- !u!108 &2251992877168026518
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -407,7 +407,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &8109031525689958910
+--- !u!114 &7963796312906362224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
