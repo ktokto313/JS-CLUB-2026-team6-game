@@ -486,7 +486,7 @@ MonoBehaviour:
   visualAxe: {fileID: 0}
   swingRadius: 5
   swingSpeed: 0.5
-  sideLimit: 0.2
+  sideLimit: 0.1
   ropeVisual: {fileID: 8141630833386428015}
   damageRadius: 0.6
   damageOffset: 0

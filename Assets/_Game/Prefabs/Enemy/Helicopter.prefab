@@ -179,9 +179,11 @@ MonoBehaviour:
   healthBar: {fileID: 4202594070797561157}
   spawnDialogues:
   - "V\xE8o v\xE8ooooooo"
-  - "Em l\xE0 CTV team 6 \u0111\u1EA5m em nh\u1EB9 thui \u1EA1 :<"
+  - Vuii Vuiiii
   hitDialogues: []
-  deathDialogues: []
+  deathDialogues:
+  - Boommmm
+  - "\u0110o\xE0ngggg"
   data: {fileID: 11400000, guid: 3391d2f4409dd094d8aae8e2ad1e767b, type: 2}
   CurrentWeaponTbScript: {fileID: 0}
   visualAxe: {fileID: 0}

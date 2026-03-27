@@ -703,13 +703,17 @@ MonoBehaviour:
   chatUI: {fileID: 982330202712695319}
   healthBar: {fileID: 3101277336792954868}
   spawnDialogues:
-  - "Em l\xE0 CTV team 6 \u0111\u1EA5m em nh\u1EB9 thui \u1EA1 :<"
+  - "Im l\u1EB7ng \u0111i..."
+  - "TA S\u1EBC NGHI\u1EC0N N\xC1T NG\u01AF\u01A0I!"
+  - "C\xFAt kh\u1ECFi l\xE3nh \u0111\u1ECBa c\u1EE7a ta!"
   hitDialogues:
-  - Hicc
-  - Pochh
-  - Suuuuu
+  - "V\xF4 \xEDch th\xF4i."
+  - "M\xE1u... ta th\xEDch n\xF3."
+  - "Kh\xE1 khen cho s\u1EF1 n\u1ED7 l\u1EF1c."
   deathDialogues:
+  - "Kh\xF4ng th\u1EC3 n\xE0o..."
   - F*ck your b*tch!!!
+  - "Ng\u01B0\u01A1i... m\u1EA1nh h\u01A1n ta t\u01B0\u1EDFng..."
   data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: c45cb0e037dd2c340ac39c9dceabccd4, type: 2}
   visualAxe: {fileID: 176173905455505152}

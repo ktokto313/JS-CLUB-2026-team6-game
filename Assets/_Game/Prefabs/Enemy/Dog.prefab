@@ -377,12 +377,16 @@ MonoBehaviour:
   healthBar: {fileID: 9185652403767030388}
   spawnDialogues:
   - "Gau G\xE2u"
+  - "G\xE1u G\xE1u"
+  - Gra Gra
   hitDialogues:
   - Grrr..
   - Gao Grr
   - "\u1EAEng \u1EAFng"
   deathDialogues:
   - "\xC1u \xC1u"
+  - "\xC0 huuuu"
+  - "\xE1uuuuuu"
   data: {fileID: 11400000, guid: 3e06ab9bd87a6fe489cadf85304d4bae, type: 2}
   CurrentWeaponTbScript: {fileID: 0}
   visualAxe: {fileID: 0}

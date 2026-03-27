@@ -274,15 +274,19 @@ MonoBehaviour:
   chatUI: {fileID: 8718749601882739977}
   healthBar: {fileID: 5975087616800936821}
   spawnDialogues:
-  - "Em l\xE0 CTV team 6 \u0111\u1EA5m em nh\u1EB9 thui \u1EA1 :<"
-  - Heelo minnh ten la team 6 cong tac vien gen13
+  - "L\u1EA1i th\xEAm m\u1ED9t mi\u1EBFng m\u1ED3i ngon!"
+  - "Anh em \u01A1i, th\u1ECBt \u0111\u1EBFn r\u1ED3i!"
+  - "Ch\u1EA1y \u0111i \u0111\xE2u cho tho\xE1t?"
+  - "Ng\u01B0\u01A1i tr\xF4ng c\xF3 v\u1EBB... y\u1EBFu \u0111\u1EA5y"
   hitDialogues:
   - "\xC1!"
   - "\u0110au th\u1EBF!"
-  - "\u0110\u1EEBng b\u1EAFn n\u1EEFa!"
+  - "\u1ED0i! \u0110au \u0111\u1EA5y"
   - "H\u1EE5t r\u1ED3i... \xE0 ch\u01B0a."
   deathDialogues:
-  - See you in Hell...
+  - "Ta s\u1EBD... b\xE1o th\xF9..."
+  - "\u0110\u1EE3i \u0111\u1EA5y, \u0111\u1EA1i ca ta s\u1EBD \u0111\u1EBFn!"
+  - "Nh\u1EDB m\u1EB7t ta \u0111\u1EA5y..."
   data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 0}
   visualAxe: {fileID: 0}

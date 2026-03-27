@@ -614,13 +614,16 @@ MonoBehaviour:
   healthBar: {fileID: 2299130319935444470}
   spawnDialogues:
   - I am comming for you
-  - "Em l\xE0 CTV team 6 \u0111\u1EA5m em nh\u1EB9 thui \u1EA1 :<"
+  - "Ng\u01B0\u01A1i \u0111\xE3 ch\u1ECDn sai ch\u1ED7 \u0111\u1EC3 \u0111\u1EBFn."
   hitDialogues:
-  - ouchhh
+  - biet bo may la ai ko
   - "\u1EF1aaa"
-  - .....
+  - "Ch\u01B0a t\xE0y \u0111\xE2u!"
   deathDialogues:
   - "Ng\u01B0\u01A1i s\u1EBD ph\u1EA3i tr\u1EA3 gi\xE1....."
+  - "Ta s\u1EBD ch\u1EDD ng\u01B0\u01A1i... \u1EDF d\u01B0\u1EDBi v\u1EF1c th\u1EB3m..."
+  - "Ng\u01B0\u01A1i th\u1EAFng tr\u1EADn n\xE0y, nh\u01B0ng cu\u1ED9c chi\u1EBFn
+    ch\u1EC9 m\u1EDBi b\u1EAFt \u0111\u1EA7u."
   data: {fileID: 11400000, guid: ab4abfbac23f4134c9768ded692563bb, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: 04e6e30989e0bd0449a1060b26d2b812, type: 2}
   visualAxe: {fileID: 0}

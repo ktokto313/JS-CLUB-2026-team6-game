@@ -55,13 +55,17 @@ MonoBehaviour:
   chatUI: {fileID: 4932402985264748304}
   healthBar: {fileID: 8481254500858831487}
   spawnDialogues:
-  - "Em l\xE0 CTV team 6 \u0111\u1EA5m em nh\u1EB9 thui \u1EA1 :<"
+  - "Ch\u1EA1y \u0111i \u0111\xE2u cho tho\xE1t?"
+  - "C\xE1i ch\u1EBFt \u0111ang c\u1EADn k\u1EC1."
+  - "Ng\u01B0\u01A1i \u0111\xE3 ch\u1ECDn sai ch\u1ED7 \u0111\u1EC3 \u0111\u1EBFn."
   hitDialogues:
   - Ouch!
   - "\u1EF0a .."
   - "Huhu m\xE9c m\u1EB9"
   deathDialogues:
   - "S\u1EBD c\xF3 nh\u1EEFng con C\xE1 PH\u1EA2I TR\u1EA2 GI\xD3 !!!"
+  - "Ta s\u1EBD... b\xE1o th\xF9..."
+  - "Ch\u1EC9 l\xE0... t\u1EA1m th\u1EDDi..."
   data: {fileID: 11400000, guid: ee566aa8d5e04ff4ea205c3d2bba336e, type: 2}
   CurrentWeaponTbScript: {fileID: 11400000, guid: 73d43e5bd8a079e44be65ddfd8216e7d, type: 2}
   visualAxe: {fileID: 8434553896180955631}
@@ -238,7 +242,7 @@ MonoBehaviour:
   - {x: 0.06, y: -0.23999977, z: 0}
   m_ShapePathHash: 503082078
   m_Mesh: {fileID: 0}
-  m_InstanceId: 138490
+  m_InstanceId: 41244
   m_LocalBounds:
     m_Center: {x: -0.034999996, y: -0.009999886, z: 0}
     m_Extent: {x: 0.095, y: 0.22999988, z: 0}
