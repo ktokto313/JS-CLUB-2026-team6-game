@@ -42,6 +42,8 @@ public class SpawnManager : MonoBehaviour {
             yield return new WaitForSeconds(GetWaveDuration(wave) + timeBetweenWaves);
             currentWaveIndex++;
         }
+        
+        yield return new WaitUntil(() => GameObject.FindGameObjectsWithTag("Enemy").Length == 0);
         EventManager.current.onWin();
     }
 
