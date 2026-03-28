@@ -111,9 +111,9 @@ GameObject:
   - component: {fileID: 5793345459179436425}
   - component: {fileID: 4029415490958023433}
   - component: {fileID: 5553352419273494973}
-  - component: {fileID: 2804065643413916319}
-  - component: {fileID: 2251992877168026518}
-  - component: {fileID: 7963796312906362224}
+  - component: {fileID: 6208268416786023573}
+  - component: {fileID: 3973063021926885496}
+  - component: {fileID: 4257985420941321909}
   m_Layer: 7
   m_Name: PlayerController
   m_TagString: Player
@@ -314,8 +314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f00e2b3b1540004eb6500f5cfb6cd97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 8
---- !u!114 &2804065643413916319
+  maxHealth: 10
+--- !u!114 &6208268416786023573
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,11 +341,11 @@ MonoBehaviour:
   - {x: 0.04, y: -0.0013566324, z: 0}
   m_ShapePathHash: -1144176179
   m_Mesh: {fileID: 0}
-  m_InstanceId: 49904
+  m_InstanceId: 49006
   m_LocalBounds:
     m_Center: {x: 0, y: 0.13932168, z: 0}
     m_Extent: {x: 0.04, y: 0.14067832, z: 0}
---- !u!108 &2251992877168026518
+--- !u!108 &3973063021926885496
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -407,7 +407,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &7963796312906362224
+--- !u!114 &4257985420941321909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
