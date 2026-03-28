@@ -86,13 +86,16 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 1f; 
 
         
-        if (SpawnManager.IsEndlessMode && losePanel.activeSelf)
-        {
-            SpawnManager.IsEndlessMode = false;
-            Debug.Log("Thua ở Endless -> Tự động chuyển về Campaign");
-        }
+        // if (SpawnManager.IsEndlessMode && losePanel.activeSelf)
+        // {
+        //     SpawnManager.IsEndlessMode = false;
+        //     Debug.Log("Thua ở Endless -> Tự động chuyển về Campaign");
+        // }
+        bool isEndlessMode = SpawnManager.IsEndlessMode;
         
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        SpawnManager.IsEndlessMode = isEndlessMode;
     }
 
     public void GoToMainMenu()
